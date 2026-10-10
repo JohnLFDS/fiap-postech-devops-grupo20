@@ -413,7 +413,28 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 
 <div class="toast" id="toast"></div>
 
-<script>
+<script type="module">
+// ══════════════════════════════════════════════
+// FIREBASE — SDK via CDN (modular)
+// ══════════════════════════════════════════════
+import { initializeApp }                        from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getDatabase, ref, set, onValue, get }  from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
+
+const firebaseConfig = {
+  apiKey:            'AIzaSyAw9ScaiqUxJ38CF34rg86IauNxS7fhLfM',
+  authDomain:        'fiap-postech-devops-grupo20.firebaseapp.com',
+  databaseURL:       'https://fiap-postech-devops-grupo20-default-rtdb.firebaseio.com',
+  projectId:         'fiap-postech-devops-grupo20',
+  storageBucket:     'fiap-postech-devops-grupo20.firebasestorage.app',
+  messagingSenderId: '1031559739055',
+  appId:             '1:1031559739055:web:128e38b158b9b7a3c0065a'
+};
+
+const _fbApp = initializeApp(firebaseConfig);
+const _db    = getDatabase(_fbApp);
+const _stateRef = ref(_db, 'tc-g20/state');
+const _tasksRef = ref(_db, 'tc-g20/tasks');
+
 // ══════════════════════════════════════════════
 // CONSTANTES
 // ══════════════════════════════════════════════
@@ -453,15 +474,94 @@ const DEFAULT_TASKS = [
 let tasks = [];
 let doneState = {};
 let pendingTaskId = null;
+let _lastAddedId = null;   // rastreia nova tarefa adicionada via cfgAddTask
+let _fbReady = false;      // true após primeira sincronização com Firebase
 
+// ── Persistência local (fallback offline) ────
+function _lsSaveTasks()  { try { localStorage.setItem(TASKS_KEY, JSON.stringify(tasks)); } catch {} }
+function _lsSaveState()  { try { localStorage.setItem(STATE_KEY, JSON.stringify(doneState)); } catch {} }
+
+// ── Persistência Firebase ────────────────────
+function saveTasks() {
+  _lsSaveTasks();
+  set(_tasksRef, tasks).catch(() => {}); // silencia erros offline
+}
+function saveState() {
+  _lsSaveState();
+  set(_stateRef, doneState).catch(() => {});
+}
+
+// ── Carga inicial (localStorage enquanto Firebase não responde) ──
 function loadTasks() {
   try { tasks = JSON.parse(localStorage.getItem(TASKS_KEY)) || DEFAULT_TASKS; } catch { tasks = DEFAULT_TASKS; }
 }
 function loadState() {
   try { doneState = JSON.parse(localStorage.getItem(STATE_KEY)) || {}; } catch { doneState = {}; }
 }
-function saveTasks()  { localStorage.setItem(TASKS_KEY, JSON.stringify(tasks)); }
-function saveState()  { localStorage.setItem(STATE_KEY, JSON.stringify(doneState)); }
+
+// ── Listeners em tempo real ──────────────────
+function _attachFirebaseListeners() {
+  // Estado (checkboxes) — sincroniza em tempo real entre todos os membros
+  onValue(_stateRef, (snapshot) => {
+    const remote = snapshot.val();
+    if (remote !== null) {
+      doneState = remote;
+      _lsSaveState();
+    }
+    if (!_fbReady) {
+      _fbReady = true;
+      // Primeiro snapshot: renderiza com dados do Firebase (substitui localStorage)
+      renderChecklist();
+      renderMembers();
+      _showSyncBadge(true);
+    } else {
+      // Atualizações subsequentes vindas de outros membros
+      renderChecklist();
+      renderMembers();
+    }
+  }, (err) => {
+    console.warn('[Firebase] state listener error:', err);
+    _showSyncBadge(false);
+  });
+
+  // Tarefas — sincroniza edições do painel de configuração
+  onValue(_tasksRef, (snapshot) => {
+    const remote = snapshot.val();
+    if (remote !== null && Array.isArray(remote)) {
+      tasks = remote;
+      _lsSaveTasks();
+      renderChecklist();
+      renderMembers();
+    }
+  }, (err) => {
+    console.warn('[Firebase] tasks listener error:', err);
+  });
+}
+
+// ── Badge de status de sincronização ─────────
+function _showSyncBadge(online) {
+  let badge = document.getElementById('fb-sync-badge');
+  if (!badge) {
+    badge = document.createElement('div');
+    badge.id = 'fb-sync-badge';
+    badge.style.cssText = 'position:fixed;bottom:18px;left:18px;z-index:9999;font-size:.7rem;font-weight:700;padding:5px 11px;border-radius:20px;letter-spacing:.5px;transition:opacity .4s;pointer-events:none;';
+    document.body.appendChild(badge);
+  }
+  if (online) {
+    badge.textContent = '🔥 Firebase sincronizado';
+    badge.style.background = 'rgba(46,204,113,.18)';
+    badge.style.border = '1px solid #2ecc71';
+    badge.style.color = '#2ecc71';
+    badge.style.opacity = '1';
+    setTimeout(() => { badge.style.opacity = '0'; }, 3500);
+  } else {
+    badge.textContent = '⚠️ Offline — dados locais';
+    badge.style.background = 'rgba(231,76,60,.18)';
+    badge.style.border = '1px solid #e74c3c';
+    badge.style.color = '#e74c3c';
+    badge.style.opacity = '1';
+  }
+}
 
 // ══════════════════════════════════════════════
 // LOGIN
@@ -668,6 +768,7 @@ function renderConfigPanel() {
 
 function cfgAddTask() {
   const newId = 'custom_' + Date.now();
+  _lastAddedId = newId;
   tasks.push({ id: newId, title: 'Nova tarefa', desc: '', owner: MEMBERS[0].id, status: 'todo' });
   renderConfigPanel();
   // foca no último input
@@ -693,17 +794,30 @@ function cfgSave() {
   btn.disabled = true;
   lbl.textContent = '✓ Salvando…';
 
-  // Lê todos os valores dos campos
+  // Lê todos os valores dos campos e detecta qual foi alterada/adicionada
+  let firstChangedId = _lastAddedId; // nova tarefa tem prioridade
   const rows = document.querySelectorAll('.cfg-row');
   rows.forEach(row => {
     const id = row.dataset.cfgId;
     const task = tasks.find(t=>t.id===id);
     if (!task) return;
-    task.title  = row.querySelector('[data-field="title"]').value.trim()  || task.title;
-    task.desc   = row.querySelector('[data-field="desc"]').value.trim();
-    task.owner  = row.querySelector('[data-field="owner"]').value;
-    task.status = row.querySelector('[data-field="status"]').value;
+    const newTitle  = row.querySelector('[data-field="title"]').value.trim()  || task.title;
+    const newDesc   = row.querySelector('[data-field="desc"]').value.trim();
+    const newOwner  = row.querySelector('[data-field="owner"]').value;
+    const newStatus = row.querySelector('[data-field="status"]').value;
+    // Marca primeira tarefa modificada (excluindo nova já rastreada)
+    if (!firstChangedId && (
+      newTitle !== task.title || newDesc !== task.desc ||
+      newOwner !== task.owner || newStatus !== task.status
+    )) {
+      firstChangedId = id;
+    }
+    task.title  = newTitle;
+    task.desc   = newDesc;
+    task.owner  = newOwner;
+    task.status = newStatus;
   });
+  _lastAddedId = null; // limpa para o próximo uso
   saveTasks();
   renderMembers();
   renderChecklist();
@@ -720,10 +834,13 @@ function cfgSave() {
     btn.disabled = false;
     lbl.textContent = 'Salvar e fechar';
 
-    // Toast de confirmação + scroll suave ao checklist
+    // Toast de confirmação + scroll suave até a tarefa alterada/adicionada
     showToast('✅ Configurações salvas! Checklist atualizado.');
     setTimeout(() => {
-      document.getElementById('checklist').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const target = firstChangedId
+        ? document.querySelector(`[data-id="${firstChangedId}"]`)
+        : document.getElementById('checklist');
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 300);
   }, 400);
 }
@@ -765,12 +882,31 @@ function init() {
   const savedTheme = localStorage.getItem('tc-fase1-theme')||'dark';
   document.documentElement.setAttribute('data-theme',savedTheme);
   updateThemeBtn(savedTheme);
+  // Renderiza imediatamente com dados locais (evita tela em branco)
   loadTasks();
   loadState();
   renderMembers();
   renderChecklist();
+  // Conecta ao Firebase e registra listeners de sincronização em tempo real
+  _attachFirebaseListeners();
 }
 init();
+
+// ══════════════════════════════════════════════
+// EXPOR FUNÇÕES AO ESCOPO GLOBAL
+// (necessário pois <script type="module"> é isolado
+//  e os onclick="..." do HTML não enxergam funções do módulo)
+// ══════════════════════════════════════════════
+window.tryLogin        = tryLogin;
+window.toggleTheme     = toggleTheme;
+window.handleCheck     = handleCheck;
+window.closeModal      = closeModal;
+window.confirmCheck    = confirmCheck;
+window.toggleConfig    = toggleConfig;
+window.cfgAddTask      = cfgAddTask;
+window.cfgDeleteTask   = cfgDeleteTask;
+window.cfgSave         = cfgSave;
+window.cfgReset        = cfgReset;
 </script>
 </body>
 </html>
