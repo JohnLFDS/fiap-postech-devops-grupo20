@@ -204,9 +204,10 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 .toast.show{transform:translateY(0);opacity:1;}
 
 /* ── LOGIN GATE ── */
-#login-gate{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;transition:opacity .3s;}
+#login-gate{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;transition:opacity .3s;overflow:hidden;}
 #login-gate.hidden{opacity:0;pointer-events:none;}
-.login-box{background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--pink);border-radius:16px;padding:36px 32px 28px;width:100%;max-width:380px;box-shadow:var(--shadow);text-align:center;}
+body:has(#login-gate:not(.hidden)){overflow:hidden;}
+.login-box{background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--pink);border-radius:16px;padding:36px 32px 0;width:100%;max-width:380px;box-shadow:var(--shadow);text-align:center;}
 .login-logo{font-size:.65rem;font-weight:700;letter-spacing:3px;color:var(--pink);text-transform:uppercase;margin-bottom:10px;}
 .login-box h2{font-size:1.2rem;font-weight:800;color:var(--txt);margin-bottom:4px;}
 .login-box p{font-size:.75rem;color:var(--muted);margin-bottom:24px;line-height:1.5;}
@@ -216,7 +217,11 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 .login-btn{width:100%;background:var(--pink);color:#fff;border:none;border-radius:8px;padding:11px;font-size:.9rem;font-weight:700;cursor:pointer;transition:opacity .15s;margin-bottom:10px;}
 .login-btn:hover{opacity:.88;}
 .login-error{font-size:.75rem;color:#e74c3c;min-height:18px;margin-top:2px;}
-.login-hint{font-size:.65rem;color:var(--muted);margin-top:20px;line-height:1.5;border-top:1px solid var(--border);padding-top:14px;}
+.login-hint{font-size:.65rem;color:var(--muted);margin-top:16px;line-height:1.5;}
+.login-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);margin-top:20px;padding:10px 0 14px;gap:8px;}
+.login-footer-version{font-size:.6rem;font-weight:700;color:var(--muted);letter-spacing:.5px;}
+.login-footer-secure{display:flex;align-items:center;gap:4px;font-size:.6rem;color:var(--muted);letter-spacing:.3px;}
+.login-footer-secure svg{flex-shrink:0;opacity:.6;}
 
 /* ── FOOTER ── */
 .footer{border-top:1px solid var(--border);padding:16px clamp(16px,3.5vw,48px);text-align:center;font-size:.68rem;color:var(--muted);}
@@ -250,6 +255,15 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
     <button class="login-btn" onclick="tryLogin()">Entrar no portal</button>
     <div class="login-error" id="loginError"></div>
     <div class="login-hint">Dúvidas? Fale com o John no grupo do WhatsApp.</div>
+    <div class="login-footer">
+      <span class="login-footer-version">v1.1.1</span>
+      <span class="login-footer-secure">
+        <svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5.5 0L0.5 2.5V6C0.5 9.15 2.68 12.1 5.5 13C8.32 12.1 10.5 9.15 10.5 6V2.5L5.5 0Z" fill="currentColor" opacity=".5"/>
+        </svg>
+        Conexão segura
+      </span>
+    </div>
   </div>
 </div>
 
