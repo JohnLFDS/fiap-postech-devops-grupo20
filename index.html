@@ -220,11 +220,11 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 .login-hint{font-size:.65rem;color:var(--muted);margin-top:16px;line-height:1.5;}
 .login-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);margin-top:20px;padding:10px 0 14px;gap:8px;}
 .login-footer-version{font-size:.6rem;font-weight:700;color:var(--muted);letter-spacing:.5px;}
-.login-footer-secure{display:flex;align-items:center;gap:4px;font-size:.6rem;color:var(--muted);letter-spacing:.3px;transition:color .4s;}
-.login-footer-secure svg{flex-shrink:0;color:#2ecc71;filter:drop-shadow(0 0 4px rgba(46,204,113,0));animation:shield-glow 2.4s ease-in-out infinite;}
+.login-footer-secure{display:flex;align-items:center;gap:4px;font-size:.6rem;color:var(--muted);letter-spacing:.3px;}
+.login-footer-secure svg{flex-shrink:0;fill:#2ecc71;animation:shield-glow 2.4s ease-in-out infinite;}
 @keyframes shield-glow{
-  0%,100%{filter:drop-shadow(0 0 2px rgba(46,204,113,.3));opacity:.7;}
-  50%{filter:drop-shadow(0 0 7px rgba(46,204,113,.95));opacity:1;}
+  0%,100%{filter:drop-shadow(0 0 2px rgba(46,204,113,.4));opacity:.75;}
+  50%{filter:drop-shadow(0 0 8px rgba(46,204,113,1));opacity:1;}
 }
 
 /* ── FOOTER ── */
@@ -262,8 +262,8 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
     <div class="login-footer">
       <span class="login-footer-version">v1.1.2</span>
       <span class="login-footer-secure">
-        <svg width="12" height="14" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M5.5 0L0.5 2.5V6C0.5 9.15 2.68 12.1 5.5 13C8.32 12.1 10.5 9.15 10.5 6V2.5L5.5 0Z" fill="currentColor"/>
+        <svg width="12" height="14" viewBox="0 0 11 13" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5.5 0L0.5 2.5V6C0.5 9.15 2.68 12.1 5.5 13C8.32 12.1 10.5 9.15 10.5 6V2.5L5.5 0Z" fill="#2ecc71"/>
         </svg>
         Conexão segura
       </span>
