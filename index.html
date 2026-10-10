@@ -198,6 +198,16 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 .btn:hover{opacity:.85;}
 .btn-cancel{background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
 .btn-confirm{background:var(--pink);color:#fff;}
+.btn-danger{background:var(--red);color:#fff;}
+
+/* ── CONFIRM DIALOG ── */
+#confirmDialog{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:1100;align-items:center;justify-content:center;padding:16px;}
+#confirmDialog.active{display:flex;}
+#confirmDialog .cd-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px 28px 22px;max-width:380px;width:100%;box-shadow:var(--shadow);}
+#confirmDialog .cd-icon{font-size:1.6rem;margin-bottom:8px;line-height:1;}
+#confirmDialog .cd-title{font-size:.95rem;font-weight:800;color:var(--txt);margin-bottom:6px;}
+#confirmDialog .cd-msg{font-size:.8rem;color:var(--muted);margin-bottom:22px;line-height:1.5;}
+#confirmDialog .cd-btns{display:flex;gap:10px;justify-content:flex-end;}
 
 /* ── TOAST ── */
 .toast{position:fixed;bottom:24px;right:24px;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:8px;padding:12px 18px;font-size:.82rem;color:var(--txt);box-shadow:var(--shadow);z-index:2000;transform:translateY(80px);opacity:0;transition:transform .3s,opacity .3s;max-width:320px;}
@@ -260,7 +270,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
     <div class="login-error" id="loginError"></div>
     <div class="login-hint">Dúvidas? Fale com o John no grupo do WhatsApp.</div>
     <div class="login-footer">
-      <span class="login-footer-version">v1.1.2</span>
+      <span class="login-footer-version">v1.2.0</span>
       <span class="login-footer-secure">
         <svg width="12" height="14" viewBox="0 0 11 13" xmlns="http://www.w3.org/2000/svg">
           <path d="M5.5 0L0.5 2.5V6C0.5 9.15 2.68 12.1 5.5 13C8.32 12.1 10.5 9.15 10.5 6V2.5L5.5 0Z" fill="#2ecc71"/>
@@ -412,6 +422,19 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
   Tech Challenge · Grupo 20 &nbsp;·&nbsp; Erick · John · Alan · Marcelo · Cassio &nbsp;·&nbsp; FIAP Pós Tech 2026 · 4 Fases
 </div>
 
+<!-- CONFIRM DIALOG (substitui confirm() nativo) -->
+<div id="confirmDialog">
+  <div class="cd-box">
+    <div class="cd-icon" id="cdIcon"></div>
+    <div class="cd-title" id="cdTitle"></div>
+    <div class="cd-msg" id="cdMsg"></div>
+    <div class="cd-btns">
+      <button class="btn btn-cancel" id="cdCancelBtn">Cancelar</button>
+      <button class="btn" id="cdOkBtn">Confirmar</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
@@ -528,18 +551,14 @@ function _attachFirebaseListeners() {
     }
     if (!_fbReady) {
       _fbReady = true;
-      // Primeiro snapshot: renderiza com dados do Firebase (substitui localStorage)
       renderChecklist();
       renderMembers();
-      _showSyncBadge(true);
     } else {
-      // Atualizações subsequentes vindas de outros membros
       renderChecklist();
       renderMembers();
     }
   }, (err) => {
     console.warn('[Firebase] state listener error:', err);
-    _showSyncBadge(false);
   });
 
   // Tarefas — sincroniza edições do painel de configuração
@@ -556,29 +575,19 @@ function _attachFirebaseListeners() {
   });
 }
 
-// ── Badge de status de sincronização ─────────
-function _showSyncBadge(online) {
-  let badge = document.getElementById('fb-sync-badge');
-  if (!badge) {
-    badge = document.createElement('div');
-    badge.id = 'fb-sync-badge';
-    badge.style.cssText = 'position:fixed;bottom:18px;left:18px;z-index:9999;font-size:.7rem;font-weight:700;padding:5px 11px;border-radius:20px;letter-spacing:.5px;transition:opacity .4s;pointer-events:none;';
-    document.body.appendChild(badge);
-  }
-  if (online) {
-    badge.textContent = '🔥 Firebase sincronizado';
-    badge.style.background = 'rgba(46,204,113,.18)';
-    badge.style.border = '1px solid #2ecc71';
-    badge.style.color = '#2ecc71';
-    badge.style.opacity = '1';
-    setTimeout(() => { badge.style.opacity = '0'; }, 3500);
-  } else {
-    badge.textContent = '⚠️ Offline — dados locais';
-    badge.style.background = 'rgba(231,76,60,.18)';
-    badge.style.border = '1px solid #e74c3c';
-    badge.style.color = '#e74c3c';
-    badge.style.opacity = '1';
-  }
+// ── Confirm dialog (substitui confirm() nativo) ──
+function showConfirm({ icon='⚠️', title, msg, okLabel='Confirmar', okClass='btn-danger', onOk }) {
+  const d = document.getElementById('confirmDialog');
+  document.getElementById('cdIcon').textContent  = icon;
+  document.getElementById('cdTitle').textContent = title;
+  document.getElementById('cdMsg').textContent   = msg;
+  const okBtn = document.getElementById('cdOkBtn');
+  okBtn.textContent = okLabel;
+  okBtn.className   = 'btn ' + okClass;
+  d.classList.add('active');
+  const close = () => d.classList.remove('active');
+  document.getElementById('cdCancelBtn').onclick = close;
+  okBtn.onclick = () => { close(); onOk(); };
 }
 
 // ══════════════════════════════════════════════
@@ -706,10 +715,19 @@ function renderChecklist() {
 // ══════════════════════════════════════════════
 function handleCheck(id) {
   if (doneState[id]) {
-    if (!confirm('Desmarcar esta tarefa como pendente?')) return;
-    delete doneState[id];
-    saveState();
-    renderChecklist();
+    const task = tasks.find(t=>t.id===id);
+    showConfirm({
+      icon: '↩️',
+      title: 'Desmarcar tarefa',
+      msg: `"${task ? task.title : id}" voltará para pendente.`,
+      okLabel: 'Desmarcar',
+      okClass: 'btn-cancel',
+      onOk: () => {
+        delete doneState[id];
+        saveState();
+        renderChecklist();
+      }
+    });
     return;
   }
   pendingTaskId = id;
@@ -808,11 +826,20 @@ function cfgAddTask() {
 }
 
 function cfgDeleteTask(id) {
-  if (!confirm('Remover esta tarefa?')) return;
-  tasks = tasks.filter(t=>t.id!==id);
-  delete doneState[id];
-  saveState();
-  renderConfigPanel();
+  const task = tasks.find(t=>t.id===id);
+  showConfirm({
+    icon: '🗑️',
+    title: 'Remover tarefa',
+    msg: `"${task ? task.title : id}" será removida permanentemente.`,
+    okLabel: 'Remover',
+    okClass: 'btn-danger',
+    onOk: () => {
+      tasks = tasks.filter(t=>t.id!==id);
+      delete doneState[id];
+      saveState();
+      renderConfigPanel();
+    }
+  });
 }
 
 function cfgSave() {
@@ -874,13 +901,21 @@ function cfgSave() {
 }
 
 function cfgReset() {
-  if (!confirm('Restaurar as tarefas para o padrão original? As marcações de concluído serão mantidas.')) return;
-  tasks = JSON.parse(JSON.stringify(DEFAULT_TASKS));
-  saveTasks();
-  renderConfigPanel();
-  renderMembers();
-  renderChecklist();
-  showToast('♻️ Tarefas restauradas para o padrão.');
+  showConfirm({
+    icon: '♻️',
+    title: 'Restaurar padrão',
+    msg: 'As tarefas voltarão ao estado original. As marcações de concluído serão mantidas.',
+    okLabel: 'Restaurar',
+    okClass: 'btn-confirm',
+    onOk: () => {
+      tasks = JSON.parse(JSON.stringify(DEFAULT_TASKS));
+      saveTasks();
+      renderConfigPanel();
+      renderMembers();
+      renderChecklist();
+      showToast('♻️ Tarefas restauradas para o padrão.');
+    }
+  });
 }
 
 function escHtml(str) {
