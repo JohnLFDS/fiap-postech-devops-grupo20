@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<title>Relatório de Entrega – Tech Challenge Fase 1</title>
+<style>
+  @page { size: A4; margin: 3cm 2cm 2cm 3cm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 12pt;
+    line-height: 1.5;
+    color: #000;
+    background: #fff;
+    padding: 3cm 2cm 2cm 3cm;
+  }
+  h1 { font-size: 14pt; font-weight: bold; text-transform: uppercase; text-align: center; margin-bottom: 0.6cm; }
+  h2 { font-size: 12pt; font-weight: bold; margin-top: 0.8cm; margin-bottom: 0.3cm; }
+  p  { text-align: justify; margin-bottom: 0.4cm; }
+  ul { margin-left: 1.5cm; margin-bottom: 0.4cm; }
+  li { margin-bottom: 0.2cm; }
+  a  { color: #1155CC; }
+  .center { text-align: center; }
+  .divider { border: none; border-top: 1px solid #ccc; margin: 0.6cm 0; }
+  table { width: 100%; border-collapse: collapse; margin: 0.4cm 0; font-size: 11pt; }
+  th { background: #D9D9D9; border: 1px solid #000; padding: 5px 8px; text-align: left; }
+  td { border: 1px solid #000; padding: 5px 8px; vertical-align: top; }
+  .placeholder { color: #CC0000; font-style: italic; }
+  @media print { body { padding: 0; } }
+</style>
+</head>
+<body>
+
+<h1>RELATÓRIO DE ENTREGA<br>Tech Challenge – Fase 1</h1>
+
+<hr class="divider"/>
+
+<h2>1. Participantes</h2>
+<table>
+  <thead><tr><th>Nome</th><th>RM</th></tr></thead>
+  <tbody>
+    <tr><td>Erick Aleixo Aragão</td><td>RM378535</td></tr>
+    <tr><td>John Lennon Fernandes da Silva</td><td>RM377728</td></tr>
+    <tr><td>Alan Santos</td><td>RM378561</td></tr>
+    <tr><td>Marcelo Santos de Jesus</td><td>RM378332</td></tr>
+    <tr><td>Cassio Tadashi Kawamura</td><td>RM378022</td></tr>
+  </tbody>
+</table>
+<p class="center">Grupo 20 – Pós-Graduação em DevOps e Arquitetura Cloud – FIAP (2026)</p>
+
+<hr class="divider"/>
+
+<h2>2. Links de Entrega</h2>
+<table>
+  <tbody>
+    <tr>
+      <td><strong>Vídeo de demonstração</strong></td>
+      <td><span class="placeholder">[INSERIR LINK DO VÍDEO – YouTube ou Google Drive]</span></td>
+    </tr>
+    <tr>
+      <td><strong>Diagrama de arquitetura</strong></td>
+      <td><span class="placeholder">[INSERIR LINK DO DIAGRAMA – draw.io ou similar]</span></td>
+    </tr>
+    <tr>
+      <td><strong>Repositório da aplicação</strong></td>
+      <td><a href="https://github.com/dougls/toggle-master-monolith">https://github.com/dougls/toggle-master-monolith</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr class="divider"/>
+
+<h2>3. Resumo dos Desafios e Decisões</h2>
+<table>
+  <thead><tr><th>Desafio encontrado</th><th>Decisão / Solução adotada</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>Conta AWS para o grupo</td>
+      <td>Criação de conta nova para uso do Free Tier (12 meses) e acesso compartilhado entre os integrantes.</td>
+    </tr>
+    <tr>
+      <td>Subnet Group do RDS exige 2 zonas de disponibilidade</td>
+      <td>Criada segunda sub-rede privada em us-east-1b para atender ao requisito mínimo do RDS Subnet Group.</td>
+    </tr>
+    <tr>
+      <td>Aplicação não conectava ao RDS</td>
+      <td>Security Group do RDS corrigido para referenciar o ID do sg-ec2-togglemaster (não um IP fixo).</td>
+    </tr>
+    <tr>
+      <td>Porta da aplicação (5000, não 80)</td>
+      <td>Confirmado no código-fonte que Flask/Gunicorn usa porta 5000. Security Group ajustado para TCP 5000.</td>
+    </tr>
+    <tr>
+      <td>Manter Gunicorn ativo após fechar SSH</td>
+      <td>Uso de <code>nohup gunicorn --bind 0.0.0.0:5000 app:app &amp;</code> para manter o processo em background.</td>
+    </tr>
+    <tr>
+      <td>Credenciais do banco de dados</td>
+      <td>Gerenciadas exclusivamente via variáveis de ambiente (<code>export DB_HOST=...</code>). Nenhuma credencial no código ou no Git.</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr class="divider"/>
+
+<h2>4. Estimativa de Custos AWS</h2>
+<table>
+  <thead>
+    <tr><th>Serviço</th><th>Configuração</th><th>Sem Free Tier</th><th>Com Free Tier</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Amazon EC2</td><td>t3.micro | Linux | On-Demand | 730h/mês</td><td>~$8,47</td><td>$0,00</td></tr>
+    <tr><td>Amazon RDS</td><td>db.t3.micro | PostgreSQL 15 | 20 GB</td><td>~$16,79</td><td>$0,00</td></tr>
+    <tr><td>Data Transfer</td><td>~1 GB/mês outbound</td><td>~$0,09</td><td>~$0,09</td></tr>
+    <tr><td><strong>TOTAL</strong></td><td>—</td><td><strong>~$25,35/mês</strong></td><td><strong>~$0,09/mês</strong></td></tr>
+  </tbody>
+</table>
+<p><span class="placeholder">[INSERIR PRINT DA AWS PRICING CALCULATOR ABAIXO]</span></p>
+
+</body>
+</html>

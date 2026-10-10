@@ -1,0 +1,13 @@
+# Segredos — NUNCA commitar
+SECRETS/
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+
+# Bob
+.bob/
+
+# Lixo
+TRASH/
