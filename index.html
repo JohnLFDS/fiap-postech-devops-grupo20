@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Tech Challenge – Grupo 20 · DevOps e Arquitetura Cloud</title>
+<style>
+:root {
+  --bg:#1a1a1a; --surface:#242424; --surface2:#2e2e2e; --border:#383838;
+  --pink:#e8006d; --pink-dim:#a8004f; --pink-glow:rgba(232,0,109,.15);
+  --blue:#5b8fff; --purple:#9b59f5; --green:#2ecc71; --yellow:#f5c518; --red:#e74c3c;
+  --txt:#f0f0f0; --txt2:#bbb; --muted:#888;
+  --shadow:0 2px 12px rgba(0,0,0,.45);
+  --cn-pink-bg:rgba(232,0,109,.12); --cn-blue-bg:rgba(91,143,255,.12);
+  --cn-pur-bg:rgba(155,89,245,.12); --cn-grn-bg:rgba(46,204,113,.12);
+}
+[data-theme="light"] {
+  --bg:#f4f4f6; --surface:#fff; --surface2:#f0f0f4; --border:#d8d8e0;
+  --pink:#c4005a; --pink-dim:#900040; --pink-glow:rgba(196,0,90,.10);
+  --blue:#1a56db; --purple:#6d28d9; --green:#15803d; --yellow:#b45309;
+  --txt:#111; --txt2:#444; --muted:#666; --shadow:0 2px 12px rgba(0,0,0,.10);
+  --cn-pink-bg:rgba(196,0,90,.08); --cn-blue-bg:rgba(26,86,219,.08);
+  --cn-pur-bg:rgba(109,40,217,.08); --cn-grn-bg:rgba(21,128,61,.08);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:clamp(14px,1.25vw,18px);scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",system-ui,sans-serif;font-size:1rem;line-height:1.6;transition:background .25s,color .25s;}
+
+/* ── HEADER ── */
+.header{background:var(--surface);border-bottom:3px solid var(--pink);padding:clamp(16px,2.5vw,32px) clamp(16px,3.5vw,48px) clamp(14px,2vw,24px);display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.brand{font-size:.68rem;font-weight:700;letter-spacing:3px;color:var(--pink);text-transform:uppercase;margin-bottom:4px;}
+.header h1{font-size:clamp(18px,2.2vw,30px);font-weight:800;color:var(--txt);line-height:1.2;}
+.header h1 span{color:var(--pink);}
+.header-sub{font-size:.78rem;color:var(--muted);margin-top:4px;}
+.header-right{display:flex;align-items:center;gap:10px;flex-shrink:0;flex-wrap:wrap;}
+.badge-group{background:var(--pink-glow);border:1px solid var(--pink-dim);border-radius:8px;padding:10px 16px;text-align:center;}
+.badge-group .num{font-size:clamp(22px,2.8vw,38px);font-weight:900;color:var(--pink);line-height:1;}
+.badge-group .lbl{font-size:.6rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
+.theme-btn,.cfg-btn{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer;font-size:.75rem;font-weight:700;color:var(--txt);display:flex;align-items:center;gap:6px;transition:background .2s,border-color .2s;white-space:nowrap;}
+.theme-btn:hover,.cfg-btn:hover{border-color:var(--pink);}
+.cfg-btn{color:var(--muted);}
+.cfg-btn.active{color:var(--pink);border-color:var(--pink-dim);}
+
+/* ── WRAP ── */
+.wrap{max-width:clamp(320px,92vw,1380px);margin:0 auto;padding:clamp(20px,3vw,44px) clamp(16px,3.5vw,48px) 60px;}
+
+/* ── SEC HEADER ── */
+.sec-header{display:flex;align-items:center;gap:10px;margin:clamp(28px,3vw,44px) 0 14px;}
+.sec-header .dot{width:4px;height:26px;background:var(--pink);border-radius:2px;flex-shrink:0;}
+.sec-header h2{font-size:.78rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--pink);}
+
+/* ── PHASES ── */
+.phases-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:clamp(10px,1.2vw,18px);}
+.phase-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:clamp(16px,1.8vw,24px);position:relative;overflow:hidden;transition:border-color .2s;}
+.phase-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.phase-card.active{border-color:var(--pink);}
+.phase-card.active::before{background:var(--pink);}
+.phase-card.future{opacity:.6;}
+.phase-card.future::before{background:var(--border);}
+.phase-badge{display:inline-flex;align-items:center;gap:6px;font-size:.65rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 9px;border-radius:20px;margin-bottom:10px;}
+.badge-active{background:var(--pink-glow);color:var(--pink);border:1px solid var(--pink-dim);}
+.badge-future{background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
+.badge-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.bd-active{background:var(--pink);animation:pulse 1.8s infinite;}
+.bd-future{background:var(--muted);}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.phase-num{font-size:.7rem;font-weight:700;color:var(--muted);margin-bottom:4px;}
+.phase-title{font-size:1rem;font-weight:800;color:var(--txt);margin-bottom:4px;line-height:1.2;}
+.phase-sub{font-size:.75rem;color:var(--muted);margin-bottom:12px;line-height:1.4;}
+.phase-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;}
+.phase-tag{font-size:.62rem;padding:2px 8px;border-radius:4px;background:var(--surface2);color:var(--txt2);border:1px solid var(--border);}
+.phase-card.active .phase-tag{background:var(--cn-pink-bg);color:var(--pink);border-color:var(--pink-dim);}
+.phase-progress{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;margin-top:4px;}
+.phase-progress-fill{height:100%;border-radius:2px;transition:width .5s ease;}
+.ppf-active{background:linear-gradient(90deg,var(--pink),var(--purple));}
+.ppf-future{background:var(--border);width:0%!important;}
+.phase-coming{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px 8px 12px;color:var(--muted);font-size:.72rem;text-align:center;line-height:1.5;gap:2px;}
+
+/* ── DELIVERABLES ── */
+.deliverables{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:clamp(10px,1.2vw,18px);margin-bottom:10px;}
+.del-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:clamp(14px,1.5vw,22px);position:relative;overflow:hidden;}
+.del-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.del-card.video::before{background:var(--pink);}
+.del-card.doc::before{background:var(--blue);}
+.del-card.report::before{background:var(--purple);}
+.del-icon{font-size:1.8rem;margin-bottom:8px;}
+.del-card h3{font-size:.85rem;font-weight:700;color:var(--txt);margin-bottom:10px;}
+.del-card ul{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.del-card ul li{font-size:.78rem;color:var(--txt2);display:flex;align-items:flex-start;gap:7px;}
+.del-card ul li::before{content:'›';color:var(--pink);font-weight:700;font-size:.9rem;line-height:1.4;flex-shrink:0;}
+
+/* ── TIMELINE ── */
+.timeline{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0;position:relative;margin-bottom:4px;}
+.timeline::before{content:'';position:absolute;top:18px;left:8%;width:84%;height:2px;background:linear-gradient(90deg,var(--pink),var(--blue),var(--purple),var(--green));}
+.tl-step{display:flex;flex-direction:column;align-items:center;gap:8px;padding-top:6px;position:relative;z-index:1;}
+.tl-circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;color:#fff;flex-shrink:0;}
+.tc-1{background:var(--pink);box-shadow:0 0 10px rgba(232,0,109,.5);}
+.tc-2{background:var(--blue);box-shadow:0 0 10px rgba(91,143,255,.5);}
+.tc-3{background:var(--purple);box-shadow:0 0 10px rgba(155,89,245,.5);}
+.tc-4{background:var(--green);box-shadow:0 0 10px rgba(46,204,113,.5);}
+.tl-label{font-size:.75rem;font-weight:700;color:var(--txt);text-align:center;}
+.tl-sub{font-size:.68rem;color:var(--muted);text-align:center;line-height:1.4;}
+
+/* ── MEMBERS ── */
+.members{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:clamp(8px,1vw,14px);}
+.member-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:clamp(12px,1.2vw,18px) clamp(10px,1vw,16px);text-align:center;}
+.member-avatar{width:42px;height:42px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800;color:#fff;}
+.av-1{background:linear-gradient(135deg,#e8006d,#a8004f);} .av-2{background:linear-gradient(135deg,#5b8fff,#2e5cbf);}
+.av-3{background:linear-gradient(135deg,#9b59f5,#6c3bbf);} .av-4{background:linear-gradient(135deg,#2ecc71,#1a8a4c);}
+.av-5{background:linear-gradient(135deg,#f5c518,#c49c0e);}
+.member-name{font-size:.72rem;font-weight:700;color:var(--txt);margin-bottom:2px;line-height:1.3;}
+.member-rm{font-size:.65rem;color:var(--muted);margin-bottom:8px;}
+.member-tasks{display:flex;flex-direction:column;gap:4px;}
+.task-tag{font-size:.62rem;padding:3px 6px;border-radius:4px;text-align:center;line-height:1.4;}
+.tag-pink{background:rgba(232,0,109,.15);color:#f472b6;border:1px solid rgba(232,0,109,.3);}
+.tag-blue{background:rgba(91,143,255,.12);color:#7aa8ff;border:1px solid rgba(91,143,255,.3);}
+.tag-purple{background:rgba(155,89,245,.12);color:#bb87ff;border:1px solid rgba(155,89,245,.3);}
+.tag-green{background:rgba(46,204,113,.12);color:#5de89a;border:1px solid rgba(46,204,113,.3);}
+.tag-yellow{background:rgba(245,197,24,.12);color:#f5d060;border:1px solid rgba(245,197,24,.3);}
+[data-theme="light"] .tag-pink{color:#9c0040;} [data-theme="light"] .tag-blue{color:#1a4db5;}
+[data-theme="light"] .tag-purple{color:#5b21b6;} [data-theme="light"] .tag-green{color:#166534;}
+[data-theme="light"] .tag-yellow{color:#92400e;}
+
+/* ── PROGRESS BAR ── */
+.progress-bar-wrap{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:10px;}
+.progress-bar-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.progress-bar-label span{font-size:.78rem;color:var(--muted);font-weight:600;}
+.progress-bar-label strong{font-size:.9rem;color:var(--green);}
+.progress-bar-track{height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--pink),var(--green));border-radius:4px;transition:width .5s ease;width:0%;}
+
+/* ── CHECKLIST ── */
+.checklist{display:flex;flex-direction:column;gap:8px;}
+.check-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:clamp(10px,1.2vw,16px) clamp(12px,1.5vw,20px);display:flex;align-items:flex-start;gap:12px;transition:border-color .2s,opacity .2s;}
+.check-item.done{opacity:.65;border-color:var(--green);background:var(--cn-grn-bg);}
+.check-box{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;margin-top:2px;transition:background .2s,border-color .2s;user-select:none;}
+.check-box:hover{border-color:var(--pink);}
+.check-item.done .check-box{background:var(--green);border-color:var(--green);}
+.check-box svg{display:none;}
+.check-item.done .check-box svg{display:block;}
+.check-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;flex-shrink:0;margin-top:1px;}
+.cn-pink{background:var(--cn-pink-bg);color:var(--pink);border:1px solid var(--pink-dim);}
+.cn-blue{background:var(--cn-blue-bg);color:var(--blue);border:1px solid rgba(91,143,255,.4);}
+.cn-purple{background:var(--cn-pur-bg);color:var(--purple);border:1px solid rgba(155,89,245,.4);}
+.cn-green{background:var(--cn-grn-bg);color:var(--green);border:1px solid rgba(46,204,113,.4);}
+.check-body{flex:1;min-width:0;}
+.check-title{font-size:.85rem;font-weight:700;color:var(--txt);margin-bottom:2px;transition:color .2s;}
+.check-item.done .check-title{color:var(--muted);text-decoration:line-through;}
+.check-desc{font-size:.75rem;color:var(--muted);line-height:1.5;}
+.check-meta{display:flex;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;}
+.owner-pill{font-size:.65rem;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+.done-by{font-size:.65rem;color:var(--green);margin-top:2px;display:none;}
+.check-item.done .done-by{display:block;}
+.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.sd-todo{background:#555;} .sd-progress{background:var(--yellow);} .sd-done{background:var(--green);}
+
+/* ── LEGEND ── */
+.legend{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:14px;padding:12px 16px;background:var(--surface);border-radius:8px;border:1px solid var(--border);}
+.legend-item{display:flex;align-items:center;gap:7px;font-size:.75rem;color:var(--txt2);}
+.legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+
+/* ── CONFIG PANEL ── */
+#config-panel{display:none;background:var(--surface);border:1px solid var(--pink-dim);border-radius:12px;padding:clamp(20px,2vw,28px);margin-top:8px;}
+#config-panel.open{display:block;}
+.cfg-panel-title{font-size:.82rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--pink);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.cfg-panel-title svg{flex-shrink:0;}
+.cfg-tasks-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+.cfg-row{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.cfg-row-num{font-size:.72rem;font-weight:800;color:var(--muted);width:20px;flex-shrink:0;text-align:center;}
+.cfg-input{flex:1;min-width:160px;background:var(--bg);border:1.5px solid var(--border);border-radius:6px;padding:7px 10px;font-size:.82rem;color:var(--txt);outline:none;transition:border-color .2s;}
+.cfg-input:focus{border-color:var(--pink);}
+.cfg-desc-input{flex:2;min-width:200px;}
+.cfg-select{background:var(--bg);border:1.5px solid var(--border);border-radius:6px;padding:7px 10px;font-size:.82rem;color:var(--txt);outline:none;cursor:pointer;transition:border-color .2s;}
+.cfg-select:focus{border-color:var(--pink);}
+.cfg-status-select{min-width:120px;}
+.cfg-del-btn{background:none;border:1px solid var(--border);border-radius:6px;padding:6px 10px;cursor:pointer;color:var(--muted);font-size:.75rem;transition:border-color .2s,color .2s;white-space:nowrap;}
+.cfg-del-btn:hover{border-color:var(--red);color:var(--red);}
+.cfg-add-btn{background:var(--cn-pink-bg);border:1px dashed var(--pink-dim);border-radius:8px;padding:10px;width:100%;cursor:pointer;font-size:.78rem;font-weight:700;color:var(--pink);text-align:center;transition:background .2s;}
+.cfg-add-btn:hover{background:var(--pink-glow);}
+.cfg-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:4px;}
+.cfg-save-btn{background:var(--pink);color:#fff;border:none;border-radius:8px;padding:9px 20px;font-size:.82rem;font-weight:700;cursor:pointer;transition:opacity .15s;}
+.cfg-save-btn:hover{opacity:.88;}
+.cfg-reset-btn{background:var(--surface2);color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:9px 16px;font-size:.82rem;font-weight:700;cursor:pointer;}
+.cfg-reset-btn:hover{border-color:var(--red);color:var(--red);}
+.cfg-hint{font-size:.68rem;color:var(--muted);margin-top:10px;line-height:1.5;}
+
+/* ── MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:1000;align-items:center;justify-content:center;padding:16px;}
+.modal-overlay.active{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px;max-width:440px;width:100%;box-shadow:var(--shadow);}
+.modal h3{font-size:1rem;font-weight:800;color:var(--txt);margin-bottom:6px;}
+.modal p{font-size:.82rem;color:var(--muted);margin-bottom:16px;line-height:1.5;}
+.modal-name{font-size:.85rem;font-weight:700;color:var(--pink);padding:8px 12px;background:var(--pink-glow);border:1px solid var(--pink-dim);border-radius:6px;margin-bottom:14px;}
+.modal-select{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--txt);border-radius:6px;padding:10px 12px;font-size:.85rem;margin-bottom:16px;outline:none;}
+.modal-select:focus{border-color:var(--pink);}
+.modal-btns{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+.btn{padding:8px 18px;border-radius:6px;font-size:.82rem;font-weight:700;cursor:pointer;border:none;transition:opacity .15s;}
+.btn:hover{opacity:.85;}
+.btn-cancel{background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
+.btn-confirm{background:var(--pink);color:#fff;}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:8px;padding:12px 18px;font-size:.82rem;color:var(--txt);box-shadow:var(--shadow);z-index:2000;transform:translateY(80px);opacity:0;transition:transform .3s,opacity .3s;max-width:320px;}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* ── LOGIN GATE ── */
+#login-gate{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;transition:opacity .3s;}
+#login-gate.hidden{opacity:0;pointer-events:none;}
+.login-box{background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--pink);border-radius:16px;padding:36px 32px 28px;width:100%;max-width:380px;box-shadow:var(--shadow);text-align:center;}
+.login-logo{font-size:.65rem;font-weight:700;letter-spacing:3px;color:var(--pink);text-transform:uppercase;margin-bottom:10px;}
+.login-box h2{font-size:1.2rem;font-weight:800;color:var(--txt);margin-bottom:4px;}
+.login-box p{font-size:.75rem;color:var(--muted);margin-bottom:24px;line-height:1.5;}
+.login-input{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;padding:11px 14px;font-size:1rem;color:var(--txt);outline:none;margin-bottom:12px;text-align:center;letter-spacing:3px;transition:border-color .2s;}
+.login-input:focus{border-color:var(--pink);}
+.login-input::placeholder{letter-spacing:1px;}
+.login-btn{width:100%;background:var(--pink);color:#fff;border:none;border-radius:8px;padding:11px;font-size:.9rem;font-weight:700;cursor:pointer;transition:opacity .15s;margin-bottom:10px;}
+.login-btn:hover{opacity:.88;}
+.login-error{font-size:.75rem;color:#e74c3c;min-height:18px;margin-top:2px;}
+.login-hint{font-size:.65rem;color:var(--muted);margin-top:20px;line-height:1.5;border-top:1px solid var(--border);padding-top:14px;}
+
+/* ── FOOTER ── */
+.footer{border-top:1px solid var(--border);padding:16px clamp(16px,3.5vw,48px);text-align:center;font-size:.68rem;color:var(--muted);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .header{flex-direction:column;gap:12px;}
+  .header-right{width:100%;justify-content:space-between;}
+  .timeline{grid-template-columns:1fr 1fr;gap:16px;}
+  .timeline::before{display:none;}
+  .check-meta{flex-direction:column;align-items:flex-end;gap:4px;}
+  .check-desc{display:none;}
+  .cfg-row{flex-direction:column;align-items:stretch;}
+}
+@media(max-width:400px){
+  .deliverables,.members{grid-template-columns:1fr;}
+  .timeline{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN GATE -->
+<div id="login-gate">
+  <div class="login-box">
+    <div class="login-logo">POS TECH &nbsp;·&nbsp; FIAP &nbsp;·&nbsp; 2026</div>
+    <h2>Tech Challenge <span style="color:var(--pink);">Grupo 20</span></h2>
+    <p>Portal restrito aos membros do grupo.<br>Insira a senha para continuar.</p>
+    <input class="login-input" id="pwInput" type="password" placeholder="Senha do grupo"
+      autocomplete="off" onkeydown="if(event.key==='Enter')tryLogin()"/>
+    <button class="login-btn" onclick="tryLogin()">Entrar no portal</button>
+    <div class="login-error" id="loginError"></div>
+    <div class="login-hint">Dúvidas? Fale com o John no grupo do WhatsApp.</div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="brand">POS TECH &nbsp;·&nbsp; DevOps e Arquitetura Cloud &nbsp;·&nbsp; FIAP</div>
+    <h1>Tech Challenge &nbsp;<span>Grupo 20</span></h1>
+    <div class="header-sub">ToggleMaster · DevOps e Arquitetura Cloud · FIAP Pós Tech 2026 &nbsp;·&nbsp; 4 Fases</div>
+  </div>
+  <div class="header-right">
+    <button class="cfg-btn" id="cfgToggleBtn" onclick="toggleConfig()" title="Configurar tarefas">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Configurar
+    </button>
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">
+      <span class="icon">☀️</span><span id="themeLabel">Modo Claro</span>
+    </button>
+    <div class="badge-group">
+      <div class="num">20</div>
+      <div class="lbl">Grupo</div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ROADMAP -->
+  <div class="sec-header"><div class="dot"></div><h2>Roadmap do projeto — 4 fases</h2></div>
+  <div class="phases-grid">
+    <div class="phase-card active">
+      <div class="phase-badge badge-active"><div class="badge-dot bd-active"></div>Em andamento</div>
+      <div class="phase-num">FASE 1</div>
+      <div class="phase-title">MVP na AWS</div>
+      <div class="phase-sub">Deploy monolítico · EC2 + RDS · Infraestrutura manual</div>
+      <div class="phase-tags">
+        <span class="phase-tag">Python / Flask</span><span class="phase-tag">EC2 t3.micro</span>
+        <span class="phase-tag">RDS PostgreSQL</span><span class="phase-tag">VPC / SGs</span>
+        <span class="phase-tag">Gunicorn</span><span class="phase-tag">12-Factor App</span>
+      </div>
+      <div class="phase-progress"><div class="phase-progress-fill ppf-active" id="phase1Fill" style="width:0%"></div></div>
+    </div>
+    <div class="phase-card future">
+      <div class="phase-badge badge-future"><div class="badge-dot bd-future"></div>Em breve</div>
+      <div class="phase-num">FASE 2</div>
+      <div class="phase-title" style="color:var(--muted);">A definir</div>
+      <div class="phase-sub">O enunciado será disponibilizado pela FIAP após a entrega da Fase 1.</div>
+      <div class="phase-coming"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" style="opacity:.35;margin-bottom:6px;"><circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="1.5"/><path d="M16 9v7l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Disponível após entrega da Fase 1</span></div>
+      <div class="phase-progress"><div class="phase-progress-fill ppf-future"></div></div>
+    </div>
+    <div class="phase-card future">
+      <div class="phase-badge badge-future"><div class="badge-dot bd-future"></div>Em breve</div>
+      <div class="phase-num">FASE 3</div>
+      <div class="phase-title" style="color:var(--muted);">A definir</div>
+      <div class="phase-sub">O enunciado será disponibilizado pela FIAP no decorrer do curso.</div>
+      <div class="phase-coming"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" style="opacity:.35;margin-bottom:6px;"><circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="1.5"/><path d="M16 9v7l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Disponível no decorrer do curso</span></div>
+      <div class="phase-progress"><div class="phase-progress-fill ppf-future"></div></div>
+    </div>
+    <div class="phase-card future">
+      <div class="phase-badge badge-future"><div class="badge-dot bd-future"></div>Em breve</div>
+      <div class="phase-num">FASE 4 · FINAL</div>
+      <div class="phase-title" style="color:var(--muted);">A definir</div>
+      <div class="phase-sub">Fase final do curso. Enunciado disponibilizado pela FIAP próximo ao início.</div>
+      <div class="phase-coming"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" style="opacity:.35;margin-bottom:6px;"><circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="1.5"/><path d="M16 9v7l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Fase final — conteúdo em breve</span></div>
+      <div class="phase-progress"><div class="phase-progress-fill ppf-future"></div></div>
+    </div>
+  </div>
+
+  <!-- ENTREGÁVEIS -->
+  <div class="sec-header"><div class="dot"></div><h2>Fase 1 — Entregáveis obrigatórios</h2></div>
+  <div class="deliverables">
+    <div class="del-card video"><div class="del-icon">🎬</div>
+      <h3>Vídeo de Demonstração <span style="font-size:.72rem;color:var(--muted);font-weight:400;">até 15 min</span></h3>
+      <ul><li>App rodando localmente (Docker)</li><li>Explicação do diagrama de arquitetura</li><li>App na EC2 acessando o RDS</li><li>Security Groups configurados</li><li>Gerenciamento de credenciais (env vars)</li></ul>
+    </div>
+    <div class="del-card doc"><div class="del-icon">📐</div>
+      <h3>Documentação</h3>
+      <ul><li>Link do diagrama (diagrams.net / Miro / ou similar)</li><li>Análise dos 12 Fatores aplicada ao projeto</li><li>VPC + subnets + EC2 + RDS + SGs desenhados</li></ul>
+    </div>
+    <div class="del-card report"><div class="del-icon">📄</div>
+      <h3>Relatório de Entrega <span style="font-size:.72rem;color:var(--muted);font-weight:400;">.PDF ou .txt</span></h3>
+      <ul><li>Nomes e RMs dos participantes</li><li>Link da documentação e do vídeo</li><li>Resumo dos desafios e decisões</li><li>Print da estimativa de custos AWS</li></ul>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="sec-header"><div class="dot"></div><h2>Fluxo de execução</h2></div>
+  <div class="timeline">
+    <div class="tl-step"><div class="tl-circle tc-1">1</div><div class="tl-label">Setup Local</div><div class="tl-sub">Clonar repo<br>Docker Compose up<br>Testar endpoints</div></div>
+    <div class="tl-step"><div class="tl-circle tc-2">2</div><div class="tl-label">Infra AWS</div><div class="tl-sub">VPC · Subnets · IGW<br>Security Groups<br>EC2 + RDS</div></div>
+    <div class="tl-step"><div class="tl-circle tc-3">3</div><div class="tl-label">Deploy &amp; Validação</div><div class="tl-sub">SSH na EC2<br>Gunicorn rodando<br>API pública validada</div></div>
+    <div class="tl-step"><div class="tl-circle tc-4">4</div><div class="tl-label">Doc &amp; Vídeo</div><div class="tl-sub">Diagrama finalizado<br>Relatório + custos<br>Gravação do vídeo</div></div>
+  </div>
+
+  <!-- MEMBROS -->
+  <div class="sec-header"><div class="dot"></div><h2>Responsabilidades por membro</h2></div>
+  <div class="members" id="membersGrid"><!-- renderizado por JS --></div>
+
+  <!-- CHECKLIST -->
+  <div class="sec-header" style="justify-content:space-between;flex-wrap:wrap;gap:8px;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div class="dot"></div><h2>Checklist de tarefas</h2>
+    </div>
+  </div>
+
+  <!-- PAINEL DE CONFIGURAÇÃO -->
+  <div id="config-panel">
+    <div class="cfg-panel-title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Configurar tarefas
+    </div>
+    <div class="cfg-tasks-list" id="cfgTasksList"><!-- renderizado por JS --></div>
+    <button class="cfg-add-btn" onclick="cfgAddTask()">+ Adicionar nova tarefa</button>
+    <div class="cfg-actions">
+      <button class="cfg-reset-btn" onclick="cfgReset()">Restaurar padrão</button>
+      <button class="cfg-save-btn" id="cfgSaveBtn" onclick="cfgSave()">
+        <span id="cfgSaveBtnLabel">Salvar e fechar</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="progress-bar-wrap" style="margin-top:14px;">
+    <div class="progress-bar-label">
+      <span>Progresso geral</span>
+      <strong id="progressText">0 / 0 concluídas</strong>
+    </div>
+    <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill"></div></div>
+  </div>
+
+  <div class="checklist" id="checklist"><!-- renderizado por JS --></div>
+
+  <div class="legend">
+    <span style="font-size:.72rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:1px;">Status:</span>
+    <div class="legend-item"><div class="legend-dot" style="background:#555;"></div> Pendente</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--yellow);"></div> Em andamento</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--green);"></div> Concluído</div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Tech Challenge · Grupo 20 &nbsp;·&nbsp; Erick · John · Alan · Marcelo · Cassio &nbsp;·&nbsp; FIAP Pós Tech 2026 · 4 Fases
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3>✅ Confirmar conclusão</h3>
+    <p id="modalTaskName" style="font-size:.85rem;color:var(--txt);margin-bottom:12px;font-weight:600;"></p>
+    <p>Quem está marcando esta tarefa como concluída?</p>
+    <div class="modal-name" id="modalMemberName">—</div>
+    <select class="modal-select" id="memberSelect">
+      <option value="">Selecione seu nome…</option>
+    </select>
+    <div class="modal-btns">
+      <button class="btn btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-confirm" onclick="confirmCheck()">Confirmar &amp; Notificar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════
+// CONSTANTES
+// ══════════════════════════════════════════════
+const NOTIFY_URL = ''; // URL do AWS API Gateway (opcional)
+const PW_HASH    = '0d1d19c56750f6d01b81ca3597f9a68d4512bbe45d48cb9ae0486e3e3b906c5b';
+const AUTH_KEY   = 'tc-g20-auth';
+const TASKS_KEY  = 'tc-g20-tasks-cfg';
+const STATE_KEY  = 'tc-g20-state';
+
+// ── Membros do grupo ──────────────────────────
+const MEMBERS = [
+  { id:'EA', name:'Erick Aleixo Aragão',        rm:'RM 378535', av:'av-1', tag:'tag-pink'   },
+  { id:'JL', name:'John Lennon F. da Silva',     rm:'RM 377728', av:'av-2', tag:'tag-blue'   },
+  { id:'AS', name:'Alan Santos',                 rm:'RM 378561', av:'av-3', tag:'tag-purple' },
+  { id:'MS', name:'Marcelo Santos de Jesus',     rm:'RM 378332', av:'av-4', tag:'tag-green'  },
+  { id:'CT', name:'Cassio Tadashi Kawamura',     rm:'RM 378022', av:'av-5', tag:'tag-yellow' },
+];
+
+// ── Tarefas padrão ────────────────────────────
+const DEFAULT_TASKS = [
+  { id:'t1',  title:'Clonar repositório e executar localmente',      desc:'git clone https://github.com/dougls/toggle-master-monolith · docker compose up · testar CRUD com curl ou Postman', owner:'CT', status:'todo' },
+  { id:'t2',  title:'Provisionar VPC, Subnets, IGW e Route Tables',  desc:'VPC 10.0.0.0/16 · Subnet pública 10.0.1.0/24 (us-east-1a) · Subnet privada 10.0.2.0/24 (us-east-1b) · IGW · Route Table', owner:'EA', status:'todo' },
+  { id:'t3',  title:'Criar Security Groups (EC2 e RDS)',              desc:'sg-ec2: TCP 22 (SSH IPs do grupo) + TCP 5000 (0.0.0.0/0) · sg-rds: TCP 5432 somente de sg-ec2', owner:'AS', status:'todo' },
+  { id:'t4',  title:'Provisionar RDS PostgreSQL',                     desc:'db.t3.micro · PostgreSQL 15 · Single-AZ · 20 GB gp2 · Subnet Group nas 2 AZs · sem acesso público', owner:'AS', status:'todo' },
+  { id:'t5',  title:'Provisionar EC2 e fazer deploy da aplicação',    desc:'t3.micro · Amazon Linux 2023 · SSH · yum install python3 · export variáveis do RDS · gunicorn --bind 0.0.0.0:5000 app:app', owner:'JL', status:'todo' },
+  { id:'t6',  title:'Validar API pública na EC2',                     desc:'curl http://<EC2-IP>:5000/flags · testar GET, POST, PUT, DELETE · confirmar que o RDS responde', owner:'JL', status:'todo' },
+  { id:'t7',  title:'Finalizar diagrama de arquitetura (diagrams.net)',desc:'Abrir diagrama-togglemaster.drawio · ajustes finais · exportar PNG · publicar link público', owner:'JL', status:'progress' },
+  { id:'t8',  title:'Análise dos 12 Fatores + Documentação',          desc:'Identificar quais fatores a app já atende · quais precisam ajuste · incluir no documento seção 3', owner:'MS', status:'progress' },
+  { id:'t9',  title:'Estimativa de custos na AWS Pricing Calculator', desc:'EC2 t3.micro + RDS db.t3.micro + transferência de dados · salvar link · tirar print', owner:'CT', status:'todo' },
+  { id:'t10', title:'Gravar vídeo de demonstração (até 15 min)',      desc:'App local · diagrama · EC2 ao vivo · Security Groups · credenciais · upload YouTube/Drive · salvar link', owner:'CT', status:'todo' },
+  { id:'t11', title:'Compilar Relatório de Entrega (PDF)',             desc:'Nomes + RMs · link do vídeo · link documentação/diagrama · resumo desafios · print custos AWS', owner:'MS', status:'todo' },
+];
+
+// ══════════════════════════════════════════════
+// ESTADO
+// ══════════════════════════════════════════════
+let tasks = [];
+let doneState = {};
+let pendingTaskId = null;
+
+function loadTasks() {
+  try { tasks = JSON.parse(localStorage.getItem(TASKS_KEY)) || DEFAULT_TASKS; } catch { tasks = DEFAULT_TASKS; }
+}
+function loadState() {
+  try { doneState = JSON.parse(localStorage.getItem(STATE_KEY)) || {}; } catch { doneState = {}; }
+}
+function saveTasks()  { localStorage.setItem(TASKS_KEY, JSON.stringify(tasks)); }
+function saveState()  { localStorage.setItem(STATE_KEY, JSON.stringify(doneState)); }
+
+// ══════════════════════════════════════════════
+// LOGIN
+// ══════════════════════════════════════════════
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+async function tryLogin() {
+  const val = document.getElementById('pwInput').value;
+  if (!val) { document.getElementById('loginError').textContent='Digite a senha.'; return; }
+  const hash = await sha256(val);
+  if (hash === PW_HASH) {
+    sessionStorage.setItem(AUTH_KEY,'1');
+    const gate = document.getElementById('login-gate');
+    gate.classList.add('hidden');
+    setTimeout(()=>gate.remove(), 350);
+  } else {
+    document.getElementById('loginError').textContent='Senha incorreta. Tente novamente.';
+    document.getElementById('pwInput').value='';
+    document.getElementById('pwInput').focus();
+  }
+}
+(function checkAuth(){
+  if (sessionStorage.getItem(AUTH_KEY)==='1') {
+    const g = document.getElementById('login-gate');
+    if (g) g.remove();
+  }
+})();
+
+// ══════════════════════════════════════════════
+// TEMA
+// ══════════════════════════════════════════════
+function toggleTheme() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',next);
+  localStorage.setItem('tc-fase1-theme',next);
+  updateThemeBtn(next);
+}
+function updateThemeBtn(t) {
+  document.getElementById('themeBtn').querySelector('.icon').textContent = t==='dark'?'☀️':'🌙';
+  document.getElementById('themeLabel').textContent = t==='dark'?'Modo Claro':'Modo Escuro';
+}
+
+// ══════════════════════════════════════════════
+// RENDER MEMBERS
+// ══════════════════════════════════════════════
+function renderMembers() {
+  const grid = document.getElementById('membersGrid');
+  // agrupa tarefas por owner
+  const byOwner = {};
+  MEMBERS.forEach(m => byOwner[m.id] = []);
+  tasks.forEach(t => { if (byOwner[t.owner] !== undefined) byOwner[t.owner].push(t.title); });
+
+  grid.innerHTML = MEMBERS.map(m => `
+    <div class="member-card">
+      <div class="member-avatar ${m.av}">${m.id}</div>
+      <div class="member-name">${m.name}</div>
+      <div class="member-rm">${m.rm}</div>
+      <div class="member-tasks">
+        ${byOwner[m.id].length
+          ? byOwner[m.id].slice(0,3).map(t=>`<span class="task-tag ${m.tag}">${t.length>22?t.slice(0,22)+'…':t}</span>`).join('')
+          + (byOwner[m.id].length>3 ? `<span class="task-tag ${m.tag}">+${byOwner[m.id].length-3} mais</span>` : '')
+          : `<span class="task-tag" style="color:var(--muted);border-color:var(--border);">Sem tarefas</span>`}
+      </div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════
+// RENDER CHECKLIST
+// ══════════════════════════════════════════════
+const NUM_COLORS = ['cn-pink','cn-pink','cn-blue','cn-blue','cn-blue','cn-purple','cn-purple','cn-purple','cn-green','cn-green','cn-green'];
+function getNumColor(idx) { return NUM_COLORS[idx] || 'cn-green'; }
+
+function getMemberByOwner(ownerId) { return MEMBERS.find(m=>m.id===ownerId) || null; }
+
+function renderChecklist() {
+  const el = document.getElementById('checklist');
+  // Popula select do modal
+  const sel = document.getElementById('memberSelect');
+  sel.innerHTML = '<option value="">Selecione seu nome…</option>' +
+    MEMBERS.map(m=>`<option value="${m.id}">${m.name}</option>`).join('');
+
+  el.innerHTML = tasks.map((task, idx) => {
+    const done = !!doneState[task.id];
+    const member = getMemberByOwner(task.owner);
+    const tagClass = member ? member.tag : 'tag-blue';
+    const ownerLabel = member ? member.name.split(' ')[0] : task.owner;
+    const dotClass = done ? 'sd-done' : (task.status==='progress' ? 'sd-progress' : 'sd-todo');
+    const doneText = done ? `✓ Concluído por ${doneState[task.id].by_name} em ${doneState[task.id].at}` : '';
+    return `
+    <div class="check-item${done?' done':''}" data-id="${task.id}">
+      <div class="check-box" onclick="handleCheck('${task.id}')">
+        <svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="check-num ${getNumColor(idx)}">${idx+1}</div>
+      <div class="check-body">
+        <div class="check-title">${task.title}</div>
+        <div class="check-desc">${task.desc}</div>
+        <div class="done-by" id="done-${task.id}">${doneText}</div>
+      </div>
+      <div class="check-meta">
+        <span class="owner-pill ${tagClass}">${ownerLabel}</span>
+        <div class="status-dot ${dotClass}" id="dot-${task.id}"></div>
+      </div>
+    </div>`;
+  }).join('');
+  updateProgress();
+}
+
+// ══════════════════════════════════════════════
+// CHECKLIST INTERACTION
+// ══════════════════════════════════════════════
+function handleCheck(id) {
+  if (doneState[id]) {
+    if (!confirm('Desmarcar esta tarefa como pendente?')) return;
+    delete doneState[id];
+    saveState();
+    renderChecklist();
+    return;
+  }
+  pendingTaskId = id;
+  const task = tasks.find(t=>t.id===id);
+  document.getElementById('modalTaskName').textContent = '📋 ' + (task ? task.title : id);
+  document.getElementById('memberSelect').value = '';
+  document.getElementById('modalMemberName').textContent = '—';
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+document.getElementById('memberSelect').addEventListener('change', function() {
+  const m = MEMBERS.find(x=>x.id===this.value);
+  document.getElementById('modalMemberName').textContent = m ? m.name : '—';
+});
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('active');
+  pendingTaskId = null;
+}
+
+async function confirmCheck() {
+  const ownerId = document.getElementById('memberSelect').value;
+  if (!ownerId) { alert('Selecione seu nome antes de confirmar.'); return; }
+  const member = MEMBERS.find(m=>m.id===ownerId);
+  const id = pendingTaskId;
+  const now = new Date();
+  const atStr = now.toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'});
+  doneState[id] = { by: ownerId, by_name: member.name.split(' ')[0], at: atStr };
+  saveState();
+  renderChecklist();
+  closeModal();
+  if (NOTIFY_URL) {
+    const task = tasks.find(t=>t.id===id);
+    try {
+      await fetch(NOTIFY_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({task:task?.title||id,member:member.name,at:atStr})});
+      showToast(`✅ ${member.name.split(' ')[0]} marcou tarefa como concluída — WhatsApp enviado!`);
+    } catch { showToast(`✅ Marcado! (notificação WhatsApp falhou)`); }
+  } else {
+    showToast(`✅ ${member.name.split(' ')[0]} marcou "${tasks.find(t=>t.id===id)?.title||id}" como concluída!`);
+  }
+}
+
+function updateProgress() {
+  const total = tasks.length;
+  const done  = Object.keys(doneState).filter(id=>tasks.find(t=>t.id===id)).length;
+  const pct   = total>0 ? Math.round((done/total)*100) : 0;
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressText').textContent = `${done} / ${total} concluídas`;
+  const f = document.getElementById('phase1Fill');
+  if (f) f.style.width = pct+'%';
+}
+
+// ══════════════════════════════════════════════
+// CONFIG PANEL
+// ══════════════════════════════════════════════
+function toggleConfig() {
+  const panel = document.getElementById('config-panel');
+  const btn   = document.getElementById('cfgToggleBtn');
+  const isOpen = panel.classList.toggle('open');
+  btn.classList.toggle('active', isOpen);
+  if (isOpen) { renderConfigPanel(); panel.scrollIntoView({behavior:'smooth',block:'start'}); }
+}
+
+function renderConfigPanel() {
+  const memberOptions = MEMBERS.map(m=>`<option value="${m.id}">${m.name.split(' ')[0]}</option>`).join('');
+  const statusOptions = `<option value="todo">Pendente</option><option value="progress">Em andamento</option>`;
+
+  document.getElementById('cfgTasksList').innerHTML = tasks.map((task,idx) => `
+    <div class="cfg-row" data-cfg-id="${task.id}">
+      <span class="cfg-row-num">${idx+1}</span>
+      <input class="cfg-input" data-field="title" value="${escHtml(task.title)}" placeholder="Título da tarefa"/>
+      <input class="cfg-input cfg-desc-input" data-field="desc" value="${escHtml(task.desc)}" placeholder="Descrição (opcional)"/>
+      <select class="cfg-select" data-field="owner">
+        ${MEMBERS.map(m=>`<option value="${m.id}"${m.id===task.owner?' selected':''}>${m.name.split(' ')[0]}</option>`).join('')}
+      </select>
+      <select class="cfg-select cfg-status-select" data-field="status">
+        <option value="todo"${task.status==='todo'?' selected':''}>Pendente</option>
+        <option value="progress"${task.status==='progress'?' selected':''}>Em andamento</option>
+      </select>
+      <button class="cfg-del-btn" onclick="cfgDeleteTask('${task.id}')">Remover</button>
+    </div>`).join('');
+}
+
+function cfgAddTask() {
+  const newId = 'custom_' + Date.now();
+  tasks.push({ id: newId, title: 'Nova tarefa', desc: '', owner: MEMBERS[0].id, status: 'todo' });
+  renderConfigPanel();
+  // foca no último input
+  setTimeout(()=>{
+    const rows = document.querySelectorAll('.cfg-row');
+    const last = rows[rows.length-1];
+    if (last) last.querySelector('input[data-field="title"]')?.focus();
+  }, 50);
+}
+
+function cfgDeleteTask(id) {
+  if (!confirm('Remover esta tarefa?')) return;
+  tasks = tasks.filter(t=>t.id!==id);
+  delete doneState[id];
+  saveState();
+  renderConfigPanel();
+}
+
+function cfgSave() {
+  // Feedback visual imediato — estado "salvando"
+  const btn = document.getElementById('cfgSaveBtn');
+  const lbl = document.getElementById('cfgSaveBtnLabel');
+  btn.disabled = true;
+  lbl.textContent = '✓ Salvando…';
+
+  // Lê todos os valores dos campos
+  const rows = document.querySelectorAll('.cfg-row');
+  rows.forEach(row => {
+    const id = row.dataset.cfgId;
+    const task = tasks.find(t=>t.id===id);
+    if (!task) return;
+    task.title  = row.querySelector('[data-field="title"]').value.trim()  || task.title;
+    task.desc   = row.querySelector('[data-field="desc"]').value.trim();
+    task.owner  = row.querySelector('[data-field="owner"]').value;
+    task.status = row.querySelector('[data-field="status"]').value;
+  });
+  saveTasks();
+  renderMembers();
+  renderChecklist();
+
+  // Pequeno delay para o usuário perceber o feedback antes do painel fechar
+  setTimeout(() => {
+    // Fecha o painel
+    const panel = document.getElementById('config-panel');
+    const cfgBtn = document.getElementById('cfgToggleBtn');
+    panel.classList.remove('open');
+    cfgBtn.classList.remove('active');
+
+    // Reset do botão para o próximo uso
+    btn.disabled = false;
+    lbl.textContent = 'Salvar e fechar';
+
+    // Toast de confirmação + scroll suave ao checklist
+    showToast('✅ Configurações salvas! Checklist atualizado.');
+    setTimeout(() => {
+      document.getElementById('checklist').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 300);
+  }, 400);
+}
+
+function cfgReset() {
+  if (!confirm('Restaurar as tarefas para o padrão original? As marcações de concluído serão mantidas.')) return;
+  tasks = JSON.parse(JSON.stringify(DEFAULT_TASKS));
+  saveTasks();
+  renderConfigPanel();
+  renderMembers();
+  renderChecklist();
+  showToast('♻️ Tarefas restauradas para o padrão.');
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ══════════════════════════════════════════════
+// MODAL — fechar ao clicar fora
+// ══════════════════════════════════════════════
+document.getElementById('modalOverlay').addEventListener('click',function(e){
+  if(e.target===this) closeModal();
+});
+
+// ══════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),4000);
+}
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+function init() {
+  const savedTheme = localStorage.getItem('tc-fase1-theme')||'dark';
+  document.documentElement.setAttribute('data-theme',savedTheme);
+  updateThemeBtn(savedTheme);
+  loadTasks();
+  loadState();
+  renderMembers();
+  renderChecklist();
+}
+init();
+</script>
+</body>
+</html>
