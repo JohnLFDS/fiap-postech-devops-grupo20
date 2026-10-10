@@ -165,8 +165,11 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 .cfg-panel-title{font-size:.82rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--pink);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
 .cfg-panel-title svg{flex-shrink:0;}
 .cfg-tasks-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
-.cfg-row{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.cfg-row{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;cursor:default;}
+.cfg-row.drag-over{border-color:var(--pink);background:var(--cn-pink-bg);}
 .cfg-row-num{font-size:.72rem;font-weight:800;color:var(--muted);width:20px;flex-shrink:0;text-align:center;}
+.cfg-drag-handle{cursor:grab;color:var(--muted);font-size:1rem;flex-shrink:0;line-height:1;user-select:none;padding:0 2px;}
+.cfg-drag-handle:active{cursor:grabbing;}
 .cfg-input{flex:1;min-width:160px;background:var(--bg);border:1.5px solid var(--border);border-radius:6px;padding:7px 10px;font-size:.82rem;color:var(--txt);outline:none;transition:border-color .2s;}
 .cfg-input:focus{border-color:var(--pink);}
 .cfg-desc-input{flex:2;min-width:200px;}
@@ -180,8 +183,8 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 .cfg-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:4px;}
 .cfg-save-btn{background:var(--pink);color:#fff;border:none;border-radius:8px;padding:9px 20px;font-size:.82rem;font-weight:700;cursor:pointer;transition:opacity .15s;}
 .cfg-save-btn:hover{opacity:.88;}
-.cfg-reset-btn{background:var(--surface2);color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:9px 16px;font-size:.82rem;font-weight:700;cursor:pointer;}
-.cfg-reset-btn:hover{border-color:var(--red);color:var(--red);}
+.cfg-cancel-btn{background:var(--surface2);color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:9px 16px;font-size:.82rem;font-weight:700;cursor:pointer;transition:border-color .2s,color .2s;}
+.cfg-cancel-btn:hover{border-color:var(--pink);color:var(--txt);}
 .cfg-hint{font-size:.68rem;color:var(--muted);margin-top:10px;line-height:1.5;}
 
 /* ── MODAL ── */
@@ -270,7 +273,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
     <div class="login-error" id="loginError"></div>
     <div class="login-hint">Dúvidas? Fale com o John no grupo do WhatsApp.</div>
     <div class="login-footer">
-      <span class="login-footer-version">v1.2.0</span>
+      <span class="login-footer-version">v1.3.0</span>
       <span class="login-footer-secure">
         <svg width="12" height="14" viewBox="0 0 11 13" xmlns="http://www.w3.org/2000/svg">
           <path d="M5.5 0L0.5 2.5V6C0.5 9.15 2.68 12.1 5.5 13C8.32 12.1 10.5 9.15 10.5 6V2.5L5.5 0Z" fill="#2ecc71"/>
@@ -392,7 +395,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
     <div class="cfg-tasks-list" id="cfgTasksList"><!-- renderizado por JS --></div>
     <button class="cfg-add-btn" onclick="cfgAddTask()">+ Adicionar nova tarefa</button>
     <div class="cfg-actions">
-      <button class="cfg-reset-btn" onclick="cfgReset()">Restaurar padrão</button>
+      <button class="cfg-cancel-btn" onclick="cfgCancel()">Cancelar</button>
       <button class="cfg-save-btn" id="cfgSaveBtn" onclick="cfgSave()">
         <span id="cfgSaveBtnLabel">Salvar e fechar</span>
       </button>
@@ -792,37 +795,82 @@ function toggleConfig() {
   if (isOpen) { renderConfigPanel(); panel.scrollIntoView({behavior:'smooth',block:'start'}); }
 }
 
-function renderConfigPanel() {
-  const memberOptions = MEMBERS.map(m=>`<option value="${m.id}">${m.name.split(' ')[0]}</option>`).join('');
-  const statusOptions = `<option value="todo">Pendente</option><option value="progress">Em andamento</option>`;
+// ── lê os valores actuais do DOM de volta para tasks[] ──────────
+function _cfgFlushDOM() {
+  document.querySelectorAll('.cfg-row').forEach(row => {
+    const id   = row.dataset.cfgId;
+    const task = tasks.find(t => t.id === id);
+    if (!task) return;
+    const titleVal = row.querySelector('[data-field="title"]').value.trim();
+    task.title  = titleVal; // pode ficar vazio — placeholder cuida da UI
+    task.desc   = row.querySelector('[data-field="desc"]').value.trim();
+    task.owner  = row.querySelector('[data-field="owner"]').value;
+    task.status = row.querySelector('[data-field="status"]').value;
+  });
+}
 
-  document.getElementById('cfgTasksList').innerHTML = tasks.map((task,idx) => `
-    <div class="cfg-row" data-cfg-id="${task.id}">
-      <span class="cfg-row-num">${idx+1}</span>
-      <input class="cfg-input" data-field="title" value="${escHtml(task.title)}" placeholder="Título da tarefa"/>
-      <input class="cfg-input cfg-desc-input" data-field="desc" value="${escHtml(task.desc)}" placeholder="Descrição (opcional)"/>
-      <select class="cfg-select" data-field="owner">
-        ${MEMBERS.map(m=>`<option value="${m.id}"${m.id===task.owner?' selected':''}>${m.name.split(' ')[0]}</option>`).join('')}
-      </select>
-      <select class="cfg-select cfg-status-select" data-field="status">
-        <option value="todo"${task.status==='todo'?' selected':''}>Pendente</option>
-        <option value="progress"${task.status==='progress'?' selected':''}>Em andamento</option>
-      </select>
-      <button class="cfg-del-btn" onclick="cfgDeleteTask('${task.id}')">Remover</button>
-    </div>`).join('');
+function _cfgMakeRow(task, idx) {
+  const row = document.createElement('div');
+  row.className = 'cfg-row';
+  row.dataset.cfgId = task.id;
+  row.draggable = true;
+  row.innerHTML = `
+    <span class="cfg-drag-handle" title="Arrastar para reordenar">☰</span>
+    <span class="cfg-row-num">${idx + 1}</span>
+    <input class="cfg-input" data-field="title" value="${escHtml(task.title)}" placeholder="Título da tarefa"/>
+    <input class="cfg-input cfg-desc-input" data-field="desc" value="${escHtml(task.desc)}" placeholder="Descrição (opcional)"/>
+    <select class="cfg-select" data-field="owner">
+      ${MEMBERS.map(m => `<option value="${m.id}"${m.id === task.owner ? ' selected' : ''}>${m.name.split(' ')[0]}</option>`).join('')}
+    </select>
+    <select class="cfg-select cfg-status-select" data-field="status">
+      <option value="todo"${task.status === 'todo' ? ' selected' : ''}>Pendente</option>
+      <option value="progress"${task.status === 'progress' ? ' selected' : ''}>Em andamento</option>
+    </select>
+    <button class="cfg-del-btn" onclick="cfgDeleteTask('${task.id}')">Remover</button>`;
+
+  // ── drag-and-drop ──
+  let _dragSrc = null;
+  row.addEventListener('dragstart', e => {
+    _dragSrc = row;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', task.id);
+    setTimeout(() => row.style.opacity = '.4', 0);
+  });
+  row.addEventListener('dragend', () => { row.style.opacity = ''; document.querySelectorAll('.cfg-row').forEach(r => r.classList.remove('drag-over')); });
+  row.addEventListener('dragover', e => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; row.classList.add('drag-over'); });
+  row.addEventListener('dragleave', () => row.classList.remove('drag-over'));
+  row.addEventListener('drop', e => {
+    e.preventDefault();
+    row.classList.remove('drag-over');
+    const srcId = e.dataTransfer.getData('text/plain');
+    if (srcId === task.id) return;
+    _cfgFlushDOM(); // preserva valores digitados antes de reordenar
+    const srcIdx = tasks.findIndex(t => t.id === srcId);
+    const tgtIdx = tasks.findIndex(t => t.id === task.id);
+    if (srcIdx < 0 || tgtIdx < 0) return;
+    const [moved] = tasks.splice(srcIdx, 1);
+    tasks.splice(tgtIdx, 0, moved);
+    renderConfigPanel();
+  });
+
+  return row;
+}
+
+function renderConfigPanel() {
+  const list = document.getElementById('cfgTasksList');
+  list.innerHTML = '';
+  tasks.forEach((task, idx) => list.appendChild(_cfgMakeRow(task, idx)));
 }
 
 function cfgAddTask() {
+  _cfgFlushDOM(); // preserva o que o usuário já digitou antes de adicionar
   const newId = 'custom_' + Date.now();
   _lastAddedId = newId;
-  tasks.push({ id: newId, title: 'Nova tarefa', desc: '', owner: MEMBERS[0].id, status: 'todo' });
-  renderConfigPanel();
-  // foca no último input
-  setTimeout(()=>{
-    const rows = document.querySelectorAll('.cfg-row');
-    const last = rows[rows.length-1];
-    if (last) last.querySelector('input[data-field="title"]')?.focus();
-  }, 50);
+  tasks.push({ id: newId, title: '', desc: '', owner: MEMBERS[0].id, status: 'todo' });
+  const list = document.getElementById('cfgTasksList');
+  const newRow = _cfgMakeRow(tasks[tasks.length - 1], tasks.length - 1);
+  list.appendChild(newRow);
+  setTimeout(() => newRow.querySelector('input[data-field="title"]')?.focus(), 50);
 }
 
 function cfgDeleteTask(id) {
@@ -843,36 +891,14 @@ function cfgDeleteTask(id) {
 }
 
 function cfgSave() {
-  // Feedback visual imediato — estado "salvando"
   const btn = document.getElementById('cfgSaveBtn');
   const lbl = document.getElementById('cfgSaveBtnLabel');
   btn.disabled = true;
   lbl.textContent = '✓ Salvando…';
 
-  // Lê todos os valores dos campos e detecta qual foi alterada/adicionada
-  let firstChangedId = _lastAddedId; // nova tarefa tem prioridade
-  const rows = document.querySelectorAll('.cfg-row');
-  rows.forEach(row => {
-    const id = row.dataset.cfgId;
-    const task = tasks.find(t=>t.id===id);
-    if (!task) return;
-    const newTitle  = row.querySelector('[data-field="title"]').value.trim()  || task.title;
-    const newDesc   = row.querySelector('[data-field="desc"]').value.trim();
-    const newOwner  = row.querySelector('[data-field="owner"]').value;
-    const newStatus = row.querySelector('[data-field="status"]').value;
-    // Marca primeira tarefa modificada (excluindo nova já rastreada)
-    if (!firstChangedId && (
-      newTitle !== task.title || newDesc !== task.desc ||
-      newOwner !== task.owner || newStatus !== task.status
-    )) {
-      firstChangedId = id;
-    }
-    task.title  = newTitle;
-    task.desc   = newDesc;
-    task.owner  = newOwner;
-    task.status = newStatus;
-  });
-  _lastAddedId = null; // limpa para o próximo uso
+  const firstChangedId = _lastAddedId;
+  _cfgFlushDOM(); // lê DOM → tasks[]
+  _lastAddedId = null;
   saveTasks();
   renderMembers();
   renderChecklist();
@@ -900,22 +926,17 @@ function cfgSave() {
   }, 400);
 }
 
-function cfgReset() {
-  showConfirm({
-    icon: '♻️',
-    title: 'Restaurar padrão',
-    msg: 'As tarefas voltarão ao estado original. As marcações de concluído serão mantidas.',
-    okLabel: 'Restaurar',
-    okClass: 'btn-confirm',
-    onOk: () => {
-      tasks = JSON.parse(JSON.stringify(DEFAULT_TASKS));
-      saveTasks();
-      renderConfigPanel();
-      renderMembers();
-      renderChecklist();
-      showToast('♻️ Tarefas restauradas para o padrão.');
-    }
-  });
+function cfgCancel() {
+  // Descarta edições — relê tasks do Firebase/localStorage
+  loadTasks();
+  renderConfigPanel();
+  renderMembers();
+  renderChecklist();
+  const panel = document.getElementById('config-panel');
+  const cfgBtn = document.getElementById('cfgToggleBtn');
+  panel.classList.remove('open');
+  cfgBtn.classList.remove('active');
+  showToast('Edições descartadas.');
 }
 
 function escHtml(str) {
@@ -968,7 +989,7 @@ window.toggleConfig    = toggleConfig;
 window.cfgAddTask      = cfgAddTask;
 window.cfgDeleteTask   = cfgDeleteTask;
 window.cfgSave         = cfgSave;
-window.cfgReset        = cfgReset;
+window.cfgCancel       = cfgCancel;
 </script>
 </body>
 </html>
