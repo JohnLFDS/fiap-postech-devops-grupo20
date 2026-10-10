@@ -579,6 +579,7 @@ async function tryLogin() {
     const gate = document.getElementById('login-gate');
     gate.classList.add('hidden');
     setTimeout(()=>gate.remove(), 350);
+    _attachFirebaseListeners();
   } else {
     document.getElementById('loginError').textContent='Senha incorreta. Tente novamente.';
     document.getElementById('pwInput').value='';
@@ -589,6 +590,7 @@ async function tryLogin() {
   if (sessionStorage.getItem(AUTH_KEY)==='1') {
     const g = document.getElementById('login-gate');
     if (g) g.remove();
+    _attachFirebaseListeners();
   }
 })();
 
@@ -887,8 +889,7 @@ function init() {
   loadState();
   renderMembers();
   renderChecklist();
-  // Conecta ao Firebase e registra listeners de sincronização em tempo real
-  _attachFirebaseListeners();
+  // Firebase é conectado apenas após login (ver tryLogin e checkAuth)
 }
 init();
 
