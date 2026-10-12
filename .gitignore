@@ -14,3 +14,7 @@ TRASH/
 
 # Projeto externo com repositório Git próprio — não commitar no repo do grupo
 toggle-master-monolith/
+
+# Pastas locais de trabalho — não sobem para o GitHub
+ENTREGAVEIS/
+REFERENCIA/
