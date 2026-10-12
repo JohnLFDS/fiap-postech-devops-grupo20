@@ -11,3 +11,6 @@ SECRETS/
 
 # Lixo
 TRASH/
+
+# Projeto externo com repositório Git próprio — não commitar no repo do grupo
+toggle-master-monolith/
