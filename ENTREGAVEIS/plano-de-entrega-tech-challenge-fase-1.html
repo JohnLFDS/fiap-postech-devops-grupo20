@@ -167,30 +167,8 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 .legend-item{display:flex;align-items:center;gap:7px;font-size:.75rem;color:var(--txt2);}
 .legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
 
-/* ── PAINEL EDITAR TAREFAS (inline abaixo do checklist) ── */
-#tasks-edit-panel{display:none;background:var(--surface);border:1px solid var(--pink-dim);border-radius:12px;padding:clamp(16px,2vw,24px);margin-top:12px;}
-#tasks-edit-panel.open{display:block;}
-.cfg-tasks-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
-.cfg-row{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;cursor:default;}
-.cfg-row.drag-over{border-color:var(--pink);background:var(--cn-pink-bg);}
-.cfg-row-num{font-size:.72rem;font-weight:800;color:var(--muted);width:20px;flex-shrink:0;text-align:center;}
-.cfg-drag-handle{cursor:grab;color:var(--muted);font-size:1rem;flex-shrink:0;line-height:1;user-select:none;padding:0 2px;}
-.cfg-drag-handle:active{cursor:grabbing;}
-.cfg-input{flex:1;min-width:160px;background:var(--bg);border:1.5px solid var(--border);border-radius:6px;padding:7px 10px;font-size:.82rem;color:var(--txt);outline:none;transition:border-color .2s;}
-.cfg-input:focus{border-color:var(--pink);}
-.cfg-desc-input{flex:2;min-width:200px;}
-.cfg-select{background:var(--bg);border:1.5px solid var(--border);border-radius:6px;padding:7px 10px;font-size:.82rem;color:var(--txt);outline:none;cursor:pointer;transition:border-color .2s;}
-.cfg-select:focus{border-color:var(--pink);}
-.cfg-status-select{min-width:120px;}
-.cfg-del-btn{background:none;border:1px solid var(--border);border-radius:6px;padding:6px 10px;cursor:pointer;color:var(--muted);font-size:.75rem;transition:border-color .2s,color .2s;white-space:nowrap;}
-.cfg-del-btn:hover{border-color:var(--red);color:var(--red);}
-.cfg-add-btn{background:var(--cn-pink-bg);border:1px dashed var(--pink-dim);border-radius:8px;padding:10px;width:100%;cursor:pointer;font-size:.78rem;font-weight:700;color:var(--pink);text-align:center;transition:background .2s;}
-.cfg-add-btn:hover{background:var(--pink-glow);}
-.cfg-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:4px;}
-.cfg-save-btn{background:var(--pink);color:#fff;border:none;border-radius:8px;padding:9px 20px;font-size:.82rem;font-weight:700;cursor:pointer;transition:opacity .15s;}
-.cfg-save-btn:hover{opacity:.88;}
-.cfg-cancel-btn{background:var(--surface2);color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:9px 16px;font-size:.82rem;font-weight:700;cursor:pointer;transition:border-color .2s,color .2s;}
-.cfg-cancel-btn:hover{border-color:var(--pink);color:var(--txt);}
+/* ── PAINEL EDITAR TAREFAS (resíduo inline — mantido para não quebrar referências CSS antigas) ── */
+#tasks-edit-panel{display:none;}
 
 /* ── KICK-OFF: TIMELINE 7 DIAS ── */
 .ko-timeline{display:flex;flex-direction:column;gap:8px;}
@@ -199,9 +177,14 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 .ko-day-label.today{background:var(--pink);border-color:var(--pink-dim);color:#fff;}
 .ko-day-label.final{background:var(--blue);border-color:var(--blue);color:#fff;}
 .ko-day-dl-day{font-size:.82rem;font-weight:800;}
-.ko-day-tasks{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
-.ko-pill{display:flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:5px 9px;font-size:.72rem;cursor:pointer;transition:border-color .15s;user-select:none;}
+/* drop zone: altura mínima para poder soltar em dias vazios */
+.ko-day-tasks{display:flex;flex-wrap:wrap;gap:6px;align-items:flex-start;min-height:36px;padding:4px;border-radius:6px;transition:background .15s;}
+.ko-day-tasks.drag-over{background:var(--pink-glow);outline:2px dashed var(--pink-dim);}
+/* pill: handle de arrastar */
+.ko-pill{display:flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:5px 9px;font-size:.72rem;cursor:grab;transition:border-color .15s,opacity .15s;user-select:none;}
+.ko-pill:active{cursor:grabbing;}
 .ko-pill:hover{border-color:var(--pink);}
+.ko-pill.dragging{opacity:.35;}
 .ko-pill.done{background:var(--cn-grn-bg);border-color:var(--green);}
 .ko-pill.done .ko-pill-code{background:var(--green);}
 .ko-pill-check{font-size:.9rem;line-height:1;}
@@ -210,6 +193,10 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 .ko-pill-owner{font-size:.68rem;color:var(--muted);white-space:nowrap;}
 .ko-guide-btn{background:var(--cn-blue-bg);border:1px solid rgba(91,143,255,.35);border-radius:4px;padding:1px 7px;font-size:.62rem;font-weight:700;color:var(--blue);cursor:pointer;white-space:nowrap;margin-left:2px;transition:background .12s;}
 .ko-guide-btn:hover{background:rgba(91,143,255,.25);}
+.ko-empty-day{font-size:.7rem;color:var(--muted);font-style:italic;padding:4px 2px;}
+/* botão exportar PNG no modal */
+.ko-export-btn{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-size:.75rem;font-weight:700;color:var(--txt2);cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;transition:border-color .2s,color .2s;}
+.ko-export-btn:hover{border-color:var(--blue);color:var(--blue);}
 
 /* ── RISCOS ── */
 .risk-table{width:100%;border-collapse:collapse;background:var(--surface);border-radius:8px;overflow:hidden;border:1px solid var(--border);}
@@ -244,6 +231,43 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:1000;align-items:center;justify-content:center;padding:16px;}
 .modal-overlay.active{display:flex;}
 .modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px;max-width:480px;width:100%;box-shadow:var(--shadow);max-height:90vh;overflow-y:auto;}
+/* modal largo para tarefas e kick-off */
+.modal-wide{max-width:860px;}
+/* modal médio para guias de passo-a-passo */
+.modal-guide{max-width:640px;}
+/* ── MODAL EDITAR TAREFAS — layout em card 2 linhas ── */
+.cfg-tasks-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.cfg-row{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:0;cursor:default;transition:border-color .15s;}
+.cfg-row:hover{border-color:rgba(91,143,255,.4);}
+.cfg-row.drag-over{border-color:var(--pink);background:var(--cn-pink-bg);}
+/* linha 1: handle · número · título */
+.cfg-row-top{display:flex;align-items:center;gap:8px;padding:10px 12px 6px;}
+/* linha 2: descrição · owner · status · remover */
+.cfg-row-bot{display:flex;align-items:center;gap:8px;padding:0 12px 10px;flex-wrap:wrap;}
+.cfg-row-num{font-size:.68rem;font-weight:800;color:var(--muted);width:18px;flex-shrink:0;text-align:center;line-height:1;}
+.cfg-drag-handle{cursor:grab;color:var(--muted);font-size:.95rem;flex-shrink:0;line-height:1;user-select:none;padding:0 2px;}
+.cfg-drag-handle:active{cursor:grabbing;}
+/* título — ocupa toda a linha superior */
+.cfg-input-title{flex:1;background:var(--bg);border:1.5px solid var(--border);border-radius:6px;padding:6px 10px;font-size:.84rem;font-weight:600;color:var(--txt);outline:none;transition:border-color .2s;}
+.cfg-input-title:focus{border-color:var(--pink);}
+/* descrição — ocupa a maior parte da linha inferior */
+.cfg-input-desc{flex:1;min-width:0;background:var(--bg);border:1.5px solid var(--border);border-radius:6px;padding:5px 9px;font-size:.75rem;color:var(--txt2);outline:none;transition:border-color .2s;}
+.cfg-input-desc:focus{border-color:var(--pink);}
+/* selects compactos */
+.cfg-sel-owner{width:130px;flex-shrink:0;background:var(--bg);border:1.5px solid var(--border);border-radius:6px;padding:5px 8px;font-size:.75rem;color:var(--txt);outline:none;cursor:pointer;transition:border-color .2s;}
+.cfg-sel-owner:focus{border-color:var(--pink);}
+.cfg-sel-status{width:120px;flex-shrink:0;background:var(--bg);border:1.5px solid var(--border);border-radius:6px;padding:5px 8px;font-size:.75rem;color:var(--txt);outline:none;cursor:pointer;transition:border-color .2s;}
+.cfg-sel-status:focus{border-color:var(--pink);}
+.cfg-del-btn{background:none;border:1px solid var(--border);border-radius:6px;padding:4px 10px;cursor:pointer;color:var(--muted);font-size:.72rem;white-space:nowrap;flex-shrink:0;transition:border-color .2s,color .2s;}
+.cfg-del-btn:hover{border-color:var(--red);color:var(--red);}
+.cfg-add-btn{background:var(--cn-pink-bg);border:1px dashed var(--pink-dim);border-radius:8px;padding:10px;width:100%;cursor:pointer;font-size:.78rem;font-weight:700;color:var(--pink);text-align:center;transition:background .2s;}
+.cfg-add-btn:hover{background:var(--pink-glow);}
+/* tabela do modal grupo */
+.group-table{width:100%;border-collapse:collapse;margin-top:6px;}
+.group-table th{font-size:.68rem;font-weight:700;color:var(--muted);text-align:left;padding:6px 10px;background:var(--surface2);border-bottom:1px solid var(--border);}
+.group-table td{font-size:.8rem;padding:9px 10px;border-bottom:1px solid var(--surface2);color:var(--txt);}
+.group-table tr:last-child td{border-bottom:none;}
+.group-table .gt-id{font-size:.62rem;font-weight:800;padding:2px 7px;border-radius:4px;background:var(--surface2);}
 .modal h3{font-size:1rem;font-weight:800;color:var(--txt);margin-bottom:6px;}
 .modal p{font-size:.82rem;color:var(--muted);margin-bottom:16px;line-height:1.5;}
 .modal-name{font-size:.85rem;font-weight:700;color:var(--pink);padding:8px 12px;background:var(--pink-glow);border:1px solid var(--pink-dim);border-radius:6px;margin-bottom:14px;}
@@ -301,6 +325,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 
 /* ── FOOTER ── */
 .footer{border-top:1px solid var(--border);padding:16px clamp(16px,3.5vw,48px);text-align:center;font-size:.68rem;color:var(--muted);}
+.footer-version{font-size:.6rem;font-weight:700;letter-spacing:1px;color:var(--muted);opacity:.55;}
 
 /* ── RESPONSIVE ── */
 @media(max-width:600px){
@@ -333,7 +358,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
     <div class="login-error" id="loginError"></div>
     <div class="login-hint">Dúvidas? Fale com o coordenador do grupo no WhatsApp.</div>
     <div class="login-footer">
-      <span class="login-footer-version">v2.0.0</span>
+      <span class="login-footer-version" id="loginVersion"></span>
       <span class="login-footer-secure">
         <svg width="12" height="14" viewBox="0 0 11 13" xmlns="http://www.w3.org/2000/svg">
           <path d="M5.5 0L0.5 2.5V6C0.5 9.15 2.68 12.1 5.5 13C8.32 12.1 10.5 9.15 10.5 6V2.5L5.5 0Z"/>
@@ -352,6 +377,9 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
     <div class="header-sub">ToggleMaster · DevOps e Arquitetura Cloud · FIAP Pós Tech 2026 &nbsp;·&nbsp; 4 Fases</div>
   </div>
   <div class="header-right">
+    <button class="theme-btn" onclick="openGroupModal()" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer;font-size:.75rem;font-weight:700;color:var(--txt);display:flex;align-items:center;gap:6px;white-space:nowrap;" id="groupBtn">
+      👥 Sobre o Grupo
+    </button>
     <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">
       <span class="icon">☀️</span><span id="themeLabel">Modo Claro</span>
     </button>
@@ -446,22 +474,6 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
     <div class="tl-step"><div class="tl-circle tc-4">4</div><div class="tl-label">Doc &amp; Vídeo</div><div class="tl-sub">Diagrama finalizado<br>Relatório simples<br>Gravação do vídeo</div></div>
   </div>
 
-  <!-- DETALHES DO GRUPO -->
-  <div class="sec-header"><div class="dot"></div><h2>Detalhes do grupo</h2></div>
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:clamp(12px,1.5vw,20px);overflow-x:auto;">
-    <table style="width:100%;border-collapse:collapse;font-size:.78rem;">
-      <thead>
-        <tr style="border-bottom:1px solid var(--border);">
-          <th style="padding:7px 14px 7px 4px;text-align:left;color:var(--muted);font-weight:700;font-size:.65rem;text-transform:uppercase;letter-spacing:.8px;white-space:nowrap;">Papel</th>
-          <th style="padding:7px 14px;text-align:left;color:var(--muted);font-weight:700;font-size:.65rem;text-transform:uppercase;letter-spacing:.8px;">Nome completo</th>
-          <th style="padding:7px 14px;text-align:left;color:var(--muted);font-weight:700;font-size:.65rem;text-transform:uppercase;letter-spacing:.8px;white-space:nowrap;">RM</th>
-          <th style="padding:7px 4px;text-align:left;color:var(--muted);font-weight:700;font-size:.65rem;text-transform:uppercase;letter-spacing:.8px;">Função</th>
-        </tr>
-      </thead>
-      <tbody id="groupDetailsBody"><!-- renderizado por JS --></tbody>
-    </table>
-  </div>
-
   <!-- MEMBROS — seletor inline nos cards -->
   <div class="sec-header">
     <div class="dot"></div>
@@ -475,18 +487,6 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
     <div class="dot"></div>
     <h2>Checklist de tarefas</h2>
     <button class="sec-edit-btn" id="tasksEditBtn" onclick="toggleTasksPanel()">✏️ Editar tarefas</button>
-  </div>
-
-  <!-- PAINEL EDITAR TAREFAS (inline) -->
-  <div id="tasks-edit-panel">
-    <div class="cfg-tasks-list" id="cfgTasksList"><!-- renderizado por JS --></div>
-    <button class="cfg-add-btn" onclick="cfgAddTask()">+ Adicionar nova tarefa</button>
-    <div class="cfg-actions">
-      <button class="cfg-cancel-btn" onclick="cfgCancel()">Cancelar</button>
-      <button class="cfg-save-btn" id="cfgSaveBtn" onclick="cfgSave()">
-        <span id="cfgSaveBtnLabel">Salvar e fechar</span>
-      </button>
-    </div>
   </div>
 
   <div class="progress-bar-wrap" style="margin-top:12px;">
@@ -506,84 +506,17 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
     <div class="legend-item"><div class="legend-dot" style="background:var(--green);"></div> Concluído</div>
   </div>
 
-  <!-- KICK-OFF: LINHA DO TEMPO 7 DIAS -->
-  <div class="sec-header"><div class="dot"></div><h2>Kick-off · Linha do tempo — 7 dias</h2><span style="font-size:.68rem;color:var(--muted);font-weight:400;">(clique nas tarefas para marcar)</span></div>
-  <div class="ko-timeline">
-    <div class="ko-day-row">
-      <div class="ko-day-label today"><div class="ko-day-dl-day">Dia 1</div><div>Seg 13/10</div></div>
-      <div class="ko-day-tasks">
-        <div class="ko-pill" onclick="koToggle(this)"><span class="ko-pill-check">☐</span><span class="ko-pill-code">KICK-OFF</span><span class="ko-pill-name">Call de definições (10h)</span><span class="ko-pill-owner">· Todos</span></div>
-        <div class="ko-pill" onclick="koToggle(this)"><span class="ko-pill-check">☐</span><span class="ko-pill-code">T1</span><span class="ko-pill-name">Rodar app localmente</span><span class="ko-pill-owner">· P5</span><button class="ko-guide-btn" onclick="event.stopPropagation();openGuide('t1')">📋 Guia</button></div>
-        <div class="ko-pill" onclick="koToggle(this)"><span class="ko-pill-check">☐</span><span class="ko-pill-code">T2</span><span class="ko-pill-name">Criar conta AWS + IAM</span><span class="ko-pill-owner">· P1</span><button class="ko-guide-btn" onclick="event.stopPropagation();openGuide('t2')">📋 Guia</button></div>
+  <!-- EVENTOS -->
+  <div class="sec-header"><div class="dot"></div><h2>Eventos</h2></div>
+  <div style="display:flex;flex-wrap:wrap;gap:10px;">
+    <div onclick="openKickoffModal()" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;cursor:pointer;transition:border-color .15s;display:flex;align-items:center;gap:12px;" onmouseover="this.style.borderColor='var(--pink)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="width:40px;height:40px;border-radius:8px;background:var(--pink-glow);border:1px solid var(--pink-dim);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">🚀</div>
+      <div>
+        <div style="font-size:.82rem;font-weight:700;color:var(--txt);">Kick-off · Fase 1</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:2px;">13/10/2026 às 10h · Linha do tempo + Anotações</div>
       </div>
+      <div style="margin-left:auto;font-size:.7rem;color:var(--pink);font-weight:700;">Ver →</div>
     </div>
-    <div class="ko-day-row">
-      <div class="ko-day-label"><div class="ko-day-dl-day">Dia 2</div><div>Ter 14/10</div></div>
-      <div class="ko-day-tasks">
-        <div class="ko-pill" onclick="koToggle(this)"><span class="ko-pill-check">☐</span><span class="ko-pill-code">T4</span><span class="ko-pill-name">Análise 12-Factor App</span><span class="ko-pill-owner">· P4</span><button class="ko-guide-btn" onclick="event.stopPropagation();openGuide('t4')">📋 Guia</button></div>
-        <div class="ko-pill" onclick="koToggle(this)"><span class="ko-pill-check">☐</span><span class="ko-pill-code">T3</span><span class="ko-pill-name">Diagrama AWS (draw.io)</span><span class="ko-pill-owner">· P3</span><button class="ko-guide-btn" onclick="event.stopPropagation();openGuide('t3')">📋 Guia</button></div>
-        <div class="ko-pill" onclick="koToggle(this)"><span class="ko-pill-check">☐</span><span class="ko-pill-code">T5</span><span class="ko-pill-name">Estimativa de custo AWS</span><span class="ko-pill-owner">· P3</span><button class="ko-guide-btn" onclick="event.stopPropagation();openGuide('t5')">📋 Guia</button></div>
-      </div>
-    </div>
-    <div class="ko-day-row">
-      <div class="ko-day-label"><div class="ko-day-dl-day">Dia 3</div><div>Qua 15/10</div></div>
-      <div class="ko-day-tasks">
-        <div class="ko-pill" onclick="koToggle(this)"><span class="ko-pill-check">☐</span><span class="ko-pill-code">T6</span><span class="ko-pill-name">Provisionar infra AWS (VPC, EC2, RDS, SG)</span><span class="ko-pill-owner">· P1+P2</span><button class="ko-guide-btn" onclick="event.stopPropagation();openGuide('t6')">📋 Guia</button></div>
-      </div>
-    </div>
-    <div class="ko-day-row">
-      <div class="ko-day-label"><div class="ko-day-dl-day">Dia 4</div><div>Qui 16/10</div></div>
-      <div class="ko-day-tasks">
-        <div class="ko-pill" onclick="koToggle(this)"><span class="ko-pill-check">☐</span><span class="ko-pill-code">T7</span><span class="ko-pill-name">Deploy na EC2 (SSH + Gunicorn + RDS)</span><span class="ko-pill-owner">· P1+P2</span><button class="ko-guide-btn" onclick="event.stopPropagation();openGuide('t7')">📋 Guia</button></div>
-      </div>
-    </div>
-    <div class="ko-day-row">
-      <div class="ko-day-label"><div class="ko-day-dl-day">Dia 5</div><div>Sex 17/10</div></div>
-      <div class="ko-day-tasks">
-        <div class="ko-pill" onclick="koToggle(this)"><span class="ko-pill-check">☐</span><span class="ko-pill-code">T8</span><span class="ko-pill-name">Validação externa da API na EC2</span><span class="ko-pill-owner">· Todos</span></div>
-        <div class="ko-pill" onclick="koToggle(this)"><span class="ko-pill-check">☐</span><span class="ko-pill-code">T9</span><span class="ko-pill-name">Início do relatório de entrega</span><span class="ko-pill-owner">· P4+P5</span></div>
-      </div>
-    </div>
-    <div class="ko-day-row">
-      <div class="ko-day-label"><div class="ko-day-dl-day">Dia 6</div><div>Sáb 18/10</div></div>
-      <div class="ko-day-tasks">
-        <div class="ko-pill" onclick="koToggle(this)"><span class="ko-pill-check">☐</span><span class="ko-pill-code">T9</span><span class="ko-pill-name">Finalizar relatório de entrega</span><span class="ko-pill-owner">· P4+P5</span></div>
-        <div class="ko-pill" onclick="koToggle(this)"><span class="ko-pill-check">☐</span><span class="ko-pill-code">T10</span><span class="ko-pill-name">Gravar vídeo de demonstração (15 min)</span><span class="ko-pill-owner">· P2+Todos</span><button class="ko-guide-btn" onclick="event.stopPropagation();openGuide('t10')">📋 Guia</button></div>
-      </div>
-    </div>
-    <div class="ko-day-row">
-      <div class="ko-day-label final"><div class="ko-day-dl-day">Dia 7</div><div>Dom 19/10</div></div>
-      <div class="ko-day-tasks">
-        <div class="ko-pill" onclick="koToggle(this)"><span class="ko-pill-check">☐</span><span class="ko-pill-code">T11</span><span class="ko-pill-name">Submissão final — vídeo + diagrama + PDF</span><span class="ko-pill-owner">· P5</span></div>
-        <div class="ko-pill" onclick="koToggle(this)"><span class="ko-pill-check">☐</span><span class="ko-pill-code">AWS</span><span class="ko-pill-name">Parar EC2 + deletar RDS (evitar cobranças)</span><span class="ko-pill-owner">· P1</span></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- RISCOS -->
-  <div class="sec-header"><div class="dot"></div><h2>Riscos e mitigações</h2></div>
-  <table class="risk-table">
-    <thead><tr><th>Risco</th><th>Nível</th><th>Mitigação</th></tr></thead>
-    <tbody>
-      <tr><td>Conta AWS não definida a tempo — bloqueia T6 e T7</td><td><span class="rl rl-high">Alto</span></td><td>P1 resolve T2 no Dia 1, prioridade máxima</td></tr>
-      <tr><td>Porta 5000 não acessível externamente na EC2</td><td><span class="rl rl-high">Alto</span></td><td>SG-EC2 deve abrir TCP 5000 — a app não usa porta 80</td></tr>
-      <tr><td>App não conecta ao RDS — Security Group incorreto</td><td><span class="rl rl-high">Alto</span></td><td>SG-RDS: permitir TCP 5432 somente do SG-EC2 (usar ID do SG, não IP)</td></tr>
-      <tr><td>Cobrança inesperada da AWS após entrega</td><td><span class="rl rl-medium">Médio</span></td><td>P1 para EC2 + deleta RDS no Dia 7. RDS cobra mesmo parado após 7 dias</td></tr>
-      <tr><td>Credenciais do banco expostas no repositório Git</td><td><span class="rl rl-high">Alto</span></td><td>Usar apenas <code>export VAR=</code> no terminal SSH — nunca comitar .env</td></tr>
-      <tr><td>Gunicorn para quando fecha o SSH</td><td><span class="rl rl-medium">Médio</span></td><td>Usar <code>nohup gunicorn ... &amp;</code> ou gravar o vídeo antes de fechar o terminal</td></tr>
-      <tr><td>Conflito de porta 5000 no macOS (AirPlay Receiver)</td><td><span class="rl rl-low">Baixo</span></td><td>Mapear <code>"5001:5000"</code> no docker-compose.yaml — já resolvido pelo grupo</td></tr>
-    </tbody>
-  </table>
-
-  <!-- ANOTAÇÕES DO KICK-OFF -->
-  <div class="sec-header"><div class="dot"></div><h2>Anotações da reunião — 13/10 às 10h</h2></div>
-  <div class="notes-grid">
-    <div class="note-block"><label>Conta AWS — decisão do grupo</label><textarea id="note0" placeholder="Conta nova ou AWS Academy? Quem cria? Créditos disponíveis?"></textarea></div>
-    <div class="note-block"><label>Canal de comunicação</label><textarea id="note1" placeholder="WhatsApp / Discord / Slack? Link do canal..."></textarea></div>
-    <div class="note-block"><label>Ferramenta para o diagrama</label><textarea id="note2" placeholder="draw.io, Miro, Lucidchart? Quem compartilha?"></textarea></div>
-    <div class="note-block"><label>Repositório Git do grupo</label><textarea id="note3" placeholder="Fork do repo original? URL do repositório..."></textarea></div>
-    <div class="note-block"><label>Ferramenta de gravação do vídeo</label><textarea id="note4" placeholder="OBS, Loom, Zoom? Quem edita? YouTube / Drive?"></textarea></div>
-    <div class="note-block"><label>Observações gerais</label><textarea id="note5" placeholder="Decisões tomadas na call que devem ser registradas..."></textarea></div>
   </div>
 
   <!-- LINKS ÚTEIS -->
@@ -612,13 +545,14 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
     <div class="link-card"><div class="lc-label">Repositório ToggleMaster</div><a href="https://github.com/dougls/toggle-master-monolith" target="_blank" rel="noopener">Ver no GitHub</a></div>
     <div class="link-card"><div class="lc-label">12-Factor App (PT-BR)</div><a href="https://12factor.net/pt_br/" target="_blank" rel="noopener">Ler documentação</a></div>
     <div class="link-card"><div class="lc-label">AWS Free Tier</div><a href="https://aws.amazon.com/free/" target="_blank" rel="noopener">Ver Free Tier</a></div>
-    <div class="link-card"><div class="lc-label">AWS Academy (login)</div><a href="https://awsacademy.instructure.com/" target="_blank" rel="noopener">Acessar AWS Academy</a></div>
+    <div class="link-card"><div class="lc-label">AWS Academy (portal de login global)</div><a href="https://awsacademy.instructure.com/" target="_blank" rel="noopener">Acessar AWS Academy</a></div>
   </div>
 
 </div>
 
 <div class="footer">
   Tech Challenge · Grupo 20 &nbsp;·&nbsp; Erick · John · Alan · Marcelo · Cassio &nbsp;·&nbsp; FIAP Pós Tech 2026
+  &nbsp;·&nbsp;<span class="footer-version" id="footerVersion"></span>
 </div>
 
 <!-- CONFIRM DIALOG -->
@@ -647,6 +581,20 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 <div class="toast" id="toast"></div>
 
 <script type="module">
+// ══════════════════════════════════════════════
+// VERSÃO — fonte única da verdade
+// ══════════════════════════════════════════════
+const APP_VERSION = 'v2.4.0';
+
+// ══════════════════════════════════════════════
+// UTILITÁRIOS
+// ══════════════════════════════════════════════
+function escHtml(str) {
+  return String(str ?? '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 // ══════════════════════════════════════════════
 // FIREBASE
 // ══════════════════════════════════════════════
@@ -679,48 +627,68 @@ const STATE_KEY  = 'tc-g20-state-v2';
 const MEMBERS_KEY= 'tc-g20-members-v2';
 const NOTES_KEY  = 'tc-g20-notes-v2';
 
-// ── Membros reais do Grupo 20 (base imutável) ──
-const MEMBERS_BASE = [
-  { id:'P1', role:'Líder Técnico / Deploy AWS',     av:'av-1', tag:'tag-pink',   name:'Erick Aleixo Aragão',    rm:'RM 378535' },
-  { id:'P2', role:'Engenheiro de Infraestrutura',   av:'av-2', tag:'tag-blue',   name:'John Lennon F. da Silva', rm:'RM 377728' },
-  { id:'P3', role:'Arquiteto de Soluções',          av:'av-3', tag:'tag-purple', name:'Alan Santos',             rm:'RM 378561' },
-  { id:'P4', role:'Analista DevOps / Documentação', av:'av-4', tag:'tag-green',  name:'Marcelo Santos de Jesus', rm:'RM 378332' },
-  { id:'P5', role:'Coordenador + Execução Local',   av:'av-5', tag:'tag-yellow', name:'Cassio Tadashi Kawamura', rm:'RM 378022' },
+// ── Catálogo fixo das 5 pessoas (nunca muda) ──
+const PEOPLE_CATALOG = [
+  { pid:'P1', av:'av-1', tag:'tag-pink',   name:'Erick Aleixo Aragão',    rm:'RM 378535' },
+  { pid:'P2', av:'av-2', tag:'tag-blue',   name:'John Lennon F. da Silva', rm:'RM 377728' },
+  { pid:'P3', av:'av-3', tag:'tag-purple', name:'Alan Santos',             rm:'RM 378561' },
+  { pid:'P4', av:'av-4', tag:'tag-green',  name:'Marcelo Santos de Jesus', rm:'RM 378332' },
+  { pid:'P5', av:'av-5', tag:'tag-yellow', name:'Cassio Tadashi Kawamura', rm:'RM 378022' },
 ];
 
-// membersData = array mutável (pode ter papéis reatribuídos via seletor inline)
+// Mapeamento slot → pessoa: { P1: 'P2', P2: null, ... }
+// null = A definir
+const DEFAULT_SLOT_MAP = { P1: null, P2: null, P3: null, P4: null, P5: null };
+
+// membersData = array de slots {id, av, tag, name, rm} derivado do slotMap
 let membersData = [];
+let slotMap = { ...DEFAULT_SLOT_MAP };
+
+function _buildMembersData() {
+  membersData = ['P1','P2','P3','P4','P5'].map(slotId => {
+    const pid = slotMap[slotId];
+    const person = pid ? PEOPLE_CATALOG.find(p => p.pid === pid) : null;
+    const av  = person ? person.av  : 'av-' + slotId.slice(1);
+    const tag = person ? person.tag : ['tag-pink','tag-blue','tag-purple','tag-green','tag-yellow'][parseInt(slotId.slice(1))-1];
+    return {
+      id:   slotId,
+      name: person ? person.name : '',
+      rm:   person ? person.rm   : '',
+      av, tag,
+    };
+  });
+}
 
 function loadMembers() {
   try {
-    const saved = JSON.parse(localStorage.getItem(MEMBERS_KEY)) || [];
-    membersData = MEMBERS_BASE.map(base => {
-      const s = saved.find(x => x.id === base.id) || {};
-      return { ...base, name: s.name || base.name, rm: s.rm || base.rm };
-    });
-  } catch { membersData = MEMBERS_BASE.map(b => ({ ...b })); }
+    const saved = JSON.parse(localStorage.getItem(MEMBERS_KEY));
+    slotMap = (saved && typeof saved === 'object' && !Array.isArray(saved))
+      ? { ...DEFAULT_SLOT_MAP, ...saved }
+      : { ...DEFAULT_SLOT_MAP };
+  } catch { slotMap = { ...DEFAULT_SLOT_MAP }; }
+  _buildMembersData();
 }
 
 function saveMembers() {
-  try { localStorage.setItem(MEMBERS_KEY, JSON.stringify(membersData.map(({id,name,rm}) => ({id,name,rm})))); } catch {}
-  try { set(_membRef, membersData.map(({id,name,rm}) => ({id,name,rm}))).catch(() => {}); } catch {}
+  try { localStorage.setItem(MEMBERS_KEY, JSON.stringify(slotMap)); } catch {}
+  try { set(_membRef, slotMap).catch(() => {}); } catch {}
 }
 
 function getMemberByOwner(id) { return membersData.find(m => m.id === id) || null; }
 
 // ── Tarefas padrão ────────────────────────────
 const DEFAULT_TASKS = [
-  { id:'t1',  title:'Executar aplicação localmente (Docker Compose)',        desc:'Clonar repo · docker compose up --build · testar CRUD com curl · identificar por que é um monolito', owner:'P5', status:'todo' },
-  { id:'t2',  title:'Criar conta AWS + usuário IAM + MFA',                   desc:'Criar conta AWS ou usar AWS Academy · habilitar MFA no root · criar usuário IAM com AdministratorAccess · definir região us-east-1', owner:'P1', status:'todo' },
-  { id:'t3',  title:'Diagrama de arquitetura AWS (draw.io)',                  desc:'VPC 10.0.0.0/16 · subnets pública e privada · EC2 na pública (porta 5000) · RDS PostgreSQL na privada · Internet Gateway · Security Groups · ícones oficiais AWS', owner:'P3', status:'todo' },
-  { id:'t4',  title:'Análise dos 12 Fatores (12-Factor App)',                 desc:'Analisar app.py, Dockerfile, requirements.txt e docker-compose.yaml · status ✅/⚠️/❌ com justificativa por fator · entregar como parte da Documentação', owner:'P4', status:'todo' },
-  { id:'t5',  title:'Estimativa de custos na AWS Pricing Calculator',         desc:'calculator.aws · EC2 t3.micro + RDS db.t3.micro + Data Transfer · região us-east-1 · salvar link público · tirar print para o relatório', owner:'P3', status:'todo' },
-  { id:'t6',  title:'Provisionar infraestrutura AWS (VPC, EC2, RDS, SGs)',    desc:'VPC · subnet pública (10.0.1.0/24) + privada (10.0.2.0/24) · IGW · Route Table · sg-ec2 (TCP 22+5000) · sg-rds (TCP 5432 só de sg-ec2) · EC2 t3.micro Amazon Linux 2023 · RDS PostgreSQL 15 db.t3.micro sem acesso público', owner:'P1', status:'todo' },
-  { id:'t7',  title:'Deploy da aplicação na EC2 via SSH',                     desc:'ssh -i key.pem ec2-user@IP · yum install git python3 · clone repo · venv · pip install · export DB_HOST/DB_NAME/DB_USER/DB_PASSWORD · flask init-db · gunicorn --bind 0.0.0.0:5000 app:app', owner:'P1', status:'todo' },
-  { id:'t8',  title:'Validar API pública na EC2',                             desc:'curl http://IP-EC2:5000/health · POST /flags · GET /flags · PUT /flags/nome · confirmar persistência no RDS', owner:'P2', status:'todo' },
-  { id:'t9',  title:'Compilar relatório de entrega (.PDF ou .txt)',           desc:'Conforme enunciado: nomes dos participantes · link da documentação e do vídeo · breve resumo dos desafios e decisões tomadas · print da estimativa de custos AWS', owner:'P4', status:'todo' },
-  { id:'t10', title:'Gravar vídeo de demonstração (até 15 min)',              desc:'App local (Docker) · diagrama de arquitetura · EC2 ao vivo com RDS · Security Groups no console AWS · gestão de credenciais · upload YouTube não listado ou Google Drive · salvar link compartilhável', owner:'P2', status:'todo' },
-  { id:'t11', title:'Submissão final + limpeza AWS',                          desc:'Reunir vídeo + diagrama + PDF/TXT · submeter na plataforma FIAP · P1: parar EC2 + deletar RDS para evitar cobranças (RDS cobra mesmo parado após 7 dias)', owner:'P5', status:'todo' },
+  { id:'t1',  title:'Executar aplicação localmente (Docker Compose)',        desc:'Clonar repo · docker compose up --build · testar CRUD com curl · identificar por que é um monolito', owner:'', status:'todo' },
+  { id:'t2',  title:'Criar conta AWS + usuário IAM + MFA',                   desc:'Criar conta AWS ou usar AWS Academy · habilitar MFA no root · criar usuário IAM com AdministratorAccess · definir região us-east-1', owner:'', status:'todo' },
+  { id:'t3',  title:'Diagrama de arquitetura AWS (draw.io)',                  desc:'VPC 10.0.0.0/16 · subnets pública e privada · EC2 na pública (porta 5000) · RDS PostgreSQL na privada · Internet Gateway · Security Groups · ícones oficiais AWS', owner:'', status:'todo' },
+  { id:'t4',  title:'Análise dos 12 Fatores (12-Factor App)',                 desc:'Analisar app.py, Dockerfile, requirements.txt e docker-compose.yaml · status ✅/⚠️/❌ com justificativa por fator · entregar como parte da Documentação', owner:'', status:'todo' },
+  { id:'t5',  title:'Estimativa de custos na AWS Pricing Calculator',         desc:'calculator.aws · EC2 t3.micro + RDS db.t3.micro + Data Transfer · região us-east-1 · salvar link público · tirar print para o relatório', owner:'', status:'todo' },
+  { id:'t6',  title:'Provisionar infraestrutura AWS (VPC, EC2, RDS, SGs)',    desc:'VPC · subnet pública (10.0.1.0/24) + privada (10.0.2.0/24) · IGW · Route Table · sg-ec2 (TCP 22+5000) · sg-rds (TCP 5432 só de sg-ec2) · EC2 t3.micro Amazon Linux 2023 · RDS PostgreSQL 15 db.t3.micro sem acesso público', owner:'', status:'todo' },
+  { id:'t7',  title:'Deploy da aplicação na EC2 via SSH',                     desc:'ssh -i key.pem ec2-user@IP · yum install git python3 · clone repo · venv · pip install · export DB_HOST/DB_NAME/DB_USER/DB_PASSWORD · flask init-db · gunicorn --bind 0.0.0.0:5000 app:app', owner:'', status:'todo' },
+  { id:'t8',  title:'Validar API pública na EC2',                             desc:'curl http://IP-EC2:5000/health · POST /flags · GET /flags · PUT /flags/nome · confirmar persistência no RDS', owner:'', status:'todo' },
+  { id:'t9',  title:'Compilar relatório de entrega (.PDF ou .txt)',           desc:'Conforme enunciado: nomes dos participantes · link da documentação e do vídeo · breve resumo dos desafios e decisões tomadas · print da estimativa de custos AWS', owner:'', status:'todo' },
+  { id:'t10', title:'Gravar vídeo de demonstração (até 15 min)',              desc:'App local (Docker) · diagrama de arquitetura · EC2 ao vivo com RDS · Security Groups no console AWS · gestão de credenciais · upload YouTube não listado ou Google Drive · salvar link compartilhável', owner:'', status:'todo' },
+  { id:'t11', title:'Submissão final + limpeza AWS',                          desc:'Reunir vídeo + diagrama + PDF/TXT · submeter na plataforma FIAP · P1: parar EC2 + deletar RDS para evitar cobranças (RDS cobra mesmo parado após 7 dias)', owner:'', status:'todo' },
 ];
 
 // ══════════════════════════════════════════════
@@ -740,13 +708,33 @@ function saveTasks() { _lsSaveTasks(); set(_tasksRef, tasks).catch(() => {}); }
 function saveState() { _lsSaveState(); set(_stateRef, doneState).catch(() => {}); }
 
 function loadTasks() {
-  try { tasks = JSON.parse(localStorage.getItem(TASKS_KEY)) || DEFAULT_TASKS; } catch { tasks = DEFAULT_TASKS; }
+  try {
+    const saved = JSON.parse(localStorage.getItem(TASKS_KEY));
+    // Migração: se tasks salvas ainda têm owners com P1-P5 hardcoded de versões antigas,
+    // descarta e parte do DEFAULT_TASKS (owner:'') para forçar o "a definir" pós-kick-off.
+    if (Array.isArray(saved) && saved.length > 0 && saved.some(t => t.owner && t.owner !== '')) {
+      localStorage.removeItem(TASKS_KEY);
+      tasks = DEFAULT_TASKS.map(t => ({ ...t }));
+    } else {
+      tasks = saved || DEFAULT_TASKS.map(t => ({ ...t }));
+    }
+  } catch { tasks = DEFAULT_TASKS.map(t => ({ ...t })); }
 }
 function loadState() {
   try { doneState = JSON.parse(localStorage.getItem(STATE_KEY)) || {}; } catch { doneState = {}; }
 }
 
 function _attachFirebaseListeners() {
+  onValue(_membRef, (snap) => {
+    const remote = snap.val();
+    if (remote && typeof remote === 'object' && !Array.isArray(remote)) {
+      slotMap = { ...DEFAULT_SLOT_MAP, ...remote };
+      localStorage.setItem(MEMBERS_KEY, JSON.stringify(slotMap));
+      _buildMembersData();
+      renderMembers();
+    }
+  }, (err) => console.warn('[Firebase] members:', err));
+
   onValue(_stateRef, (snap) => {
     const remote = snap.val();
     if (remote !== null) { doneState = remote; _lsSaveState(); }
@@ -756,7 +744,20 @@ function _attachFirebaseListeners() {
 
   onValue(_tasksRef, (snap) => {
     const remote = snap.val();
-    if (remote !== null && Array.isArray(remote)) { tasks = remote; _lsSaveTasks(); renderChecklist(); renderMembers(); }
+    if (remote !== null && Array.isArray(remote)) {
+      // Mesma migração: ignora tasks remotas com owners hardcoded de versões antigas
+      if (remote.some(t => t.owner && t.owner !== '')) {
+        // limpa no Firebase também: regrava sem owners
+        const clean = remote.map(t => ({ ...t, owner: '' }));
+        set(_tasksRef, clean).catch(() => {});
+        tasks = clean;
+      } else {
+        tasks = remote;
+      }
+      _lsSaveTasks();
+      renderChecklist();
+      renderMembers();
+    }
   }, (err) => console.warn('[Firebase] tasks:', err));
 }
 
@@ -818,68 +819,63 @@ function updateThemeBtn(t) {
 function renderMembers() {
   const grid = document.getElementById('membersGrid');
   const byOwner = {};
-  membersData.forEach(m => byOwner[m.id] = []);
+  ['P1','P2','P3','P4','P5'].forEach(id => byOwner[id] = []);
   tasks.forEach(t => { if (byOwner[t.owner] !== undefined) byOwner[t.owner].push(t.title); });
 
-  grid.innerHTML = membersData.map(m => {
-    const memberOptions = membersData.map(opt =>
-      `<option value="${opt.id}"${opt.name === m.name ? ' selected' : ''}>${opt.name.split(' ')[0]}</option>`
-    ).join('');
-    const tagsHtml = byOwner[m.id].length
-      ? byOwner[m.id].slice(0, 3).map(t => `<span class="task-tag ${m.tag}">${t.length > 22 ? t.slice(0, 22) + '…' : t}</span>`).join('')
-        + (byOwner[m.id].length > 3 ? `<span class="task-tag ${m.tag}">+${byOwner[m.id].length - 3} mais</span>` : '')
+  const slots = ['P1','P2','P3','P4','P5'];
+  const tagList = ['tag-pink','tag-blue','tag-purple','tag-green','tag-yellow'];
+  const avList  = ['av-1','av-2','av-3','av-4','av-5'];
+
+  grid.innerHTML = slots.map((slotId, i) => {
+    const assignedPid = slotMap[slotId];           // ex: 'P3' ou null
+    const person = assignedPid ? PEOPLE_CATALOG.find(p => p.pid === assignedPid) : null;
+    const tag    = person ? person.tag : tagList[i];
+    const av     = person ? person.av  : avList[i];
+    const displayName = person ? person.name.split(' ')[0] : '—';
+
+    const tagsHtml = byOwner[slotId].length
+      ? byOwner[slotId].slice(0, 3).map(t => `<span class="task-tag ${tag}">${t.length > 22 ? t.slice(0, 22) + '…' : t}</span>`).join('')
+        + (byOwner[slotId].length > 3 ? `<span class="task-tag ${tag}">+${byOwner[slotId].length - 3} mais</span>` : '')
       : `<span class="task-tag" style="color:var(--muted);border-color:var(--border);">Sem tarefas</span>`;
-    const firstName = m.name.split(' ')[0];
+
+    // Opções do select: "A definir" + as 5 pessoas do catálogo
+    const opts = `<option value=""${!assignedPid ? ' selected' : ''}>— A definir —</option>`
+      + PEOPLE_CATALOG.map(p =>
+          `<option value="${p.pid}"${p.pid === assignedPid ? ' selected' : ''}>${p.name.split(' ')[0]} (${p.pid})</option>`
+        ).join('');
+
     return `
     <div class="member-card">
-      <div class="member-avatar ${m.av}">${m.id}</div>
-      <div class="member-name">${firstName}</div>
-      <div class="member-role-label">${m.role}</div>
-      <select class="member-sel" data-role="${m.id}" onchange="onMemberSelChange(this)" title="Reatribuir papel ${m.id}">
-        ${membersData.map(opt => `<option value="${opt.id}"${opt.id === m.id ? ' selected' : ''}>${opt.name.split(' ')[0]} (${opt.id})</option>`).join('')}
+      <div class="member-avatar ${av}">${slotId}</div>
+      <div class="member-name">${displayName}</div>
+      <select class="member-sel" data-slot="${slotId}" onchange="onMemberSelChange(this)" title="Atribuir membro ao papel ${slotId}">
+        ${opts}
       </select>
       <div class="member-tasks">${tagsHtml}</div>
     </div>`;
   }).join('');
 
-  // mostra botão salvar atribuições
   document.getElementById('membersSaveBtn').style.display = '';
-
-  // Renderiza tabela de detalhes do grupo
-  const tbody = document.getElementById('groupDetailsBody');
-  if (tbody) {
-    const tagColors = { 'tag-pink':'var(--pink)', 'tag-blue':'var(--blue)', 'tag-purple':'var(--purple)', 'tag-green':'var(--green)', 'tag-yellow':'var(--yellow)' };
-    tbody.innerHTML = membersData.map(m => `
-      <tr style="border-bottom:1px solid var(--surface2);">
-        <td style="padding:8px 14px 8px 4px;white-space:nowrap;">
-          <span style="font-size:.65rem;font-weight:800;background:var(--surface2);color:${tagColors[m.tag]||'var(--blue)'};border:1px solid var(--border);border-radius:4px;padding:2px 7px;">${m.id}</span>
-        </td>
-        <td style="padding:8px 14px;font-weight:600;color:var(--txt);">${m.name}</td>
-        <td style="padding:8px 14px;color:var(--muted);white-space:nowrap;">${m.rm}</td>
-        <td style="padding:8px 4px;color:var(--txt2);font-size:.72rem;">${m.role}</td>
-      </tr>`).join('');
-  }
 }
 
 function onMemberSelChange(sel) {
-  // Troca os papéis entre dois membros quando o seletor muda
-  const roleId   = sel.dataset.role;       // papel do card que foi alterado (ex: P1)
-  const newId    = sel.value;              // novo papel selecionado (ex: P2)
-  if (roleId === newId) return;
+  const slotId = sel.dataset.slot;          // slot sendo alterado (ex: 'P1')
+  const newPid = sel.value || null;         // pessoa escolhida (ex: 'P3') ou null
 
-  // Encontra os dois membros e troca roles
-  const mA = membersData.find(m => m.id === roleId);
-  const mB = membersData.find(m => m.id === newId);
-  if (!mA || !mB) return;
+  // Se essa pessoa já está em outro slot, libera o slot anterior
+  Object.keys(slotMap).forEach(s => {
+    if (s !== slotId && slotMap[s] === newPid && newPid !== null) slotMap[s] = null;
+  });
 
-  // Troca: mA assume o papel de mB e vice-versa
-  const tmpName = mA.name, tmpRm = mA.rm, tmpAv = mA.av, tmpTag = mA.tag;
-  mA.name = mB.name; mA.rm = mB.rm; mA.av = mB.av; mA.tag = mB.tag;
-  mB.name = tmpName; mB.rm = tmpRm; mB.av = tmpAv; mB.tag = tmpTag;
-
+  slotMap[slotId] = newPid;
+  _buildMembersData();
   saveMembers();
   renderMembers();
-  showToast(`✅ ${mA.name.split(' ')[0]} ↔ ${mB.name.split(' ')[0]} — papéis trocados!`);
+  renderChecklist();
+
+  const person = newPid ? PEOPLE_CATALOG.find(p => p.pid === newPid) : null;
+  const label  = person ? person.name.split(' ')[0] : 'A definir';
+  showToast(`✅ ${slotId} → ${label}`);
 }
 
 function saveInlineMembers() {
@@ -905,7 +901,7 @@ function renderChecklist() {
     const done    = !!doneState[task.id];
     const member  = getMemberByOwner(task.owner);
     const tagClass = member ? member.tag : 'tag-blue';
-    const ownerLbl = member ? member.name.split(' ')[0] : task.owner;
+    const ownerLbl = member && member.name ? member.name.split(' ')[0] : (task.owner ? task.owner : 'A definir');
     const dotClass = done ? 'sd-done' : (task.status === 'progress' ? 'sd-progress' : 'sd-todo');
     const doneText = done ? `✓ Concluído por ${doneState[task.id].by_name} em ${doneState[task.id].at}` : '';
     const guideBtn = GUIDE_IDS.has(task.id)
@@ -964,20 +960,23 @@ function openCheckModal(task) {
     <div class="modal-name" id="modalMemberName">—</div>
     <select class="modal-select" id="memberSelect">
       <option value="">Selecione seu nome…</option>
-      ${membersData.map(m => `<option value="${m.id}">${m.name}</option>`).join('')}
+      ${PEOPLE_CATALOG.map(p => `<option value="${p.pid}">${p.name}</option>`).join('')}
     </select>`;
   document.getElementById('modalBtns').innerHTML = `
     <button class="btn btn-cancel" onclick="closeModal()">Cancelar</button>
     <button class="btn btn-confirm" onclick="confirmCheck()">Confirmar &amp; Notificar</button>`;
   document.getElementById('memberSelect').addEventListener('change', function () {
-    const m = membersData.find(x => x.id === this.value);
-    document.getElementById('modalMemberName').textContent = m ? m.name : '—';
+    const p = PEOPLE_CATALOG.find(x => x.pid === this.value);
+    document.getElementById('modalMemberName').textContent = p ? p.name : '—';
   });
   document.getElementById('modalOverlay').classList.add('active');
 }
 
 function closeModal() {
   document.getElementById('modalOverlay').classList.remove('active');
+  const box = document.getElementById('modalBox');
+  box.classList.remove('modal-wide');
+  box.classList.remove('modal-guide');
   pendingTaskId = null;
   pendingGuideId = null;
 }
@@ -985,14 +984,15 @@ function closeModal() {
 async function confirmCheck() {
   const ownerId = document.getElementById('memberSelect')?.value;
   if (!ownerId) { alert('Selecione seu nome antes de confirmar.'); return; }
-  const member = membersData.find(m => m.id === ownerId);
+  const person = PEOPLE_CATALOG.find(p => p.pid === ownerId);
   const id = pendingTaskId;
   const atStr = new Date().toLocaleString('pt-BR', {dateStyle:'short', timeStyle:'short'});
-  doneState[id] = { by: ownerId, by_name: member.name.split(' ')[0], at: atStr };
+  doneState[id] = { by: ownerId, by_name: person ? person.name.split(' ')[0] : ownerId, at: atStr };
   saveState();
   renderChecklist();
   closeModal();
-  showToast(`✅ ${member.name.split(' ')[0]} marcou "${tasks.find(t => t.id === id)?.title || id}" como concluída!`);
+  const firstName = person ? person.name.split(' ')[0] : ownerId;
+  showToast(`✅ ${firstName} marcou "${tasks.find(t => t.id === id)?.title || id}" como concluída!`);
 }
 
 function updateProgress() {
@@ -1006,14 +1006,238 @@ function updateProgress() {
 }
 
 // ══════════════════════════════════════════════
-// PAINEL EDITAR TAREFAS (inline abaixo do checklist)
+// MODAL — SOBRE O GRUPO
+// ══════════════════════════════════════════════
+function openGroupModal() {
+  const tagColors = { 'tag-pink':'var(--pink)', 'tag-blue':'var(--blue)', 'tag-purple':'var(--purple)', 'tag-green':'var(--green)', 'tag-yellow':'var(--yellow)' };
+  const rows = PEOPLE_CATALOG.map(p => `
+    <tr>
+      <td><span class="gt-id" style="color:${tagColors[p.tag]||'var(--blue)'};">${p.pid}</span></td>
+      <td style="font-weight:600;">${p.name}</td>
+      <td style="color:var(--muted);">${p.rm}</td>
+    </tr>`).join('');
+  document.getElementById('modalTitle').textContent    = '👥 Grupo 20 — Membros';
+  document.getElementById('modalSubtitle').textContent = 'FIAP Pós Tech · DevOps e Arquitetura Cloud · 2026';
+  document.getElementById('modalBody').innerHTML = `
+    <table class="group-table">
+      <thead><tr><th>ID</th><th>Nome completo</th><th>RM</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+  document.getElementById('modalBtns').innerHTML =
+    `<button class="btn btn-cancel" onclick="closeModal()">Fechar</button>`;
+  const box = document.getElementById('modalBox');
+  box.classList.remove('modal-wide');
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+// ══════════════════════════════════════════════
+// MODAL — KICK-OFF FASE 1
+// ══════════════════════════════════════════════
+const KO_DAYS_KEY = 'tc-g20-ko-days-v1';
+
+// Definição padrão dos dias (imutável — serve de fallback)
+const KICKOFF_DAYS_DEFAULT = [
+  { label:'Dia 1\n13/10',   isFinal:false, tasks:[{code:'T1',name:'App local',id:'t1'},{code:'T2',name:'AWS + IAM',id:'t2'}] },
+  { label:'Dia 2\n14/10',   isFinal:false, tasks:[{code:'T3',name:'Diagrama',id:'t3'},{code:'T4',name:'12-Factor',id:'t4'},{code:'T5',name:'Custos',id:'t5'}] },
+  { label:'Dia 3\n15/10',   isFinal:false, tasks:[{code:'T6',name:'Infra AWS',id:'t6'}] },
+  { label:'Dia 4\n16/10',   isFinal:false, tasks:[{code:'T7',name:'Deploy EC2',id:'t7'},{code:'T8',name:'Validar API',id:'t8'}] },
+  { label:'Dia 5\n17/10',   isFinal:false, tasks:[] },
+  { label:'Dia 6\n18/10',   isFinal:false, tasks:[{code:'T10',name:'Vídeo',id:'t10'}] },
+  { label:'🏁 Dia 7\n19/10',isFinal:true,  tasks:[{code:'T9',name:'Relatório',id:'t9'},{code:'T11',name:'Submissão',id:'t11'}] },
+];
+
+// Estado mutável — persiste no localStorage
+let koDays = KICKOFF_DAYS_DEFAULT.map(d => ({ ...d, tasks: [...d.tasks] }));
+
+function _koLoad() {
+  try {
+    const s = JSON.parse(localStorage.getItem(KO_DAYS_KEY));
+    if (Array.isArray(s) && s.length === KICKOFF_DAYS_DEFAULT.length) koDays = s;
+  } catch {}
+}
+function _koSaveDays() {
+  try { localStorage.setItem(KO_DAYS_KEY, JSON.stringify(koDays)); } catch {}
+}
+
+const KO_NOTES_LABELS = ['Decisões tomadas','Divisão de responsabilidades','Riscos identificados','Dúvidas / pendências','Ferramentas escolhidas','Observações gerais'];
+
+// ── Render + DnD via addEventListener (módulo ES não expõe on* inline) ──
+let _koDragSrc = null; // { dayIdx, taskId }
+
+function _koRenderTimeline() {
+  const tl = document.getElementById('koTimeline');
+  if (!tl) return;
+
+  // 1. gera HTML puro — sem nenhum atributo on*
+  tl.innerHTML = koDays.map((day, di) => {
+    const labelCls = day.isFinal ? 'ko-day-label final' : 'ko-day-label';
+    const pillsHtml = day.tasks.map(t => {
+      const done = !!doneState[t.id];
+      return `<span class="ko-pill${done ? ' done' : ''}"
+          draggable="true"
+          data-day-idx="${di}"
+          data-task-id="${t.id}">
+        <span class="ko-pill-check">${done ? '☑' : '☐'}</span>
+        <span class="ko-pill-code">${t.code}</span>
+        <span class="ko-pill-name">${t.name}</span>
+        ${GUIDE_IDS.has(t.id)
+          ? `<button class="ko-guide-btn" data-guide-id="${t.id}">Guia</button>`
+          : ''}
+      </span>`;
+    }).join('') || `<span class="ko-empty-day">Buffer / revisão</span>`;
+    return `<div class="ko-day-row">
+      <div class="${labelCls}"><div class="ko-day-dl-day">${day.label.replace('\n','<br>')}</div></div>
+      <div class="ko-day-tasks" data-day-idx="${di}">${pillsHtml}</div>
+    </div>`;
+  }).join('');
+
+  // 2. bind listeners após o innerHTML estar no DOM
+  _koBindListeners(tl);
+}
+
+function _koBindListeners(tl) {
+  // Pills: click para toggle, drag para mover
+  tl.querySelectorAll('.ko-pill').forEach(pill => {
+    const taskId = pill.dataset.taskId;
+    const dayIdx = parseInt(pill.dataset.dayIdx, 10);
+
+    // toggle done
+    pill.addEventListener('click', (e) => {
+      if (e.target.closest('.ko-guide-btn')) return; // não propaga para guide
+      pill.classList.toggle('done');
+      const check = pill.querySelector('.ko-pill-check');
+      if (check) check.textContent = pill.classList.contains('done') ? '☑' : '☐';
+      const code  = pill.querySelector('.ko-pill-code');
+      if (code)  code.style.background = pill.classList.contains('done') ? 'var(--green)' : '';
+    });
+
+    // drag start
+    pill.addEventListener('dragstart', (e) => {
+      _koDragSrc = { dayIdx, taskId };
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', taskId);
+      setTimeout(() => pill.classList.add('dragging'), 0);
+    });
+
+    pill.addEventListener('dragend', () => {
+      pill.classList.remove('dragging');
+      tl.querySelectorAll('.ko-day-tasks').forEach(z => z.classList.remove('drag-over'));
+    });
+  });
+
+  // Botões de guia dentro das pills
+  tl.querySelectorAll('.ko-guide-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openGuide(btn.dataset.guideId);
+    });
+  });
+
+  // Drop zones
+  tl.querySelectorAll('.ko-day-tasks').forEach(zone => {
+    const targetDayIdx = parseInt(zone.dataset.dayIdx, 10);
+
+    zone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      zone.classList.add('drag-over');
+    });
+
+    zone.addEventListener('dragleave', (e) => {
+      // só remove quando o cursor sai da zona, não quando entra numa pill filha
+      if (!zone.contains(e.relatedTarget)) zone.classList.remove('drag-over');
+    });
+
+    zone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      zone.classList.remove('drag-over');
+      if (!_koDragSrc) return;
+      const { dayIdx: srcDayIdx, taskId } = _koDragSrc;
+      _koDragSrc = null;
+      if (srcDayIdx === targetDayIdx) return;
+
+      const task = koDays[srcDayIdx].tasks.find(t => t.id === taskId);
+      if (!task) return;
+      koDays[srcDayIdx].tasks = koDays[srcDayIdx].tasks.filter(t => t.id !== taskId);
+      koDays[targetDayIdx].tasks.push(task);
+
+      _koSaveDays();
+      _koRenderTimeline();
+      showToast(`📅 ${task.code} movido para ${koDays[targetDayIdx].label.split('\n')[0]}`);
+    });
+  });
+}
+
+// ── Open modal ───────────────────────────────
+function openKickoffModal() {
+  _koLoad();
+  const savedNotes = (() => { try { return JSON.parse(localStorage.getItem(NOTES_KEY)) || []; } catch { return []; } })();
+  const notesHtml = KO_NOTES_LABELS.map((lbl, i) => `
+    <div class="note-block">
+      <label>${lbl}</label>
+      <textarea id="koNote${i}" placeholder="${lbl}…" oninput="koSaveNotes()">${savedNotes[i] || ''}</textarea>
+    </div>`).join('');
+
+  document.getElementById('modalTitle').textContent    = '🚀 Kick-off · Fase 1';
+  document.getElementById('modalSubtitle').textContent = '13/10/2026 às 10h · Linha do tempo + Anotações';
+  document.getElementById('modalBody').innerHTML = `
+    <div style="margin-bottom:16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <span style="font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;">Linha do tempo — 7 dias</span>
+        <span style="font-size:.65rem;color:var(--muted);font-style:italic;">✦ Arraste as tarefas entre os dias</span>
+      </div>
+      <div class="ko-timeline" id="koTimeline"></div>
+    </div>
+    <div>
+      <div style="font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;">Anotações do kick-off</div>
+      <div class="notes-grid">${notesHtml}</div>
+    </div>`;
+  document.getElementById('modalBtns').innerHTML =
+    `<button class="btn btn-cancel" onclick="koResetDays()" style="font-size:.72rem;color:var(--muted);">↺ Resetar dias</button>
+     <button class="btn btn-cancel" onclick="closeModal()">Fechar</button>`;
+  const box = document.getElementById('modalBox');
+  box.classList.add('modal-wide');
+  document.getElementById('modalOverlay').classList.add('active');
+  _koRenderTimeline();
+}
+
+function koResetDays() {
+  koDays = KICKOFF_DAYS_DEFAULT.map(d => ({ ...d, tasks: [...d.tasks] }));
+  _koSaveDays();
+  _koRenderTimeline();
+  showToast('↺ Dias resetados para o padrão.');
+}
+
+function koToggleById(el, taskId) {
+  el.classList.toggle('done');
+  const check = el.querySelector('.ko-pill-check');
+  if (check) check.textContent = el.classList.contains('done') ? '☑' : '☐';
+  const codeEl = el.querySelector('.ko-pill-code');
+  if (codeEl) codeEl.style.background = el.classList.contains('done') ? 'var(--green)' : '';
+}
+
+function koSaveNotes() {
+  const notes = KO_NOTES_LABELS.map((_, i) => document.getElementById('koNote' + i)?.value || '');
+  try { localStorage.setItem(NOTES_KEY, JSON.stringify(notes)); } catch {}
+}
+
+// ══════════════════════════════════════════════
+// MODAL EDITAR TAREFAS (overlay, substitui painel inline)
 // ══════════════════════════════════════════════
 function toggleTasksPanel() {
-  const panel = document.getElementById('tasks-edit-panel');
-  const btn   = document.getElementById('tasksEditBtn');
-  const isOpen = panel.classList.toggle('open');
-  btn.classList.toggle('active', isOpen);
-  if (isOpen) { renderConfigPanel(); setTimeout(() => panel.scrollIntoView({behavior:'smooth',block:'start'}), 80); }
+  // Abre o modal de edição de tarefas
+  document.getElementById('modalTitle').textContent    = '✏️ Editar tarefas';
+  document.getElementById('modalSubtitle').textContent = 'Reordene, edite ou adicione tarefas ao checklist.';
+  document.getElementById('modalBody').innerHTML       = `<div class="cfg-tasks-list" id="cfgTasksList"></div>
+    <button class="cfg-add-btn" onclick="cfgAddTask()">+ Adicionar tarefa</button>`;
+  document.getElementById('modalBtns').innerHTML = `
+    <button class="btn btn-cancel" onclick="cfgCancel()">Descartar</button>
+    <button class="btn btn-confirm" id="cfgSaveBtn" onclick="cfgSave()"><span id="cfgSaveBtnLabel">Salvar e fechar</span></button>`;
+  const box = document.getElementById('modalBox');
+  box.classList.add('modal-wide');
+  renderConfigPanel();
+  document.getElementById('modalOverlay').classList.add('active');
+  document.getElementById('tasksEditBtn').classList.add('active');
 }
 
 function _cfgFlushDOM() {
@@ -1034,18 +1258,22 @@ function _cfgMakeRow(task, idx) {
   row.dataset.cfgId = task.id;
   row.draggable = true;
   row.innerHTML = `
-    <span class="cfg-drag-handle" title="Arrastar para reordenar">☰</span>
-    <span class="cfg-row-num">${idx + 1}</span>
-    <input class="cfg-input" data-field="title" value="${escHtml(task.title)}" placeholder="Título da tarefa"/>
-    <input class="cfg-input cfg-desc-input" data-field="desc" value="${escHtml(task.desc)}" placeholder="Descrição (opcional)"/>
-    <select class="cfg-select" data-field="owner">
-      ${membersData.map(m => `<option value="${m.id}"${m.id === task.owner ? ' selected' : ''}>${m.name.split(' ')[0]} (${m.id})</option>`).join('')}
-    </select>
-    <select class="cfg-select cfg-status-select" data-field="status">
-      <option value="todo"${task.status === 'todo' ? ' selected' : ''}>Pendente</option>
-      <option value="progress"${task.status === 'progress' ? ' selected' : ''}>Em andamento</option>
-    </select>
-    <button class="cfg-del-btn" onclick="cfgDeleteTask('${task.id}')">Remover</button>`;
+    <div class="cfg-row-top">
+      <span class="cfg-drag-handle" title="Arrastar para reordenar">☰</span>
+      <span class="cfg-row-num">${idx + 1}</span>
+      <input class="cfg-input-title" data-field="title" value="${escHtml(task.title)}" placeholder="Título da tarefa"/>
+    </div>
+    <div class="cfg-row-bot">
+      <input class="cfg-input-desc" data-field="desc" value="${escHtml(task.desc)}" placeholder="Descrição (opcional)"/>
+      <select class="cfg-sel-owner" data-field="owner">
+        ${membersData.map(m => `<option value="${m.id}"${m.id === task.owner ? ' selected' : ''}>${m.name.split(' ')[0]} (${m.id})</option>`).join('')}
+      </select>
+      <select class="cfg-sel-status" data-field="status">
+        <option value="todo"${task.status === 'todo' ? ' selected' : ''}>Pendente</option>
+        <option value="progress"${task.status === 'progress' ? ' selected' : ''}>Em andamento</option>
+      </select>
+      <button class="cfg-del-btn" onclick="cfgDeleteTask('${task.id}')">🗑</button>
+    </div>`;
 
   let _dragSrc = null;
   row.addEventListener('dragstart', e => {
@@ -1104,7 +1332,8 @@ function cfgDeleteTask(id) {
 function cfgSave() {
   const btn = document.getElementById('cfgSaveBtn');
   const lbl = document.getElementById('cfgSaveBtnLabel');
-  btn.disabled = true; lbl.textContent = '✓ Salvando…';
+  if (btn) { btn.disabled = true; }
+  if (lbl) { lbl.textContent = '✓ Salvando…'; }
   const firstId = _lastAddedId;
   _cfgFlushDOM();
   _lastAddedId = null;
@@ -1112,9 +1341,10 @@ function cfgSave() {
   renderMembers();
   renderChecklist();
   setTimeout(() => {
-    document.getElementById('tasks-edit-panel').classList.remove('open');
+    closeModal();
     document.getElementById('tasksEditBtn').classList.remove('active');
-    btn.disabled = false; lbl.textContent = 'Salvar e fechar';
+    if (btn) { btn.disabled = false; }
+    if (lbl) { lbl.textContent = 'Salvar e fechar'; }
     showToast('✅ Tarefas salvas!');
     setTimeout(() => {
       const target = firstId ? document.querySelector(`[data-id="${firstId}"]`) : document.getElementById('checklist');
@@ -1125,10 +1355,9 @@ function cfgSave() {
 
 function cfgCancel() {
   loadTasks();
-  renderConfigPanel();
   renderMembers();
   renderChecklist();
-  document.getElementById('tasks-edit-panel').classList.remove('open');
+  closeModal();
   document.getElementById('tasksEditBtn').classList.remove('active');
   showToast('Edições descartadas.');
 }
@@ -1256,6 +1485,9 @@ function openGuide(id) {
     </li>`).join('');
   document.getElementById('modalBody').innerHTML = `<ul class="guide-step-list">${stepsHtml}</ul>`;
   document.getElementById('modalBtns').innerHTML = `<button class="btn btn-cancel" onclick="closeModal()">Fechar</button>`;
+  const box = document.getElementById('modalBox');
+  box.classList.remove('modal-wide');
+  box.classList.add('modal-guide');
   document.getElementById('modalOverlay').classList.add('active');
 }
 
@@ -1309,9 +1541,11 @@ function showToast(msg) {
 // FECHAR MODAL AO CLICAR FORA
 // ══════════════════════════════════════════════
 document.getElementById('modalOverlay').addEventListener('click', function (e) {
-  if (e.target === this) closeModal();
+  if (e.target === this) { closeModal(); document.getElementById('tasksEditBtn')?.classList.remove('active'); }
 });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModal(); document.getElementById('tasksEditBtn')?.classList.remove('active'); }
+});
 
 // ══════════════════════════════════════════════
 // INIT
@@ -1320,6 +1554,11 @@ function init() {
   const savedTheme = localStorage.getItem('tc-fase1-theme') || 'dark';
   document.documentElement.setAttribute('data-theme', savedTheme);
   updateThemeBtn(savedTheme);
+  // preenche versão nos dois lugares a partir da fonte única
+  const lv = document.getElementById('loginVersion');
+  const fv = document.getElementById('footerVersion');
+  if (lv) lv.textContent = APP_VERSION;
+  if (fv) fv.textContent = APP_VERSION;
   loadMembers();
   loadTasks();
   loadState();
@@ -1342,8 +1581,11 @@ window.cfgAddTask         = cfgAddTask;
 window.cfgDeleteTask      = cfgDeleteTask;
 window.cfgSave            = cfgSave;
 window.cfgCancel          = cfgCancel;
-window.koToggle           = koToggle;
+window.koSaveNotes        = koSaveNotes;
+window.koResetDays        = koResetDays;
 window.openGuide          = openGuide;
+window.openGroupModal     = openGroupModal;
+window.openKickoffModal   = openKickoffModal;
 window.onMemberSelChange  = onMemberSelChange;
 window.saveInlineMembers  = saveInlineMembers;
 </script>
