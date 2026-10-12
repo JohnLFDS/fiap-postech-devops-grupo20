@@ -685,7 +685,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 // ══════════════════════════════════════════════
 // VERSÃO — fonte única da verdade
 // ══════════════════════════════════════════════
-const APP_VERSION = 'v2.26.0';
+const APP_VERSION = 'v2.27.0';
 
 // ══════════════════════════════════════════════
 // UTILITÁRIOS
@@ -789,7 +789,7 @@ const DEFAULT_TASKS = [
   { id:'t8',  label:'Validar API',     title:'Validar API pública na EC2',                             desc:'curl http://IP-EC2:5000/health · POST /flags · GET /flags · PUT /flags/nome · confirmar persistência no RDS', owner:'', status:'todo' },
   { id:'t9',  label:'Relatório',       title:'Compilar relatório de entrega (.PDF ou .txt)',           desc:'Conforme enunciado: nomes dos participantes · link da documentação e do vídeo · breve resumo dos desafios e decisões tomadas · print da estimativa de custos AWS', owner:'', status:'todo' },
   { id:'t10', label:'Vídeo',           title:'Gravar vídeo de demonstração (até 15 min)',              desc:'App local (Docker) · diagrama de arquitetura · EC2 ao vivo com RDS · Security Groups no console AWS · gestão de credenciais · upload YouTube não listado ou Google Drive · salvar link compartilhável', owner:'', status:'todo' },
-  { id:'t11', label:'Submission',      title:'Submissão final + limpeza AWS',                          desc:'Reunir vídeo + diagrama + PDF/TXT · submeter na plataforma FIAP · P1: parar EC2 + deletar RDS para evitar cobranças (RDS cobra mesmo parado após 7 dias)', owner:'', status:'todo' },
+  { id:'t11', label:'Submission',      title:'Submissão final + limpeza AWS',                          desc:'Reunir vídeo + diagrama + PDF/TXT · submeter na plataforma FIAP · Erick: parar EC2 + deletar RDS para evitar cobranças (RDS cobra mesmo parado após 7 dias)', owner:'', status:'todo' },
 ];
 
 // ══════════════════════════════════════════════
@@ -1502,7 +1502,7 @@ function koToggle(el) {
 const GUIDES = {
   t1: {
     title: 'T1 — Executar a aplicação localmente',
-    subtitle: 'Responsável: P5 · Prazo: Dia 1',
+    subtitle: 'Responsável: Cassio · Prazo: Dia 1',
     steps: [
       { title: 'Instalar o Docker Desktop', body: 'Acesse docker.com e baixe o Docker Desktop. Após instalar, aguarde o ícone da baleia aparecer na barra de menu.', tip: null },
       { title: 'Clonar o repositório', body: 'Abra o terminal:', code: 'git clone https://github.com/dougls/toggle-master-monolith\ncd toggle-master-monolith' },
@@ -1515,7 +1515,7 @@ const GUIDES = {
   },
   t2: {
     title: 'T2 — Criar conta AWS + IAM + MFA',
-    subtitle: 'Responsável: P1 · Prazo: Dia 1 (PRIORIDADE MÁXIMA)',
+    subtitle: 'Responsável: Erick · Prazo: Dia 1 (PRIORIDADE MÁXIMA)',
     steps: [
       { title: 'Verificar AWS Academy primeiro', body: 'Perguntar ao professor se há créditos no AWS Academy (awsacademy.instructure.com) — evita cartão de crédito.', tip: null },
       { title: 'Criar conta AWS (se necessário)', body: 'aws.amazon.com → "Criar conta gratuita" · e-mail + telefone + cartão (cobrança de $1 estornada).', tip: null },
@@ -1526,7 +1526,7 @@ const GUIDES = {
   },
   t3: {
     title: 'T3 — Diagrama de Arquitetura AWS',
-    subtitle: 'Responsável: P3 · Prazo: Dia 2',
+    subtitle: 'Responsável: Alan · Prazo: Dia 2',
     steps: [
       { title: 'Acessar o draw.io', body: 'app.diagrams.net → novo diagrama em branco.', tip: null },
       { title: 'Ativar biblioteca AWS', body: 'Extras → Edit Diagram ou barra lateral → Search Shapes → "AWS". Ative o pack "AWS19".', tip: null },
@@ -1538,7 +1538,7 @@ const GUIDES = {
   },
   t4: {
     title: 'T4 — Análise dos 12 Fatores',
-    subtitle: 'Responsável: P4 · Prazo: Dia 2',
+    subtitle: 'Responsável: Marcelo · Prazo: Dia 2',
     steps: [
       { title: 'Ler a documentação', body: 'Acesse 12factor.net/pt_br e leia os 12 fatores.', tip: null },
       { title: 'Mapear cada fator no código', body: 'Para cada fator: ✅ Atende / ⚠️ Parcialmente / ❌ Não atende\n\nI. Codebase ✅ — repo único no GitHub\nII. Dependencies ✅ — requirements.txt\nIII. Config ✅/⚠️ — os.getenv() mas sem .env padrão\nIV. Backing Services ✅ — PostgreSQL via variáveis\nV. Build/Release/Run ⚠️ — Dockerfile mas release manual\nVI. Processes ⚠️ — possível estado em memória\nVII. Port Binding ✅ — gunicorn --bind 0.0.0.0:5000\nVIII. Concurrency ⚠️ — sem workers configurados\nIX. Disposability ⚠️ — sem shutdown gracioso\nX. Dev/Prod Parity ❌ — Docker local vs EC2 sem Docker\nXI. Logs ❌ — print() em vez de stdout estruturado\nXII. Admin Processes ✅ — flask init-db', tip: null },
@@ -1547,7 +1547,7 @@ const GUIDES = {
   },
   t5: {
     title: 'T5 — Estimativa de Custo AWS',
-    subtitle: 'Responsável: P3 · Prazo: Dia 2',
+    subtitle: 'Responsável: Alan · Prazo: Dia 2',
     steps: [
       { title: 'Acessar a calculadora', body: 'calculator.aws → "Create estimate" → região: US East (N. Virginia).', tip: null },
       { title: 'Adicionar EC2', body: '• OS: Linux · Instance: t3.micro · 730h/mês · On-Demand', tip: null },
@@ -1558,7 +1558,7 @@ const GUIDES = {
   },
   t6: {
     title: 'T6 — Provisionar Infraestrutura AWS',
-    subtitle: 'Responsável: P1 + P2 · Prazo: Dia 3 · Depende de: T2',
+    subtitle: 'Responsável: Erick + John · Prazo: Dia 3 · Depende de: T2',
     steps: [
       { title: 'Criar VPC', body: 'VPC → Create VPC · Name: togglemaster-vpc · CIDR: 10.0.0.0/16', tip: null },
       { title: 'Criar sub-redes', body: 'Pública: togglemaster-public | us-east-1a | 10.0.1.0/24 → Enable auto-assign public IPv4\nPrivada: togglemaster-private | us-east-1b | 10.0.2.0/24 → NÃO habilitar IP público', tip: null },
@@ -1571,7 +1571,7 @@ const GUIDES = {
   },
   t7: {
     title: 'T7 — Deploy na EC2',
-    subtitle: 'Responsável: P1 + P2 · Prazo: Dia 4 · Depende de: T6',
+    subtitle: 'Responsável: Erick + John · Prazo: Dia 4 · Depende de: T6',
     steps: [
       { title: 'Conectar via SSH', body: '', code: 'chmod 400 togglemaster-key.pem\nssh -i togglemaster-key.pem ec2-user@<IP-EC2>' },
       { title: 'Instalar dependências', body: '', code: 'sudo yum update -y\nsudo yum install -y git python3 python3-pip' },
