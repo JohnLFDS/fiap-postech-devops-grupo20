@@ -271,9 +271,9 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
       autocomplete="off" onkeydown="if(event.key==='Enter')tryLogin()"/>
     <button class="login-btn" onclick="tryLogin()">Entrar no portal</button>
     <div class="login-error" id="loginError"></div>
-    <div class="login-hint">Dúvidas? Fale com o John no grupo do WhatsApp.</div>
+    <div class="login-hint">Dúvidas? Fale com o coordenador do grupo no WhatsApp.</div>
     <div class="login-footer">
-      <span class="login-footer-version">v1.3.0</span>
+      <span class="login-footer-version">v1.4.0</span>
       <span class="login-footer-secure">
         <svg width="12" height="14" viewBox="0 0 11 13" xmlns="http://www.w3.org/2000/svg">
           <path d="M5.5 0L0.5 2.5V6C0.5 9.15 2.68 12.1 5.5 13C8.32 12.1 10.5 9.15 10.5 6V2.5L5.5 0Z" fill="#2ecc71"/>
@@ -422,7 +422,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 </div>
 
 <div class="footer">
-  Tech Challenge · Grupo 20 &nbsp;·&nbsp; Erick · John · Alan · Marcelo · Cassio &nbsp;·&nbsp; FIAP Pós Tech 2026 · 4 Fases
+  Tech Challenge · Grupo 20 &nbsp;·&nbsp; P1 · P2 · P3 · P4 · P5 &nbsp;·&nbsp; Papéis a definir no kick-off de 13/10 &nbsp;·&nbsp; FIAP Pós Tech 2026 · 4 Fases
 </div>
 
 <!-- CONFIRM DIALOG (substitui confirm() nativo) -->
@@ -476,8 +476,9 @@ const firebaseConfig = {
 
 const _fbApp = initializeApp(firebaseConfig);
 const _db    = getDatabase(_fbApp);
-const _stateRef = ref(_db, 'tc-g20/state');
-const _tasksRef = ref(_db, 'tc-g20/tasks');
+// v1.4.0 — caminhos renomeados para invalidar cache anterior (kick-off reset)
+const _stateRef = ref(_db, 'tc-g20/v2/state');
+const _tasksRef = ref(_db, 'tc-g20/v2/tasks');
 
 // ══════════════════════════════════════════════
 // CONSTANTES
@@ -485,31 +486,37 @@ const _tasksRef = ref(_db, 'tc-g20/tasks');
 const NOTIFY_URL = ''; // URL do AWS API Gateway (opcional)
 const PW_HASH    = '0d1d19c56750f6d01b81ca3597f9a68d4512bbe45d48cb9ae0486e3e3b906c5b';
 const AUTH_KEY   = 'tc-g20-auth';
-const TASKS_KEY  = 'tc-g20-tasks-cfg';
-const STATE_KEY  = 'tc-g20-state';
+const TASKS_KEY  = 'tc-g20-tasks-cfg-v2';  // v2 — força reload dos DEFAULT_TASKS
+const STATE_KEY  = 'tc-g20-state-v2';      // v2 — zera checklist para o kick-off
 
 // ── Membros do grupo ──────────────────────────
+// ⚠️ Papéis a confirmar no kick-off de 13/10
 const MEMBERS = [
-  { id:'EA', name:'Erick Aleixo Aragão',        rm:'RM 378535', av:'av-1', tag:'tag-pink'   },
-  { id:'JL', name:'John Lennon F. da Silva',     rm:'RM 377728', av:'av-2', tag:'tag-blue'   },
-  { id:'AS', name:'Alan Santos',                 rm:'RM 378561', av:'av-3', tag:'tag-purple' },
-  { id:'MS', name:'Marcelo Santos de Jesus',     rm:'RM 378332', av:'av-4', tag:'tag-green'  },
-  { id:'CT', name:'Cassio Tadashi Kawamura',     rm:'RM 378022', av:'av-5', tag:'tag-yellow' },
+  { id:'P1', name:'A definir no kick-off', rm:'Papel: Líder Técnico / Deploy AWS',    av:'av-1', tag:'tag-pink'   },
+  { id:'P2', name:'A definir no kick-off', rm:'Papel: Engenheiro de Infraestrutura',  av:'av-2', tag:'tag-blue'   },
+  { id:'P3', name:'A definir no kick-off', rm:'Papel: Arquiteto de Soluções',         av:'av-3', tag:'tag-purple' },
+  { id:'P4', name:'A definir no kick-off', rm:'Papel: Analista DevOps / Documentação',av:'av-4', tag:'tag-green'  },
+  { id:'P5', name:'A definir no kick-off', rm:'Papel: Coordenador + Execução Local',  av:'av-5', tag:'tag-yellow' },
 ];
 
 // ── Tarefas padrão ────────────────────────────
+// Owners alinhados ao enunciado FIAP + README oficial
+// Todos os status reiniciados para 'todo' — progresso real a registrar após kick-off
 const DEFAULT_TASKS = [
-  { id:'t1',  title:'Clonar repositório e executar localmente',      desc:'git clone https://github.com/dougls/toggle-master-monolith · docker compose up · testar CRUD com curl ou Postman', owner:'CT', status:'todo' },
-  { id:'t2',  title:'Provisionar VPC, Subnets, IGW e Route Tables',  desc:'VPC 10.0.0.0/16 · Subnet pública 10.0.1.0/24 (us-east-1a) · Subnet privada 10.0.2.0/24 (us-east-1b) · IGW · Route Table', owner:'EA', status:'todo' },
-  { id:'t3',  title:'Criar Security Groups (EC2 e RDS)',              desc:'sg-ec2: TCP 22 (SSH IPs do grupo) + TCP 5000 (0.0.0.0/0) · sg-rds: TCP 5432 somente de sg-ec2', owner:'AS', status:'todo' },
-  { id:'t4',  title:'Provisionar RDS PostgreSQL',                     desc:'db.t3.micro · PostgreSQL 15 · Single-AZ · 20 GB gp2 · Subnet Group nas 2 AZs · sem acesso público', owner:'AS', status:'todo' },
-  { id:'t5',  title:'Provisionar EC2 e fazer deploy da aplicação',    desc:'t3.micro · Amazon Linux 2023 · SSH · yum install python3 · export variáveis do RDS · gunicorn --bind 0.0.0.0:5000 app:app', owner:'JL', status:'todo' },
-  { id:'t6',  title:'Validar API pública na EC2',                     desc:'curl http://<EC2-IP>:5000/flags · testar GET, POST, PUT, DELETE · confirmar que o RDS responde', owner:'JL', status:'todo' },
-  { id:'t7',  title:'Finalizar diagrama de arquitetura (diagrams.net)',desc:'Abrir diagrama-togglemaster.drawio · ajustes finais · exportar PNG · publicar link público', owner:'JL', status:'progress' },
-  { id:'t8',  title:'Análise dos 12 Fatores + Documentação',          desc:'Identificar quais fatores a app já atende · quais precisam ajuste · incluir no documento seção 3', owner:'MS', status:'progress' },
-  { id:'t9',  title:'Estimativa de custos na AWS Pricing Calculator', desc:'EC2 t3.micro + RDS db.t3.micro + transferência de dados · salvar link · tirar print', owner:'CT', status:'todo' },
-  { id:'t10', title:'Gravar vídeo de demonstração (até 15 min)',      desc:'App local · diagrama · EC2 ao vivo · Security Groups · credenciais · upload YouTube/Drive · salvar link', owner:'CT', status:'todo' },
-  { id:'t11', title:'Compilar Relatório de Entrega (PDF)',             desc:'Nomes + RMs · link do vídeo · link documentação/diagrama · resumo desafios · print custos AWS', owner:'MS', status:'todo' },
+  // ── Paralelas (podem rodar ao mesmo tempo) ──
+  { id:'t1',  title:'Executar aplicação localmente (Docker Compose)',   desc:'Todos: git clone · docker compose up --build · testar CRUD com curl · identificar por que é um monolito', owner:'P5', status:'todo' },
+  { id:'t2',  title:'Criar conta AWS + usuário IAM + MFA',              desc:'P1: criar conta AWS ou usar AWS Academy · habilitar MFA no root · criar usuário IAM com AdministratorAccess · definir região us-east-1', owner:'P1', status:'todo' },
+  { id:'t3',  title:'Diagrama de arquitetura AWS (draw.io)',             desc:'P3: VPC 10.0.0.0/16 · subnets pública e privada · EC2 (porta 5000) · RDS PostgreSQL · Internet Gateway · Security Groups com ícones oficiais AWS19', owner:'P3', status:'todo' },
+  { id:'t4',  title:'Análise dos 12 Fatores (12-Factor App)',            desc:'P4: analisar app.py, Dockerfile, requirements.txt e docker-compose.yaml contra cada fator · status ✅/⚠️/❌ com justificativa · resultado: 7 ✅, 3 ⚠️, 2 ❌', owner:'P4', status:'todo' },
+  { id:'t5',  title:'Estimativa de custos na AWS Pricing Calculator',    desc:'P3: calculator.aws · EC2 t3.micro + RDS db.t3.micro + Data Transfer · região us-east-1 · salvar link público · tirar print para o relatório', owner:'P3', status:'todo' },
+  // ── Sequenciais (dependem das paralelas) ──
+  { id:'t6',  title:'Provisionar infraestrutura AWS (VPC, EC2, RDS, SGs)', desc:'P1+P2: VPC · subnet pública (10.0.1.0/24) + privada (10.0.2.0/24) · IGW · Route Table · sg-ec2 (TCP 22+5000) · sg-rds (TCP 5432 só de sg-ec2) · EC2 t3.micro Amazon Linux 2023 · RDS PostgreSQL 15 db.t3.micro sem acesso público', owner:'P1', status:'todo' },
+  { id:'t7',  title:'Deploy da aplicação na EC2 via SSH',                desc:'P1+P2: ssh -i key.pem ec2-user@<IP> · yum install git python3 · clone repo · venv · pip install · export DB_HOST/DB_NAME/DB_USER/DB_PASSWORD · flask init-db · gunicorn --bind 0.0.0.0:5000 app:app', owner:'P1', status:'todo' },
+  { id:'t8',  title:'Validar API pública na EC2',                        desc:'Todos: curl http://<EC2-IP>:5000/health · POST /flags · GET /flags · PUT /flags/<nome> · confirmar persistência no RDS', owner:'P2', status:'todo' },
+  // ── Documentação e entrega ──
+  { id:'t9',  title:'Compilar Relatório de Entrega (ABNT em PDF)',       desc:'P4+P5: capa (nomes + RMs) · análise monolito · 12 Fatores · diagrama · custos AWS (print) · evidências deploy (prints terminal) · credenciais · desafios · referências', owner:'P4', status:'todo' },
+  { id:'t10', title:'Gravar vídeo de demonstração (até 15 min)',         desc:'P2+Todos: app local (Docker) · diagrama de arquitetura · EC2 ao vivo com RDS · Security Groups no console AWS · gestão de credenciais · upload YouTube não listado ou Google Drive · salvar link compartilhável', owner:'P2', status:'todo' },
+  { id:'t11', title:'Submissão final + limpeza AWS',                     desc:'P5 (coord.): reunir vídeo + diagrama + PDF · submeter na plataforma FIAP · P1: parar EC2 + deletar RDS para evitar cobranças (RDS cobra mesmo parado após 7 dias)', owner:'P5', status:'todo' },
 ];
 
 // ══════════════════════════════════════════════
