@@ -161,6 +161,22 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 /* botão guia no check-item */
 .check-guide-btn{background:var(--cn-blue-bg);border:1px solid rgba(91,143,255,.35);border-radius:5px;padding:3px 9px;font-size:.65rem;font-weight:700;color:var(--blue);cursor:pointer;white-space:nowrap;transition:background .15s;}
 .check-guide-btn:hover{background:rgba(91,143,255,.25);}
+/* ── EDIT ICON no check-item ── */
+.check-edit-btn{width:28px;height:28px;border-radius:6px;border:1px solid transparent;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;opacity:0;transition:opacity .15s,background .15s,border-color .15s;padding:0;}
+.check-item:hover .check-edit-btn{opacity:1;}
+.check-edit-btn:hover{background:var(--surface2);border-color:var(--border);}
+.check-edit-btn svg{display:block!important;pointer-events:none;}
+/* ── ADD TASK BUTTON (inline após a lista) ── */
+.checklist-add-btn{display:flex;align-items:center;gap:8px;width:100%;background:transparent;border:1.5px dashed var(--border);border-radius:8px;padding:11px 16px;cursor:pointer;font-size:.8rem;font-weight:600;color:var(--muted);transition:border-color .2s,color .2s,background .2s;margin-top:4px;}
+.checklist-add-btn:hover{border-color:var(--pink);color:var(--pink);background:var(--pink-glow);}
+.checklist-add-btn svg{flex-shrink:0;transition:transform .2s;}
+.checklist-add-btn:hover svg{transform:rotate(90deg);}
+/* ── MODAL EDIÇÃO INDIVIDUAL ── */
+.task-edit-field{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:7px;padding:9px 12px;font-size:.85rem;color:var(--txt);font-family:inherit;outline:none;transition:border-color .2s;margin-bottom:10px;}
+.task-edit-field:focus{border-color:var(--pink);background:var(--bg);}
+.task-edit-field-label{font-size:.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px;display:block;}
+.task-edit-row{display:flex;gap:10px;flex-wrap:wrap;}
+.task-edit-row .task-edit-field{flex:1;min-width:120px;margin-bottom:0;}
 
 /* ── LEGEND ── */
 .legend{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:14px;padding:12px 16px;background:var(--surface);border-radius:8px;border:1px solid var(--border);}
@@ -486,7 +502,6 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
   <div class="sec-header" style="margin-top:clamp(28px,3vw,44px);">
     <div class="dot"></div>
     <h2>Checklist de tarefas</h2>
-    <button class="sec-edit-btn" id="tasksEditBtn" onclick="toggleTasksPanel()">✏️ Editar tarefas</button>
   </div>
 
   <div class="progress-bar-wrap" style="margin-top:12px;">
@@ -498,6 +513,11 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
   </div>
 
   <div class="checklist" id="checklist"><!-- renderizado por JS --></div>
+
+  <button class="checklist-add-btn" onclick="openAddTaskModal()">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v6M5 8h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    Nova tarefa
+  </button>
 
   <div class="legend">
     <span style="font-size:.72rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:1px;">Status:</span>
@@ -605,7 +625,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 // ══════════════════════════════════════════════
 // VERSÃO — fonte única da verdade
 // ══════════════════════════════════════════════
-const APP_VERSION = 'v2.8.0';
+const APP_VERSION = 'v2.9.0';
 
 // ══════════════════════════════════════════════
 // UTILITÁRIOS
@@ -918,6 +938,11 @@ function renderChecklist() {
         ${guideBtn}
         <span class="owner-pill ${tagClass}">${ownerLbl}</span>
         <div class="status-dot ${dotClass}" id="dot-${task.id}"></div>
+        <button class="check-edit-btn" onclick="openEditTaskModal('${task.id}')" title="Editar tarefa" aria-label="Editar tarefa">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M9.5 2.5l2 2L4 12H2v-2L9.5 2.5z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
       </div>
     </div>`;
   }).join('');
@@ -1220,148 +1245,102 @@ function koSaveNotes() {
 }
 
 // ══════════════════════════════════════════════
-// MODAL EDITAR TAREFAS (overlay, substitui painel inline)
+// MODAL EDITAR TAREFA INDIVIDUAL
 // ══════════════════════════════════════════════
-function toggleTasksPanel() {
-  // Abre o modal de edição de tarefas
-  document.getElementById('modalTitle').textContent    = '✏️ Editar tarefas';
-  document.getElementById('modalSubtitle').textContent = 'Reordene, edite ou adicione tarefas ao checklist.';
-  document.getElementById('modalBody').innerHTML       = `<div class="cfg-tasks-list" id="cfgTasksList"></div>
-    <button class="cfg-add-btn" onclick="cfgAddTask()">+ Adicionar tarefa</button>`;
-  document.getElementById('modalBtns').innerHTML = `
-    <button class="btn btn-cancel" onclick="cfgCancel()">Descartar</button>
-    <button class="btn btn-confirm" id="cfgSaveBtn" onclick="cfgSave()"><span id="cfgSaveBtnLabel">Salvar e fechar</span></button>`;
+function _taskEditOwnerOpts(currentOwner) {
+  return `<option value="ALL"${currentOwner === 'ALL' ? ' selected' : ''}>👥 Todos</option>`
+    + PEOPLE_CATALOG.map(p => `<option value="${p.pid}"${p.pid === currentOwner ? ' selected' : ''}>${p.name.split(' ')[0]}</option>`).join('')
+    + `<option value=""${!currentOwner ? ' selected' : ''}>— A definir —</option>`;
+}
+
+function _openTaskModal(task, isNew) {
   const box = document.getElementById('modalBox');
-  box.classList.add('modal-wide');
-  renderConfigPanel();
-  document.getElementById('modalOverlay').classList.add('active');
-  document.getElementById('tasksEditBtn').classList.add('active');
-}
-
-function _cfgFlushDOM() {
-  document.querySelectorAll('.cfg-row').forEach(row => {
-    const id   = row.dataset.cfgId;
-    const task = tasks.find(t => t.id === id);
-    if (!task) return;
-    task.title  = row.querySelector('[data-field="title"]').value.trim();
-    task.desc   = row.querySelector('[data-field="desc"]').value.trim();
-    task.owner  = row.querySelector('[data-field="owner"]').value;
-    task.status = row.querySelector('[data-field="status"]').value;
-  });
-}
-
-function _cfgMakeRow(task, idx) {
-  const ownerOpts = `<option value="ALL"${task.owner === 'ALL' ? ' selected' : ''}>👥 Todos</option>`
-    + PEOPLE_CATALOG.map(p => `<option value="${p.pid}"${p.pid === task.owner ? ' selected' : ''}>${p.name.split(' ')[0]}</option>`).join('')
-    + `<option value=""${!task.owner ? ' selected' : ''}>— A definir —</option>`;
-  const row = document.createElement('div');
-  row.className = 'cfg-row';
-  row.dataset.cfgId = task.id;
-  row.draggable = true;
-  row.innerHTML = `
-    <div class="cfg-row-top">
-      <span class="cfg-drag-handle" title="Arrastar para reordenar">☰</span>
-      <span class="cfg-row-num">${idx + 1}</span>
-      <input class="cfg-input-title" data-field="title" value="${escHtml(task.title)}" placeholder="Título da tarefa"/>
-    </div>
-    <div class="cfg-row-bot">
-      <input class="cfg-input-desc" data-field="desc" value="${escHtml(task.desc)}" placeholder="Descrição (opcional)"/>
-      <select class="cfg-sel-owner" data-field="owner">
-        ${ownerOpts}
-      </select>
-      <select class="cfg-sel-status" data-field="status">
-        <option value="todo"${task.status === 'todo' ? ' selected' : ''}>Pendente</option>
-        <option value="progress"${task.status === 'progress' ? ' selected' : ''}>Em andamento</option>
-      </select>
-      <button class="cfg-del-btn" onclick="cfgDeleteTask('${task.id}')">🗑</button>
+  box.classList.remove('modal-wide');
+  box.classList.add('modal-guide');
+  document.getElementById('modalTitle').textContent    = isNew ? '＋ Nova tarefa' : '✏️ Editar tarefa';
+  document.getElementById('modalSubtitle').textContent = isNew ? 'Preencha os campos e salve.' : task.title;
+  document.getElementById('modalBody').innerHTML = `
+    <label class="task-edit-field-label">Título</label>
+    <input id="teTitle" class="task-edit-field" placeholder="Ex: Criar VPC na AWS" value="${escHtml(task.title)}"/>
+    <label class="task-edit-field-label">Descrição <span style="font-weight:400;opacity:.6;">(opcional)</span></label>
+    <textarea id="teDesc" class="task-edit-field" rows="3" placeholder="Detalhes, comandos, links…" style="resize:vertical;">${escHtml(task.desc)}</textarea>
+    <div class="task-edit-row" style="margin-bottom:10px;">
+      <div style="flex:1;min-width:120px;">
+        <label class="task-edit-field-label">Responsável</label>
+        <select id="teOwner" class="task-edit-field" style="margin-bottom:0;">${_taskEditOwnerOpts(task.owner)}</select>
+      </div>
+      <div style="flex:1;min-width:120px;">
+        <label class="task-edit-field-label">Status</label>
+        <select id="teStatus" class="task-edit-field" style="margin-bottom:0;">
+          <option value="todo"${task.status === 'todo' ? ' selected' : ''}>⚪ Pendente</option>
+          <option value="progress"${task.status === 'progress' ? ' selected' : ''}>🟡 Em andamento</option>
+        </select>
+      </div>
     </div>`;
-
-  let _dragSrc = null;
-  row.addEventListener('dragstart', e => {
-    _dragSrc = row; e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', task.id);
-    setTimeout(() => row.style.opacity = '.4', 0);
-  });
-  row.addEventListener('dragend', () => { row.style.opacity = ''; document.querySelectorAll('.cfg-row').forEach(r => r.classList.remove('drag-over')); });
-  row.addEventListener('dragover', e => { e.preventDefault(); row.classList.add('drag-over'); });
-  row.addEventListener('dragleave', () => row.classList.remove('drag-over'));
-  row.addEventListener('drop', e => {
-    e.preventDefault(); row.classList.remove('drag-over');
-    const srcId = e.dataTransfer.getData('text/plain');
-    if (srcId === task.id) return;
-    _cfgFlushDOM();
-    const si = tasks.findIndex(t => t.id === srcId);
-    const ti = tasks.findIndex(t => t.id === task.id);
-    if (si < 0 || ti < 0) return;
-    const [moved] = tasks.splice(si, 1);
-    tasks.splice(ti, 0, moved);
-    renderConfigPanel();
-  });
-  return row;
+  document.getElementById('modalBtns').innerHTML = `
+    ${!isNew ? `<button class="btn btn-danger" style="margin-right:auto;" onclick="_deleteTaskFromModal('${task.id}')">🗑 Excluir</button>` : ''}
+    <button class="btn btn-cancel" onclick="closeModal()">Cancelar</button>
+    <button class="btn btn-confirm" onclick="_saveTaskFromModal('${task.id}',${isNew})">💾 Salvar</button>`;
+  document.getElementById('modalOverlay').classList.add('active');
+  setTimeout(() => document.getElementById('teTitle')?.focus(), 80);
 }
 
-function renderConfigPanel() {
-  const list = document.getElementById('cfgTasksList');
-  list.innerHTML = '';
-  tasks.forEach((task, idx) => list.appendChild(_cfgMakeRow(task, idx)));
+function openEditTaskModal(id) {
+  const task = tasks.find(t => t.id === id);
+  if (!task) return;
+  _openTaskModal(task, false);
 }
 
-function cfgAddTask() {
-  _cfgFlushDOM();
+function openAddTaskModal() {
   const newId = 'custom_' + Date.now();
   _lastAddedId = newId;
-  tasks.push({ id: newId, title: '', desc: '', owner: '', status: 'todo' });
-  const list = document.getElementById('cfgTasksList');
-  const newRow = _cfgMakeRow(tasks[tasks.length - 1], tasks.length - 1);
-  list.appendChild(newRow);
-  setTimeout(() => {
-    newRow.querySelector('input[data-field="title"]')?.focus();
-    newRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }, 50);
+  const newTask = { id: newId, title: '', desc: '', owner: '', status: 'todo' };
+  tasks.push(newTask);
+  _openTaskModal(newTask, true);
 }
 
-function cfgDeleteTask(id) {
+function _saveTaskFromModal(id, isNew) {
   const task = tasks.find(t => t.id === id);
-  showConfirm({
-    icon: '🗑️', title: 'Remover tarefa',
-    msg: `"${task ? task.title : id}" será removida permanentemente.`,
-    okLabel: 'Remover', okClass: 'btn-danger',
-    onOk: () => { tasks = tasks.filter(t => t.id !== id); delete doneState[id]; saveState(); renderConfigPanel(); }
-  });
-}
-
-function cfgSave() {
-  const btn = document.getElementById('cfgSaveBtn');
-  const lbl = document.getElementById('cfgSaveBtnLabel');
-  if (btn) { btn.disabled = true; }
-  if (lbl) { lbl.textContent = '✓ Salvando…'; }
-  const firstId = _lastAddedId;
-  _cfgFlushDOM();
-  _lastAddedId = null;
+  if (!task) return;
+  const title = document.getElementById('teTitle')?.value.trim();
+  if (!title) { document.getElementById('teTitle')?.focus(); document.getElementById('teTitle')?.style && (document.getElementById('teTitle').style.borderColor = 'var(--red)'); return; }
+  task.title  = title;
+  task.desc   = document.getElementById('teDesc')?.value.trim() || '';
+  task.owner  = document.getElementById('teOwner')?.value || '';
+  task.status = document.getElementById('teStatus')?.value || 'todo';
   saveTasks();
   renderMembers();
   renderChecklist();
-  setTimeout(() => {
-    closeModal();
-    document.getElementById('tasksEditBtn').classList.remove('active');
-    if (btn) { btn.disabled = false; }
-    if (lbl) { lbl.textContent = 'Salvar e fechar'; }
-    showToast('✅ Tarefas salvas!');
-    setTimeout(() => {
-      const target = firstId ? document.querySelector(`[data-id="${firstId}"]`) : document.getElementById('checklist');
-      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 300);
-  }, 400);
+  closeModal();
+  showToast(isNew ? `✅ Tarefa "${task.title}" adicionada!` : `✅ Tarefa "${task.title}" salva!`);
+  if (isNew) setTimeout(() => { const el = document.querySelector(`[data-id="${id}"]`); if (el) el.scrollIntoView({ behavior:'smooth', block:'center' }); }, 300);
 }
 
-function cfgCancel() {
-  loadTasks();
-  renderMembers();
-  renderChecklist();
+function _deleteTaskFromModal(id) {
+  const task = tasks.find(t => t.id === id);
   closeModal();
-  document.getElementById('tasksEditBtn').classList.remove('active');
-  showToast('Edições descartadas.');
+  showConfirm({
+    icon: '🗑️', title: 'Excluir tarefa',
+    msg: `"${task ? task.title : id}" será removida permanentemente.`,
+    okLabel: 'Excluir', okClass: 'btn-danger',
+    onOk: () => {
+      tasks = tasks.filter(t => t.id !== id);
+      delete doneState[id];
+      saveTasks();
+      saveState();
+      renderMembers();
+      renderChecklist();
+      showToast('🗑 Tarefa excluída.');
+    }
+  });
 }
+
+// mantidos para compatibilidade (não usados na nova UI)
+function toggleTasksPanel() {}
+function cfgSave() {}
+function cfgCancel() {}
+function cfgAddTask() {}
+function cfgDeleteTask(id) { _deleteTaskFromModal(id); }
 
 // ══════════════════════════════════════════════
 // KICK-OFF — pills clicáveis
@@ -1572,23 +1551,27 @@ init();
 // ══════════════════════════════════════════════
 // EXPOR AO ESCOPO GLOBAL
 // ══════════════════════════════════════════════
-window.tryLogin           = tryLogin;
-window.toggleTheme        = toggleTheme;
-window.handleCheck        = handleCheck;
-window.closeModal         = closeModal;
-window.confirmCheck       = confirmCheck;
-window.toggleTasksPanel   = toggleTasksPanel;
-window.cfgAddTask         = cfgAddTask;
-window.cfgDeleteTask      = cfgDeleteTask;
-window.cfgSave            = cfgSave;
-window.cfgCancel          = cfgCancel;
-window.koSaveNotes        = koSaveNotes;
-window.koResetDays        = koResetDays;
-window.openGuide          = openGuide;
-window.openGroupModal     = openGroupModal;
-window.openKickoffModal   = openKickoffModal;
-window.onMemberSelChange  = onMemberSelChange;
-window.saveInlineMembers  = saveInlineMembers;
+window.tryLogin              = tryLogin;
+window.toggleTheme           = toggleTheme;
+window.handleCheck           = handleCheck;
+window.closeModal            = closeModal;
+window.confirmCheck          = confirmCheck;
+window.toggleTasksPanel      = toggleTasksPanel;
+window.cfgAddTask            = cfgAddTask;
+window.cfgDeleteTask         = cfgDeleteTask;
+window.cfgSave               = cfgSave;
+window.cfgCancel             = cfgCancel;
+window.koSaveNotes           = koSaveNotes;
+window.koResetDays           = koResetDays;
+window.openGuide             = openGuide;
+window.openGroupModal        = openGroupModal;
+window.openKickoffModal      = openKickoffModal;
+window.onMemberSelChange     = onMemberSelChange;
+window.saveInlineMembers     = saveInlineMembers;
+window.openEditTaskModal     = openEditTaskModal;
+window.openAddTaskModal      = openAddTaskModal;
+window._saveTaskFromModal    = _saveTaskFromModal;
+window._deleteTaskFromModal  = _deleteTaskFromModal;
 </script>
 </body>
 </html>
