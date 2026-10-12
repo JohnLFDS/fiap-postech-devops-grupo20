@@ -622,6 +622,33 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
   <!-- LINKS ÚTEIS -->
   <div class="sec-header"><div class="dot"></div><h2>Links úteis</h2></div>
 
+  <!-- Google Drive — destaque -->
+  <a href="https://drive.google.com/drive/folders/1XMRkgXA7OegbMk2MqhQj-wE4eu0LzyGt?usp=drive_link" target="_blank" rel="noopener" style="text-decoration:none;display:block;margin-bottom:18px;">
+    <div style="background:linear-gradient(135deg,rgba(66,133,244,.12),rgba(52,168,83,.1));border:1.5px solid rgba(66,133,244,.4);border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:16px;transition:border-color .18s,box-shadow .18s;" onmouseover="this.style.borderColor='rgba(66,133,244,.8)';this.style.boxShadow='0 0 0 3px rgba(66,133,244,.12)'" onmouseout="this.style.borderColor='rgba(66,133,244,.4)';this.style.boxShadow='none'">
+      <!-- Ícone Google Drive SVG -->
+      <div style="width:44px;height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+        <svg width="36" height="32" viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg">
+          <path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/>
+          <path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44a9.06 9.06 0 0 0 -1.2 4.5h27.5z" fill="#00ac47"/>
+          <path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.502l5.852 11.5z" fill="#ea4335"/>
+          <path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/>
+          <path d="m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/>
+          <path d="m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 28h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/>
+        </svg>
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
+          <span style="font-size:.9rem;font-weight:800;color:var(--txt);">📁 Pasta do Grupo 20</span>
+          <span style="font-size:.6rem;font-weight:700;background:rgba(66,133,244,.15);color:#4285f4;border:1px solid rgba(66,133,244,.35);border-radius:20px;padding:2px 9px;">Google Drive</span>
+          <span style="font-size:.6rem;font-weight:700;background:rgba(52,168,83,.15);color:#34a853;border:1px solid rgba(52,168,83,.35);border-radius:20px;padding:2px 9px;">Compartilhada</span>
+        </div>
+        <div style="font-size:.75rem;color:var(--muted);line-height:1.5;">Arquivos do projeto · Diagrama · Relatório · Vídeo · Documentação da entrega</div>
+        <div style="font-size:.68rem;color:#4285f4;margin-top:3px;font-weight:600;">drive.google.com ↗</div>
+      </div>
+      <div style="font-size:.75rem;color:#4285f4;font-weight:700;white-space:nowrap;flex-shrink:0;">Abrir →</div>
+    </div>
+  </a>
+
   <div class="links-group-label">🖥️ Consoles AWS</div>
   <div class="links-grid">
     <div class="link-card"><div class="lc-label">Console AWS (geral)</div><a href="https://console.aws.amazon.com/" target="_blank" rel="noopener">Abrir Console AWS</a></div>
@@ -685,7 +712,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 // ══════════════════════════════════════════════
 // VERSÃO — fonte única da verdade
 // ══════════════════════════════════════════════
-const APP_VERSION = 'v2.28.0';
+const APP_VERSION = 'v2.29.0';
 
 // ══════════════════════════════════════════════
 // UTILITÁRIOS
