@@ -474,10 +474,10 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
     <div class="tl-step"><div class="tl-circle tc-4">4</div><div class="tl-label">Doc &amp; Vídeo</div><div class="tl-sub">Diagrama finalizado<br>Relatório simples<br>Gravação do vídeo</div></div>
   </div>
 
-  <!-- MEMBROS — seletor inline nos cards -->
+  <!-- MEMBROS — atribuição de tarefas -->
   <div class="sec-header">
     <div class="dot"></div>
-    <h2>Responsabilidades por membro</h2>
+    <h2>Atribuição de tarefas por membro</h2>
     <button class="sec-edit-btn" id="membersSaveBtn" onclick="saveInlineMembers()" style="display:none;">💾 Salvar atribuições</button>
   </div>
   <div class="members" id="membersGrid"><!-- renderizado por JS --></div>
@@ -513,10 +513,20 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
       <div style="width:40px;height:40px;border-radius:8px;background:var(--pink-glow);border:1px solid var(--pink-dim);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">🚀</div>
       <div>
         <div style="font-size:.82rem;font-weight:700;color:var(--txt);">Kick-off · Fase 1</div>
-        <div style="font-size:.72rem;color:var(--muted);margin-top:2px;">13/10/2026 às 10h · Linha do tempo + Anotações</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:2px;">Linha do tempo + Anotações</div>
       </div>
       <div style="margin-left:auto;font-size:.7rem;color:var(--pink);font-weight:700;">Ver →</div>
     </div>
+    <a href="https://meet.google.com/kaz-qcqs-mmg" target="_blank" rel="noopener" style="text-decoration:none;">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;cursor:pointer;transition:border-color .15s;display:flex;align-items:center;gap:12px;" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="width:40px;height:40px;border-radius:8px;background:var(--cn-grn-bg);border:1px solid rgba(46,204,113,.4);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">📹</div>
+        <div>
+          <div style="font-size:.82rem;font-weight:700;color:var(--txt);">Reunião · Deploy na AWS</div>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:2px;">Quarta-feira · Google Meet · Deploy local + AWS ao vivo</div>
+          <div style="font-size:.68rem;color:var(--green);margin-top:3px;font-weight:600;">meet.google.com/kaz-qcqs-mmg ↗</div>
+        </div>
+      </div>
+    </a>
   </div>
 
   <!-- LINKS ÚTEIS -->
@@ -584,7 +594,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 // ══════════════════════════════════════════════
 // VERSÃO — fonte única da verdade
 // ══════════════════════════════════════════════
-const APP_VERSION = 'v2.5.0';
+const APP_VERSION = 'v2.6.0';
 
 // ══════════════════════════════════════════════
 // UTILITÁRIOS
@@ -818,64 +828,40 @@ function updateThemeBtn(t) {
 // ══════════════════════════════════════════════
 function renderMembers() {
   const grid = document.getElementById('membersGrid');
+
+  // byOwner: conta tarefas por pessoa + 'ALL' (todos)
   const byOwner = {};
-  ['P1','P2','P3','P4','P5'].forEach(id => byOwner[id] = []);
-  tasks.forEach(t => { if (byOwner[t.owner] !== undefined) byOwner[t.owner].push(t.title); });
+  PEOPLE_CATALOG.forEach(p => byOwner[p.pid] = []);
+  byOwner['ALL'] = [];
+  tasks.forEach(t => {
+    if (t.owner === 'ALL') {
+      PEOPLE_CATALOG.forEach(p => byOwner[p.pid].push(t.title));
+    } else if (byOwner[t.owner] !== undefined) {
+      byOwner[t.owner].push(t.title);
+    }
+  });
 
-  const slots = ['P1','P2','P3','P4','P5'];
-  const tagList = ['tag-pink','tag-blue','tag-purple','tag-green','tag-yellow'];
-  const avList  = ['av-1','av-2','av-3','av-4','av-5'];
-
-  grid.innerHTML = slots.map((slotId, i) => {
-    const assignedPid = slotMap[slotId];           // ex: 'P3' ou null
-    const person = assignedPid ? PEOPLE_CATALOG.find(p => p.pid === assignedPid) : null;
-    const tag    = person ? person.tag : tagList[i];
-    const av     = person ? person.av  : avList[i];
-    const displayName = person ? person.name.split(' ')[0] : '—';
-
-    const tagsHtml = byOwner[slotId].length
-      ? byOwner[slotId].slice(0, 3).map(t => `<span class="task-tag ${tag}">${t.length > 22 ? t.slice(0, 22) + '…' : t}</span>`).join('')
-        + (byOwner[slotId].length > 3 ? `<span class="task-tag ${tag}">+${byOwner[slotId].length - 3} mais</span>` : '')
+  grid.innerHTML = PEOPLE_CATALOG.map(person => {
+    const myTasks = byOwner[person.pid] || [];
+    const tagsHtml = myTasks.length
+      ? myTasks.slice(0, 3).map(t => `<span class="task-tag ${person.tag}">${t.length > 22 ? t.slice(0, 22) + '…' : t}</span>`).join('')
+        + (myTasks.length > 3 ? `<span class="task-tag ${person.tag}">+${myTasks.length - 3} mais</span>` : '')
       : `<span class="task-tag" style="color:var(--muted);border-color:var(--border);">Sem tarefas</span>`;
-
-    // Opções do select: "A definir" + as 5 pessoas do catálogo
-    const opts = `<option value=""${!assignedPid ? ' selected' : ''}>— A definir —</option>`
-      + PEOPLE_CATALOG.map(p =>
-          `<option value="${p.pid}"${p.pid === assignedPid ? ' selected' : ''}>${p.name.split(' ')[0]} (${p.pid})</option>`
-        ).join('');
 
     return `
     <div class="member-card">
-      <div class="member-avatar ${av}">${slotId}</div>
-      <div class="member-name">${displayName}</div>
-      <select class="member-sel" data-slot="${slotId}" onchange="onMemberSelChange(this)" title="Atribuir membro ao papel ${slotId}">
-        ${opts}
-      </select>
+      <div class="member-avatar ${person.av}">${person.name.split(' ')[0].charAt(0)}</div>
+      <div class="member-name">${person.name.split(' ')[0]}</div>
+      <div class="member-rm">${person.rm}</div>
       <div class="member-tasks">${tagsHtml}</div>
     </div>`;
   }).join('');
 
-  document.getElementById('membersSaveBtn').style.display = '';
+  document.getElementById('membersSaveBtn').style.display = 'none';
 }
 
 function onMemberSelChange(sel) {
-  const slotId = sel.dataset.slot;          // slot sendo alterado (ex: 'P1')
-  const newPid = sel.value || null;         // pessoa escolhida (ex: 'P3') ou null
-
-  // Se essa pessoa já está em outro slot, libera o slot anterior
-  Object.keys(slotMap).forEach(s => {
-    if (s !== slotId && slotMap[s] === newPid && newPid !== null) slotMap[s] = null;
-  });
-
-  slotMap[slotId] = newPid;
-  _buildMembersData();
-  saveMembers();
-  renderMembers();
-  renderChecklist();
-
-  const person = newPid ? PEOPLE_CATALOG.find(p => p.pid === newPid) : null;
-  const label  = person ? person.name.split(' ')[0] : 'A definir';
-  showToast(`✅ ${slotId} → ${label}`);
+  // mantido para compatibilidade (não usado na nova UI)
 }
 
 function saveInlineMembers() {
@@ -900,8 +886,8 @@ function renderChecklist() {
   el.innerHTML = tasks.map((task, idx) => {
     const done    = !!doneState[task.id];
     const member  = getMemberByOwner(task.owner);
-    const tagClass = member ? member.tag : 'tag-blue';
-    const ownerLbl = member && member.name ? member.name.split(' ')[0] : (task.owner ? task.owner : 'A definir');
+    const tagClass = task.owner === 'ALL' ? 'tag-purple' : (member ? member.tag : 'tag-blue');
+    const ownerLbl = task.owner === 'ALL' ? '👥 Todos' : (member && member.name ? member.name.split(' ')[0] : (task.owner ? task.owner : 'A definir'));
     const dotClass = done ? 'sd-done' : (task.status === 'progress' ? 'sd-progress' : 'sd-todo');
     const doneText = done ? `✓ Concluído por ${doneState[task.id].by_name} em ${doneState[task.id].at}` : '';
     const guideBtn = GUIDE_IDS.has(task.id)
@@ -961,6 +947,7 @@ function openCheckModal(task) {
     <select class="modal-select" id="memberSelect">
       <option value="">Selecione seu nome…</option>
       ${PEOPLE_CATALOG.map(p => `<option value="${p.pid}">${p.name}</option>`).join('')}
+      <option value="ALL">👥 Todos (marcando juntos)</option>
     </select>`;
   document.getElementById('modalBtns').innerHTML = `
     <button class="btn btn-cancel" onclick="closeModal()">Cancelar</button>
@@ -984,15 +971,15 @@ function closeModal() {
 async function confirmCheck() {
   const ownerId = document.getElementById('memberSelect')?.value;
   if (!ownerId) { alert('Selecione seu nome antes de confirmar.'); return; }
-  const person = PEOPLE_CATALOG.find(p => p.pid === ownerId);
+  const person = ownerId === 'ALL' ? null : PEOPLE_CATALOG.find(p => p.pid === ownerId);
   const id = pendingTaskId;
   const atStr = new Date().toLocaleString('pt-BR', {dateStyle:'short', timeStyle:'short'});
-  doneState[id] = { by: ownerId, by_name: person ? person.name.split(' ')[0] : ownerId, at: atStr };
+  const byName = ownerId === 'ALL' ? 'Todos' : (person ? person.name.split(' ')[0] : ownerId);
+  doneState[id] = { by: ownerId, by_name: byName, at: atStr };
   saveState();
   renderChecklist();
   closeModal();
-  const firstName = person ? person.name.split(' ')[0] : ownerId;
-  showToast(`✅ ${firstName} marcou "${tasks.find(t => t.id === id)?.title || id}" como concluída!`);
+  showToast(`✅ ${byName} marcou "${tasks.find(t => t.id === id)?.title || id}" como concluída!`);
 }
 
 function updateProgress() {
@@ -1037,13 +1024,11 @@ const KO_DAYS_KEY = 'tc-g20-ko-days-v1';
 
 // Definição padrão dos dias (imutável — serve de fallback)
 const KICKOFF_DAYS_DEFAULT = [
-  { label:'Dia 1\n13/10',   isFinal:false, tasks:[{code:'T1',name:'App local',id:'t1'},{code:'T2',name:'AWS + IAM',id:'t2'}] },
-  { label:'Dia 2\n14/10',   isFinal:false, tasks:[{code:'T3',name:'Diagrama',id:'t3'},{code:'T4',name:'12-Factor',id:'t4'},{code:'T5',name:'Custos',id:'t5'}] },
-  { label:'Dia 3\n15/10',   isFinal:false, tasks:[{code:'T6',name:'Infra AWS',id:'t6'}] },
-  { label:'Dia 4\n16/10',   isFinal:false, tasks:[{code:'T7',name:'Deploy EC2',id:'t7'},{code:'T8',name:'Validar API',id:'t8'}] },
-  { label:'Dia 5\n17/10',   isFinal:false, tasks:[] },
-  { label:'Dia 6\n18/10',   isFinal:false, tasks:[{code:'T10',name:'Vídeo',id:'t10'}] },
-  { label:'🏁 Dia 7\n19/10',isFinal:true,  tasks:[{code:'T9',name:'Relatório',id:'t9'},{code:'T11',name:'Submissão',id:'t11'}] },
+  { label:'Qua\n15/10',    isFinal:false, tasks:[{code:'T1',name:'App local',id:'t1'},{code:'T2',name:'AWS + IAM',id:'t2'},{code:'T6',name:'Infra AWS',id:'t6'},{code:'T7',name:'Deploy EC2',id:'t7'},{code:'T8',name:'Validar API',id:'t8'}] },
+  { label:'Qui\n16/10',    isFinal:false, tasks:[{code:'T3',name:'Diagrama',id:'t3'},{code:'T4',name:'12-Factor',id:'t4'},{code:'T5',name:'Custos',id:'t5'}] },
+  { label:'Sex\n17/10',    isFinal:false, tasks:[] },
+  { label:'Sáb\n18/10',    isFinal:false, tasks:[{code:'T10',name:'Vídeo',id:'t10'}] },
+  { label:'🏁 Dom\n19/10', isFinal:true,  tasks:[{code:'T9',name:'Relatório',id:'t9'},{code:'T11',name:'Submissão',id:'t11'}] },
 ];
 
 // Estado mutável — persiste no localStorage
@@ -1179,7 +1164,7 @@ function openKickoffModal() {
     </div>`).join('');
 
   document.getElementById('modalTitle').textContent    = '🚀 Kick-off · Fase 1';
-  document.getElementById('modalSubtitle').textContent = '13/10/2026 às 10h · Linha do tempo + Anotações';
+  document.getElementById('modalSubtitle').textContent = 'Quarta-feira · Google Meet · meet.google.com/kaz-qcqs-mmg';
   document.getElementById('modalBody').innerHTML = `
     <div style="margin-bottom:16px;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
@@ -1253,6 +1238,9 @@ function _cfgFlushDOM() {
 }
 
 function _cfgMakeRow(task, idx) {
+  const ownerOpts = `<option value="ALL"${task.owner === 'ALL' ? ' selected' : ''}>👥 Todos</option>`
+    + PEOPLE_CATALOG.map(p => `<option value="${p.pid}"${p.pid === task.owner ? ' selected' : ''}>${p.name.split(' ')[0]}</option>`).join('')
+    + `<option value=""${!task.owner ? ' selected' : ''}>— A definir —</option>`;
   const row = document.createElement('div');
   row.className = 'cfg-row';
   row.dataset.cfgId = task.id;
@@ -1266,7 +1254,7 @@ function _cfgMakeRow(task, idx) {
     <div class="cfg-row-bot">
       <input class="cfg-input-desc" data-field="desc" value="${escHtml(task.desc)}" placeholder="Descrição (opcional)"/>
       <select class="cfg-sel-owner" data-field="owner">
-        ${membersData.map(m => `<option value="${m.id}"${m.id === task.owner ? ' selected' : ''}>${m.name.split(' ')[0]} (${m.id})</option>`).join('')}
+        ${ownerOpts}
       </select>
       <select class="cfg-sel-status" data-field="status">
         <option value="todo"${task.status === 'todo' ? ' selected' : ''}>Pendente</option>
@@ -1309,7 +1297,7 @@ function cfgAddTask() {
   _cfgFlushDOM();
   const newId = 'custom_' + Date.now();
   _lastAddedId = newId;
-  tasks.push({ id: newId, title: '', desc: '', owner: membersData[0]?.id || 'P1', status: 'todo' });
+  tasks.push({ id: newId, title: '', desc: '', owner: '', status: 'todo' });
   const list = document.getElementById('cfgTasksList');
   const newRow = _cfgMakeRow(tasks[tasks.length - 1], tasks.length - 1);
   list.appendChild(newRow);
@@ -1458,11 +1446,11 @@ const GUIDES = {
   },
   t10: {
     title: 'T10 — Gravar Vídeo de Demonstração',
-    subtitle: 'Responsável: P2 + Todos · Prazo: Dia 6 · Depende de: T1, T3, T7',
+    subtitle: 'Todos juntos · Quarta-feira no Google Meet · Depende de: T1, T3, T7',
     steps: [
       { title: 'Roteiro sugerido (15 min)', body: '[0:00–1:30] Apresentação do grupo — nomes, RMs, contexto\n[1:30–4:00] App local — docker compose up, testar CRUD\n[4:00–7:00] Diagrama — VPC, sub-redes, EC2, RDS, SGs\n[7:00–11:00] EC2 ao vivo — SSH, Gunicorn, API respondendo\n[11:00–13:30] Security Groups e credenciais — console AWS + env vars\n[13:30–15:00] Conclusão — desafios, decisões, próximas fases', tip: null },
-      { title: 'Ferramenta de gravação', body: 'Opções: OBS Studio (melhor qualidade), Loom (mais simples, gera link direto), Zoom (gravar reunião do grupo).', tip: '💡 Loom é o mais rápido.' },
-      { title: 'Publicar e testar o link', body: 'YouTube (não listado) ou Google Drive. Teste o link em aba anônima.', tip: '⚠️ Teste antes de incluir no relatório. Link quebrado = entrega inválida.' },
+      { title: 'Gravar pelo Google Meet', body: 'Entrar na reunião via meet.google.com/kaz-qcqs-mmg → "Mais opções" (⋮) → "Gravar reunião". O vídeo fica salvo no Google Drive do organizador automaticamente.', tip: '💡 Todos precisam estar na reunião. A gravação captura tela + áudio de todos.' },
+      { title: 'Publicar e testar o link', body: 'Compartilhar o link do Google Drive (ou baixar e subir no YouTube não listado). Teste o link em aba anônima antes de incluir no relatório.', tip: '⚠️ Teste antes de incluir no relatório. Link quebrado = entrega inválida.' },
     ]
   },
 };
