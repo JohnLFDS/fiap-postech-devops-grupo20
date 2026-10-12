@@ -605,7 +605,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 // ══════════════════════════════════════════════
 // VERSÃO — fonte única da verdade
 // ══════════════════════════════════════════════
-const APP_VERSION = 'v2.7.0';
+const APP_VERSION = 'v2.8.0';
 
 // ══════════════════════════════════════════════
 // UTILITÁRIOS
@@ -1166,43 +1166,45 @@ function _koBindListeners(tl) {
 
 // ── Open modal ───────────────────────────────
 function openKickoffModal() {
-  _koLoad();
-  const savedNotes = (() => { try { return JSON.parse(localStorage.getItem(NOTES_KEY)) || []; } catch { return []; } })();
-  const notesHtml = KO_NOTES_LABELS.map((lbl, i) => `
-    <div class="note-block">
-      <label>${lbl}</label>
-      <textarea id="koNote${i}" placeholder="${lbl}…" oninput="koSaveNotes()">${savedNotes[i] || ''}</textarea>
-    </div>`).join('');
-
-  document.getElementById('modalTitle').textContent    = '🚀 Kick-off · Fase 1';
-  document.getElementById('modalSubtitle').textContent = 'Quarta-feira · Google Meet · meet.google.com/kaz-qcqs-mmg';
+  document.getElementById('modalTitle').textContent    = '✅ Kick-off · Fase 1 — Concluído';
+  document.getElementById('modalSubtitle').textContent = '13/10/2026 · Reunião de alinhamento do grupo';
   document.getElementById('modalBody').innerHTML = `
-    <div style="margin-bottom:16px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-        <span style="font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;">Linha do tempo — 7 dias</span>
-        <span style="font-size:.65rem;color:var(--muted);font-style:italic;">✦ Arraste as tarefas entre os dias</span>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+
+      <div style="background:var(--cn-grn-bg);border:1px solid rgba(46,204,113,.3);border-radius:8px;padding:12px 14px;">
+        <div style="font-size:.65rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">🎯 Escopo e formato</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
+          <li style="font-size:.8rem;color:var(--txt2);display:flex;gap:7px;"><span style="color:var(--green);font-weight:700;">›</span>Trabalho simples — adequado para uma pessoa só fazer, mas faremos em grupo.</li>
+          <li style="font-size:.8rem;color:var(--txt2);display:flex;gap:7px;"><span style="color:var(--green);font-weight:700;">›</span>Atribuição de tarefas por pessoa (sem papéis fixos) — qualquer tarefa pode ir para todos ou para um só.</li>
+        </ul>
       </div>
-      <div class="ko-timeline" id="koTimeline"></div>
-    </div>
-    <div>
-      <div style="font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;">Anotações do kick-off</div>
-      <div class="notes-grid">${notesHtml}</div>
+
+      <div style="background:var(--cn-blue-bg);border:1px solid rgba(91,143,255,.3);border-radius:8px;padding:12px 14px;">
+        <div style="font-size:.65rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">📅 Próximos passos</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
+          <li style="font-size:.8rem;color:var(--txt2);display:flex;gap:7px;"><span style="color:var(--blue);font-weight:700;">›</span><span><strong>Quarta-feira:</strong> reunião no Google Meet — deploy local + deploy na AWS ao vivo, todos juntos.</span></li>
+          <li style="font-size:.8rem;color:var(--txt2);display:flex;gap:7px;"><span style="color:var(--blue);font-weight:700;">›</span><span><strong>Outro dia:</strong> gravação do vídeo de explicação com todos online na mesma reunião do Google Meet.</span></li>
+        </ul>
+      </div>
+
+      <div style="background:var(--cn-pur-bg);border:1px solid rgba(155,89,245,.3);border-radius:8px;padding:12px 14px;">
+        <div style="font-size:.65rem;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">📹 Ferramenta de gravação</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
+          <li style="font-size:.8rem;color:var(--txt2);display:flex;gap:7px;"><span style="color:var(--purple);font-weight:700;">›</span>Gravar direto pelo Google Meet (função "Gravar reunião") — vídeo vai para o Google Drive do organizador.</li>
+          <li style="font-size:.8rem;color:var(--txt2);display:flex;gap:7px;"><span style="color:var(--purple);font-weight:700;">›</span>Link da reunião: <a href="https://meet.google.com/kaz-qcqs-mmg" target="_blank" rel="noopener" style="color:var(--blue);font-weight:600;">meet.google.com/kaz-qcqs-mmg ↗</a></li>
+        </ul>
+      </div>
+
     </div>`;
   document.getElementById('modalBtns').innerHTML =
-    `<button class="btn btn-cancel" onclick="koResetDays()" style="font-size:.72rem;color:var(--muted);">↺ Resetar dias</button>
-     <button class="btn btn-cancel" onclick="closeModal()">Fechar</button>`;
+    `<button class="btn btn-cancel" onclick="closeModal()">Fechar</button>`;
   const box = document.getElementById('modalBox');
-  box.classList.add('modal-wide');
+  box.classList.remove('modal-wide');
+  box.classList.add('modal-guide');
   document.getElementById('modalOverlay').classList.add('active');
-  _koRenderTimeline();
 }
 
-function koResetDays() {
-  koDays = KICKOFF_DAYS_DEFAULT.map(d => ({ ...d, tasks: [...d.tasks] }));
-  _koSaveDays();
-  _koRenderTimeline();
-  showToast('↺ Dias resetados para o padrão.');
-}
+function koResetDays() { /* sem uso após simplificação do kick-off */ }
 
 function koToggleById(el, taskId) {
   el.classList.toggle('done');
