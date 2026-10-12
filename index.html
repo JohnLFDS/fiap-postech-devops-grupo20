@@ -712,7 +712,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 // ══════════════════════════════════════════════
 // VERSÃO — fonte única da verdade
 // ══════════════════════════════════════════════
-const APP_VERSION = 'v2.30.0';
+const APP_VERSION = 'v2.31.0';
 
 // ══════════════════════════════════════════════
 // UTILITÁRIOS
@@ -1623,7 +1623,24 @@ function openGuide(id) {
   const g = GUIDES[id];
   if (!g) return;
   document.getElementById('modalTitle').textContent = g.title;
-  document.getElementById('modalSubtitle').textContent = g.subtitle;
+
+  // Subtitle dinâmico: reflete o owner atual da tarefa
+  const task = tasks.find(t => t.id === id);
+  let ownerLabel = '';
+  if (task && task.owner) {
+    if (task.owner === 'ALL') {
+      ownerLabel = 'Todos';
+    } else {
+      const person = PEOPLE_CATALOG.find(p => p.pid === task.owner);
+      ownerLabel = person ? person.name.split(' ')[0] : task.owner;
+    }
+  }
+  // Mantém o prazo/dependência do subtitle estático, trocando só o responsável
+  const staticSubtitle = g.subtitle || '';
+  const dynamicSubtitle = ownerLabel
+    ? staticSubtitle.replace(/Responsável:[^·]+/, `Responsável: ${ownerLabel}`)
+    : staticSubtitle;
+  document.getElementById('modalSubtitle').textContent = dynamicSubtitle;
   const stepsHtml = g.steps.map((s, i) => `
     <li>
       <div class="guide-step-num">${i + 1}</div>
