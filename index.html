@@ -656,7 +656,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 // ══════════════════════════════════════════════
 // VERSÃO — fonte única da verdade
 // ══════════════════════════════════════════════
-const APP_VERSION = 'v2.19.0';
+const APP_VERSION = 'v2.20.0';
 
 // ══════════════════════════════════════════════
 // UTILITÁRIOS
@@ -750,17 +750,17 @@ function getMemberByOwner(id) { return membersData.find(m => m.id === id) || nul
 
 // ── Tarefas padrão ────────────────────────────
 const DEFAULT_TASKS = [
-  { id:'t1',  title:'Executar aplicação localmente (Docker Compose)',        desc:'Clonar repo · docker compose up --build · testar CRUD com curl · identificar por que é um monolito', owner:'', status:'todo' },
-  { id:'t2',  title:'Criar conta AWS + usuário IAM + MFA',                   desc:'Criar conta AWS ou usar AWS Academy · habilitar MFA no root · criar usuário IAM com AdministratorAccess · definir região us-east-1', owner:'', status:'todo' },
-  { id:'t3',  title:'Diagrama de arquitetura AWS (draw.io)',                  desc:'VPC 10.0.0.0/16 · subnets pública e privada · EC2 na pública (porta 5000) · RDS PostgreSQL na privada · Internet Gateway · Security Groups · ícones oficiais AWS', owner:'', status:'todo' },
-  { id:'t4',  title:'Análise dos 12 Fatores (12-Factor App)',                 desc:'Analisar app.py, Dockerfile, requirements.txt e docker-compose.yaml · status ✅/⚠️/❌ com justificativa por fator · entregar como parte da Documentação', owner:'', status:'todo' },
-  { id:'t5',  title:'Estimativa de custos na AWS Pricing Calculator',         desc:'calculator.aws · EC2 t3.micro + RDS db.t3.micro + Data Transfer · região us-east-1 · salvar link público · tirar print para o relatório', owner:'', status:'todo' },
-  { id:'t6',  title:'Provisionar infraestrutura AWS (VPC, EC2, RDS, SGs)',    desc:'VPC · subnet pública (10.0.1.0/24) + privada (10.0.2.0/24) · IGW · Route Table · sg-ec2 (TCP 22+5000) · sg-rds (TCP 5432 só de sg-ec2) · EC2 t3.micro Amazon Linux 2023 · RDS PostgreSQL 15 db.t3.micro sem acesso público', owner:'', status:'todo' },
-  { id:'t7',  title:'Deploy da aplicação na EC2 via SSH',                     desc:'ssh -i key.pem ec2-user@IP · yum install git python3 · clone repo · venv · pip install · export DB_HOST/DB_NAME/DB_USER/DB_PASSWORD · flask init-db · gunicorn --bind 0.0.0.0:5000 app:app', owner:'', status:'todo' },
-  { id:'t8',  title:'Validar API pública na EC2',                             desc:'curl http://IP-EC2:5000/health · POST /flags · GET /flags · PUT /flags/nome · confirmar persistência no RDS', owner:'', status:'todo' },
-  { id:'t9',  title:'Compilar relatório de entrega (.PDF ou .txt)',           desc:'Conforme enunciado: nomes dos participantes · link da documentação e do vídeo · breve resumo dos desafios e decisões tomadas · print da estimativa de custos AWS', owner:'', status:'todo' },
-  { id:'t10', title:'Gravar vídeo de demonstração (até 15 min)',              desc:'App local (Docker) · diagrama de arquitetura · EC2 ao vivo com RDS · Security Groups no console AWS · gestão de credenciais · upload YouTube não listado ou Google Drive · salvar link compartilhável', owner:'', status:'todo' },
-  { id:'t11', title:'Submissão final + limpeza AWS',                          desc:'Reunir vídeo + diagrama + PDF/TXT · submeter na plataforma FIAP · P1: parar EC2 + deletar RDS para evitar cobranças (RDS cobra mesmo parado após 7 dias)', owner:'', status:'todo' },
+  { id:'t1',  label:'Deploy local',    title:'Executar aplicação localmente (Docker Compose)',        desc:'Clonar repo · docker compose up --build · testar CRUD com curl · identificar por que é um monolito', owner:'', status:'todo' },
+  { id:'t2',  label:'Conta AWS',       title:'Criar conta AWS + usuário IAM + MFA',                   desc:'Criar conta AWS ou usar AWS Academy · habilitar MFA no root · criar usuário IAM com AdministratorAccess · definir região us-east-1', owner:'', status:'todo' },
+  { id:'t3',  label:'Diagrama',        title:'Diagrama de arquitetura AWS (draw.io)',                  desc:'VPC 10.0.0.0/16 · subnets pública e privada · EC2 na pública (porta 5000) · RDS PostgreSQL na privada · Internet Gateway · Security Groups · ícones oficiais AWS', owner:'', status:'todo' },
+  { id:'t4',  label:'12 Fatores',      title:'Análise dos 12 Fatores (12-Factor App)',                 desc:'Analisar app.py, Dockerfile, requirements.txt e docker-compose.yaml · status ✅/⚠️/❌ com justificativa por fator · entregar como parte da Documentação', owner:'', status:'todo' },
+  { id:'t5',  label:'Pricing',         title:'Estimativa de custos na AWS Pricing Calculator',         desc:'calculator.aws · EC2 t3.micro + RDS db.t3.micro + Data Transfer · região us-east-1 · salvar link público · tirar print para o relatório', owner:'', status:'todo' },
+  { id:'t6',  label:'Infra AWS',       title:'Provisionar infraestrutura AWS (VPC, EC2, RDS, SGs)',    desc:'VPC · subnet pública (10.0.1.0/24) + privada (10.0.2.0/24) · IGW · Route Table · sg-ec2 (TCP 22+5000) · sg-rds (TCP 5432 só de sg-ec2) · EC2 t3.micro Amazon Linux 2023 · RDS PostgreSQL 15 db.t3.micro sem acesso público', owner:'', status:'todo' },
+  { id:'t7',  label:'Deploy EC2',      title:'Deploy da aplicação na EC2 via SSH',                     desc:'ssh -i key.pem ec2-user@IP · yum install git python3 · clone repo · venv · pip install · export DB_HOST/DB_NAME/DB_USER/DB_PASSWORD · flask init-db · gunicorn --bind 0.0.0.0:5000 app:app', owner:'', status:'todo' },
+  { id:'t8',  label:'Validar API',     title:'Validar API pública na EC2',                             desc:'curl http://IP-EC2:5000/health · POST /flags · GET /flags · PUT /flags/nome · confirmar persistência no RDS', owner:'', status:'todo' },
+  { id:'t9',  label:'Relatório',       title:'Compilar relatório de entrega (.PDF ou .txt)',           desc:'Conforme enunciado: nomes dos participantes · link da documentação e do vídeo · breve resumo dos desafios e decisões tomadas · print da estimativa de custos AWS', owner:'', status:'todo' },
+  { id:'t10', label:'Vídeo',           title:'Gravar vídeo de demonstração (até 15 min)',              desc:'App local (Docker) · diagrama de arquitetura · EC2 ao vivo com RDS · Security Groups no console AWS · gestão de credenciais · upload YouTube não listado ou Google Drive · salvar link compartilhável', owner:'', status:'todo' },
+  { id:'t11', label:'Submission',      title:'Submissão final + limpeza AWS',                          desc:'Reunir vídeo + diagrama + PDF/TXT · submeter na plataforma FIAP · P1: parar EC2 + deletar RDS para evitar cobranças (RDS cobra mesmo parado após 7 dias)', owner:'', status:'todo' },
 ];
 
 // ══════════════════════════════════════════════
@@ -887,10 +887,11 @@ function renderMembers() {
   PEOPLE_CATALOG.forEach(p => ownTasks[p.pid] = []);
 
   tasks.forEach(t => {
+    const lbl = t.label || t.title;
     if (t.owner === 'ALL') {
-      allTasks.push(t.title);
+      allTasks.push(lbl);
     } else if (ownTasks[t.owner] !== undefined) {
-      ownTasks[t.owner].push(t.title);
+      ownTasks[t.owner].push(lbl);
     }
   });
 
@@ -901,7 +902,7 @@ function renderMembers() {
 
     // Tags individuais (cor do membro)
     const mineTags = mine.slice(0, 3).map(t =>
-      `<span class="task-tag ${person.tag}">${t.length > 24 ? t.slice(0, 24) + '…' : t}</span>`
+      `<span class="task-tag ${person.tag}">${t.length > 18 ? t.slice(0, 18) + '…' : t}</span>`
     ).join('');
     const mineExtra = mine.length > 3
       ? `<span class="task-tag ${person.tag}">+${mine.length - 3} mais</span>` : '';
@@ -909,7 +910,7 @@ function renderMembers() {
     // Tags compartilhadas (tom roxo/neutro com ícone 👥)
     const sharedVisible = shared.slice(0, Math.max(0, 3 - mine.length));
     const sharedTags = sharedVisible.map(t =>
-      `<span class="task-tag tag-purple" style="opacity:.85;">👥 ${t.length > 20 ? t.slice(0, 20) + '…' : t}</span>`
+      `<span class="task-tag tag-purple" style="opacity:.85;">👥 ${t.length > 16 ? t.slice(0, 16) + '…' : t}</span>`
     ).join('');
     const sharedExtra = shared.length > sharedVisible.length
       ? `<span class="task-tag tag-purple" style="opacity:.75;">+${shared.length - sharedVisible.length} de todos</span>` : '';
