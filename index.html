@@ -509,24 +509,35 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
   <!-- EVENTOS -->
   <div class="sec-header"><div class="dot"></div><h2>Eventos</h2></div>
   <div style="display:flex;flex-wrap:wrap;gap:10px;">
-    <div onclick="openKickoffModal()" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;cursor:pointer;transition:border-color .15s;display:flex;align-items:center;gap:12px;" onmouseover="this.style.borderColor='var(--pink)'" onmouseout="this.style.borderColor='var(--border)'">
-      <div style="width:40px;height:40px;border-radius:8px;background:var(--pink-glow);border:1px solid var(--pink-dim);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">🚀</div>
+
+    <!-- Kick-off — CONCLUÍDO -->
+    <div onclick="openKickoffModal()" style="background:var(--cn-grn-bg);border:1px solid rgba(46,204,113,.35);border-radius:10px;padding:16px 20px;cursor:pointer;transition:border-color .15s;display:flex;align-items:center;gap:12px;opacity:.85;" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='rgba(46,204,113,.35)'">
+      <div style="width:40px;height:40px;border-radius:8px;background:rgba(46,204,113,.2);border:1px solid rgba(46,204,113,.5);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">✅</div>
       <div>
-        <div style="font-size:.82rem;font-weight:700;color:var(--txt);">Kick-off · Fase 1</div>
-        <div style="font-size:.72rem;color:var(--muted);margin-top:2px;">Linha do tempo + Anotações</div>
+        <div style="display:flex;align-items:center;gap:7px;">
+          <span style="font-size:.82rem;font-weight:700;color:var(--txt);">Kick-off · Fase 1</span>
+          <span style="font-size:.6rem;font-weight:700;background:rgba(46,204,113,.2);color:var(--green);border:1px solid rgba(46,204,113,.4);border-radius:20px;padding:1px 8px;">Concluído</span>
+        </div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:2px;">13/10/2026 · Decisões: trabalho em grupo, deploy conjunto na quarta via Google Meet, vídeo gravado na reunião</div>
       </div>
-      <div style="margin-left:auto;font-size:.7rem;color:var(--pink);font-weight:700;">Ver →</div>
+      <div style="margin-left:auto;font-size:.7rem;color:var(--green);font-weight:700;white-space:nowrap;">Ver notas →</div>
     </div>
+
+    <!-- Reunião Deploy — PRÓXIMO -->
     <a href="https://meet.google.com/kaz-qcqs-mmg" target="_blank" rel="noopener" style="text-decoration:none;">
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;cursor:pointer;transition:border-color .15s;display:flex;align-items:center;gap:12px;" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'">
-        <div style="width:40px;height:40px;border-radius:8px;background:var(--cn-grn-bg);border:1px solid rgba(46,204,113,.4);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">📹</div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;cursor:pointer;transition:border-color .15s;display:flex;align-items:center;gap:12px;" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="width:40px;height:40px;border-radius:8px;background:var(--cn-blue-bg);border:1px solid rgba(91,143,255,.4);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">📹</div>
         <div>
-          <div style="font-size:.82rem;font-weight:700;color:var(--txt);">Reunião · Deploy na AWS</div>
-          <div style="font-size:.72rem;color:var(--muted);margin-top:2px;">Quarta-feira · Google Meet · Deploy local + AWS ao vivo</div>
-          <div style="font-size:.68rem;color:var(--green);margin-top:3px;font-weight:600;">meet.google.com/kaz-qcqs-mmg ↗</div>
+          <div style="display:flex;align-items:center;gap:7px;">
+            <span style="font-size:.82rem;font-weight:700;color:var(--txt);">Reunião · Deploy na AWS</span>
+            <span style="font-size:.6rem;font-weight:700;background:var(--cn-blue-bg);color:var(--blue);border:1px solid rgba(91,143,255,.4);border-radius:20px;padding:1px 8px;animation:pulse 1.8s infinite;">Em breve</span>
+          </div>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:2px;">Quarta-feira · Google Meet · Deploy local + Deploy AWS ao vivo + Gravação do vídeo</div>
+          <div style="font-size:.68rem;color:var(--blue);margin-top:3px;font-weight:600;">meet.google.com/kaz-qcqs-mmg ↗</div>
         </div>
       </div>
     </a>
+
   </div>
 
   <!-- LINKS ÚTEIS -->
@@ -594,7 +605,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 // ══════════════════════════════════════════════
 // VERSÃO — fonte única da verdade
 // ══════════════════════════════════════════════
-const APP_VERSION = 'v2.6.0';
+const APP_VERSION = 'v2.7.0';
 
 // ══════════════════════════════════════════════
 // UTILITÁRIOS
