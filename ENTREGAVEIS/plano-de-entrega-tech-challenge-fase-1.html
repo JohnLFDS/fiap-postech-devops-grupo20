@@ -162,6 +162,18 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 /* ── CONFIG PANEL ── */
 #config-panel{display:none;background:var(--surface);border:1px solid var(--pink-dim);border-radius:12px;padding:clamp(20px,2vw,28px);margin-top:8px;}
 #config-panel.open{display:block;}
+/* abas do painel */
+.cfg-tabs{display:flex;gap:6px;margin-bottom:18px;border-bottom:1px solid var(--border);padding-bottom:0;}
+.cfg-tab{background:none;border:none;border-bottom:2px solid transparent;padding:6px 14px 8px;font-size:.78rem;font-weight:700;color:var(--muted);cursor:pointer;transition:color .15s,border-color .15s;margin-bottom:-1px;}
+.cfg-tab:hover{color:var(--txt);}
+.cfg-tab.active{color:var(--pink);border-bottom-color:var(--pink);}
+.cfg-tab-content{display:none;}
+.cfg-tab-content.active{display:block;}
+/* editor de membros */
+.cfg-members-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px;margin-bottom:20px;}
+.cfg-member-row{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.cfg-member-tag{font-size:.72rem;font-weight:800;padding:3px 8px;border-radius:4px;background:var(--cn-pink-bg);color:var(--pink);border:1px solid var(--pink-dim);white-space:nowrap;flex-shrink:0;}
+.cfg-member-role{font-size:.68rem;color:var(--muted);margin-top:2px;line-height:1.3;}
 .cfg-panel-title{font-size:.82rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--pink);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
 .cfg-panel-title svg{flex-shrink:0;}
 .cfg-tasks-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
@@ -390,10 +402,23 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
   <div id="config-panel">
     <div class="cfg-panel-title">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      Configurar tarefas
+      Configurar
     </div>
-    <div class="cfg-tasks-list" id="cfgTasksList"><!-- renderizado por JS --></div>
-    <button class="cfg-add-btn" onclick="cfgAddTask()">+ Adicionar nova tarefa</button>
+    <!-- Abas -->
+    <div class="cfg-tabs">
+      <button class="cfg-tab active" onclick="cfgSwitchTab('members',this)">👥 Membros</button>
+      <button class="cfg-tab" onclick="cfgSwitchTab('tasks',this)">📋 Tarefas</button>
+    </div>
+    <!-- Aba Membros -->
+    <div class="cfg-tab-content active" id="cfgTabMembers">
+      <div class="cfg-hint" style="margin-bottom:14px;">Defina o nome e RM de cada papel. Salve para atualizar o checklist e o modal de confirmação.</div>
+      <div class="cfg-members-grid" id="cfgMembersList"><!-- renderizado por JS --></div>
+    </div>
+    <!-- Aba Tarefas -->
+    <div class="cfg-tab-content" id="cfgTabTasks">
+      <div class="cfg-tasks-list" id="cfgTasksList"><!-- renderizado por JS --></div>
+      <button class="cfg-add-btn" onclick="cfgAddTask()">+ Adicionar nova tarefa</button>
+    </div>
     <div class="cfg-actions">
       <button class="cfg-cancel-btn" onclick="cfgCancel()">Cancelar</button>
       <button class="cfg-save-btn" id="cfgSaveBtn" onclick="cfgSave()">
@@ -422,7 +447,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 </div>
 
 <div class="footer">
-  Tech Challenge · Grupo 20 &nbsp;·&nbsp; P1 · P2 · P3 · P4 · P5 &nbsp;·&nbsp; Papéis a definir no kick-off de 13/10 &nbsp;·&nbsp; FIAP Pós Tech 2026 · 4 Fases
+  Tech Challenge · Grupo 20 &nbsp;·&nbsp; Erick Aleixo Aragão · John Lennon F. da Silva · Alan Santos · Marcelo Santos de Jesus · Cassio Tadashi Kawamura &nbsp;·&nbsp; FIAP Pós Tech 2026 · 4 Fases
 </div>
 
 <!-- CONFIRM DIALOG (substitui confirm() nativo) -->
@@ -485,19 +510,43 @@ const _tasksRef = ref(_db, 'tc-g20/v2/tasks');
 // ══════════════════════════════════════════════
 const NOTIFY_URL = ''; // URL do AWS API Gateway (opcional)
 const PW_HASH    = '0d1d19c56750f6d01b81ca3597f9a68d4512bbe45d48cb9ae0486e3e3b906c5b';
-const AUTH_KEY   = 'tc-g20-auth';
-const TASKS_KEY  = 'tc-g20-tasks-cfg-v2';  // v2 — força reload dos DEFAULT_TASKS
-const STATE_KEY  = 'tc-g20-state-v2';      // v2 — zera checklist para o kick-off
+const AUTH_KEY    = 'tc-g20-auth';
+const TASKS_KEY   = 'tc-g20-tasks-cfg-v2';  // v2 — força reload dos DEFAULT_TASKS
+const STATE_KEY   = 'tc-g20-state-v2';      // v2 — zera checklist para o kick-off
+const MEMBERS_KEY = 'tc-g20-members-v2';    // nomes definidos no kick-off
 
-// ── Membros do grupo ──────────────────────────
-// ⚠️ Papéis a confirmar no kick-off de 13/10
-const MEMBERS = [
-  { id:'P1', name:'A definir no kick-off', rm:'Papel: Líder Técnico / Deploy AWS',    av:'av-1', tag:'tag-pink'   },
-  { id:'P2', name:'A definir no kick-off', rm:'Papel: Engenheiro de Infraestrutura',  av:'av-2', tag:'tag-blue'   },
-  { id:'P3', name:'A definir no kick-off', rm:'Papel: Arquiteto de Soluções',         av:'av-3', tag:'tag-purple' },
-  { id:'P4', name:'A definir no kick-off', rm:'Papel: Analista DevOps / Documentação',av:'av-4', tag:'tag-green'  },
-  { id:'P5', name:'A definir no kick-off', rm:'Papel: Coordenador + Execução Local',  av:'av-5', tag:'tag-yellow' },
+// ── Membros do grupo — dados reais do Grupo 20 ──────────────────
+const MEMBERS_BASE = [
+  { id:'P1', role:'Líder Técnico / Deploy AWS',     av:'av-1', tag:'tag-pink',   name:'Erick Aleixo Aragão',        rm:'RM 378535' },
+  { id:'P2', role:'Engenheiro de Infraestrutura',   av:'av-2', tag:'tag-blue',   name:'John Lennon F. da Silva',     rm:'RM 377728' },
+  { id:'P3', role:'Arquiteto de Soluções',          av:'av-3', tag:'tag-purple', name:'Alan Santos',                 rm:'RM 378561' },
+  { id:'P4', role:'Analista DevOps / Documentação', av:'av-4', tag:'tag-green',  name:'Marcelo Santos de Jesus',     rm:'RM 378332' },
+  { id:'P5', role:'Coordenador + Execução Local',   av:'av-5', tag:'tag-yellow', name:'Cassio Tadashi Kawamura',     rm:'RM 378022' },
 ];
+
+// membersData é o array mutável (pode ter nomes editados via painel)
+let membersData = [];
+
+function loadMembers() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(MEMBERS_KEY)) || [];
+    membersData = MEMBERS_BASE.map(base => {
+      const s = saved.find(x => x.id === base.id) || {};
+      // usa o salvo se existir; caso contrário mantém os dados reais do MEMBERS_BASE
+      return { ...base, name: s.name || base.name, rm: s.rm || base.rm };
+    });
+  } catch { membersData = MEMBERS_BASE.map(b => ({ ...b })); }
+}
+
+function saveMembers() {
+  try { localStorage.setItem(MEMBERS_KEY, JSON.stringify(membersData.map(({id,name,rm})=>({id,name,rm})))); } catch {}
+  // sincroniza no Firebase também
+  try { set(ref(_db,'tc-g20/v2/members'), membersData.map(({id,name,rm})=>({id,name,rm}))).catch(()=>{}); } catch {}
+}
+
+// MEMBERS — alias para compatibilidade com código existente
+// (sempre aponta para membersData que é atualizado pelo editor)
+function getMemberById(id) { return membersData.find(m => m.id === id) || null; }
 
 // ── Tarefas padrão ────────────────────────────
 // Owners alinhados ao enunciado FIAP + README oficial
@@ -661,10 +710,10 @@ function renderMembers() {
   const grid = document.getElementById('membersGrid');
   // agrupa tarefas por owner
   const byOwner = {};
-  MEMBERS.forEach(m => byOwner[m.id] = []);
+  membersData.forEach(m => byOwner[m.id] = []);
   tasks.forEach(t => { if (byOwner[t.owner] !== undefined) byOwner[t.owner].push(t.title); });
 
-  grid.innerHTML = MEMBERS.map(m => `
+  grid.innerHTML = membersData.map(m => `
     <div class="member-card">
       <div class="member-avatar ${m.av}">${m.id}</div>
       <div class="member-name">${m.name}</div>
@@ -684,14 +733,14 @@ function renderMembers() {
 const NUM_COLORS = ['cn-pink','cn-pink','cn-blue','cn-blue','cn-blue','cn-purple','cn-purple','cn-purple','cn-green','cn-green','cn-green'];
 function getNumColor(idx) { return NUM_COLORS[idx] || 'cn-green'; }
 
-function getMemberByOwner(ownerId) { return MEMBERS.find(m=>m.id===ownerId) || null; }
+function getMemberByOwner(ownerId) { return membersData.find(m=>m.id===ownerId) || null; }
 
 function renderChecklist() {
   const el = document.getElementById('checklist');
   // Popula select do modal
   const sel = document.getElementById('memberSelect');
   sel.innerHTML = '<option value="">Selecione seu nome…</option>' +
-    MEMBERS.map(m=>`<option value="${m.id}">${m.name}</option>`).join('');
+    membersData.map(m=>`<option value="${m.id}">${m.name}</option>`).join('');
 
   el.innerHTML = tasks.map((task, idx) => {
     const done = !!doneState[task.id];
@@ -749,7 +798,7 @@ function handleCheck(id) {
 }
 
 document.getElementById('memberSelect').addEventListener('change', function() {
-  const m = MEMBERS.find(x=>x.id===this.value);
+  const m = membersData.find(x=>x.id===this.value);
   document.getElementById('modalMemberName').textContent = m ? m.name : '—';
 });
 
@@ -761,7 +810,7 @@ function closeModal() {
 async function confirmCheck() {
   const ownerId = document.getElementById('memberSelect').value;
   if (!ownerId) { alert('Selecione seu nome antes de confirmar.'); return; }
-  const member = MEMBERS.find(m=>m.id===ownerId);
+  const member = membersData.find(m=>m.id===ownerId);
   const id = pendingTaskId;
   const now = new Date();
   const atStr = now.toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'});
@@ -827,7 +876,7 @@ function _cfgMakeRow(task, idx) {
     <input class="cfg-input" data-field="title" value="${escHtml(task.title)}" placeholder="Título da tarefa"/>
     <input class="cfg-input cfg-desc-input" data-field="desc" value="${escHtml(task.desc)}" placeholder="Descrição (opcional)"/>
     <select class="cfg-select" data-field="owner">
-      ${MEMBERS.map(m => `<option value="${m.id}"${m.id === task.owner ? ' selected' : ''}>${m.name.split(' ')[0]}</option>`).join('')}
+      ${membersData.map(m => `<option value="${m.id}"${m.id === task.owner ? ' selected' : ''}>${(m.name==='A definir no kick-off'?m.id:m.name.split(' ')[0])}</option>`).join('')}
     </select>
     <select class="cfg-select cfg-status-select" data-field="status">
       <option value="todo"${task.status === 'todo' ? ' selected' : ''}>Pendente</option>
@@ -873,11 +922,16 @@ function cfgAddTask() {
   _cfgFlushDOM(); // preserva o que o usuário já digitou antes de adicionar
   const newId = 'custom_' + Date.now();
   _lastAddedId = newId;
-  tasks.push({ id: newId, title: '', desc: '', owner: MEMBERS[0].id, status: 'todo' });
+  // owner padrão = primeiro membro disponível
+  tasks.push({ id: newId, title: '', desc: '', owner: membersData[0]?.id || 'P1', status: 'todo' });
   const list = document.getElementById('cfgTasksList');
   const newRow = _cfgMakeRow(tasks[tasks.length - 1], tasks.length - 1);
   list.appendChild(newRow);
-  setTimeout(() => newRow.querySelector('input[data-field="title"]')?.focus(), 50);
+  // foca no título e rola até a nova linha
+  setTimeout(() => {
+    newRow.querySelector('input[data-field="title"]')?.focus();
+    newRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 50);
 }
 
 function cfgDeleteTask(id) {
@@ -904,11 +958,14 @@ function cfgSave() {
   lbl.textContent = '✓ Salvando…';
 
   const firstChangedId = _lastAddedId;
-  _cfgFlushDOM(); // lê DOM → tasks[]
+  _cfgFlushMembersDOM(); // lê campos de membros → membersData[]
+  _cfgFlushDOM();        // lê DOM → tasks[]
   _lastAddedId = null;
+  saveMembers();
   saveTasks();
   renderMembers();
   renderChecklist();
+  renderConfigMembersPanel(); // atualiza os dropdowns de owner com novos nomes
 
   // Pequeno delay para o usuário perceber o feedback antes do painel fechar
   setTimeout(() => {
@@ -934,8 +991,10 @@ function cfgSave() {
 }
 
 function cfgCancel() {
-  // Descarta edições — relê tasks do Firebase/localStorage
+  // Descarta edições — relê tasks e membros do Firebase/localStorage
+  loadMembers();
   loadTasks();
+  renderConfigMembersPanel();
   renderConfigPanel();
   renderMembers();
   renderChecklist();
@@ -944,6 +1003,51 @@ function cfgCancel() {
   panel.classList.remove('open');
   cfgBtn.classList.remove('active');
   showToast('Edições descartadas.');
+}
+
+// ══════════════════════════════════════════════
+// CONFIG PANEL — ABA MEMBROS
+// ══════════════════════════════════════════════
+function cfgSwitchTab(tab, btn) {
+  document.querySelectorAll('.cfg-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.cfg-tab-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(tab === 'members' ? 'cfgTabMembers' : 'cfgTabTasks').classList.add('active');
+  if (tab === 'tasks') renderConfigPanel();
+  if (tab === 'members') renderConfigMembersPanel();
+}
+
+function renderConfigMembersPanel() {
+  const grid = document.getElementById('cfgMembersList');
+  if (!grid) return;
+  const base = Object.fromEntries(MEMBERS_BASE.map(b => [b.id, b]));
+  grid.innerHTML = membersData.map(m => `
+    <div class="cfg-member-row" data-member-id="${m.id}">
+      <div style="min-width:36px;">
+        <div class="cfg-member-tag">${m.id}</div>
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div class="cfg-member-role">${m.role}</div>
+        <input class="cfg-input" style="margin-top:6px;width:100%;" data-mfield="name"
+          value="${escHtml(m.name)}"
+          placeholder="${escHtml(base[m.id]?.name || 'Nome completo…')}"/>
+        <input class="cfg-input" style="margin-top:6px;width:100%;font-size:.75rem;" data-mfield="rm"
+          value="${escHtml(m.rm)}"
+          placeholder="${escHtml(base[m.id]?.rm || 'RM…')}"/>
+      </div>
+    </div>`).join('');
+}
+
+function _cfgFlushMembersDOM() {
+  document.querySelectorAll('.cfg-member-row').forEach(row => {
+    const id = row.dataset.memberId;
+    const m  = membersData.find(x => x.id === id);
+    if (!m) return;
+    const nameVal = row.querySelector('[data-mfield="name"]').value.trim();
+    const base = MEMBERS_BASE.find(b => b.id === id);
+    m.name = nameVal || (base ? base.name : id);
+    m.rm   = row.querySelector('[data-mfield="rm"]').value.trim() || (base ? base.rm : '');
+  });
 }
 
 function escHtml(str) {
@@ -974,6 +1078,7 @@ function init() {
   document.documentElement.setAttribute('data-theme',savedTheme);
   updateThemeBtn(savedTheme);
   // Renderiza imediatamente com dados locais (evita tela em branco)
+  loadMembers();
   loadTasks();
   loadState();
   renderMembers();
@@ -997,6 +1102,7 @@ window.cfgAddTask      = cfgAddTask;
 window.cfgDeleteTask   = cfgDeleteTask;
 window.cfgSave         = cfgSave;
 window.cfgCancel       = cfgCancel;
+window.cfgSwitchTab    = cfgSwitchTab;
 </script>
 </body>
 </html>
