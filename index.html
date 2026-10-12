@@ -373,7 +373,16 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 <!-- LOGIN GATE -->
 <div id="login-gate">
   <div class="login-box">
-    <div class="login-logo">POS TECH &nbsp;·&nbsp; FIAP &nbsp;·&nbsp; 2026</div>
+    <div class="login-logo" style="display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+      <svg width="80" height="20" viewBox="0 0 101 25" fill="none" xmlns="http://www.w3.org/2000/svg" style="fill:var(--pink);">
+        <path d="M30.7193 0H28.709V24.8265H30.7193V0Z"/>
+        <path d="M17.26 11.8854H7.47571V13.5916H17.26V11.8854Z"/>
+        <path d="M0 0V24.8265H2.01026V1.70619H22.7725V0H0Z"/>
+        <path d="M90.9643 0.101257H75.0078V24.9277H77.0181V15.6738H77.0338V13.9677H77.0181V1.80745H90.8229C95.6758 1.80745 98.9896 3.86065 98.9896 7.79356V7.86586C98.9896 11.553 95.5973 13.9677 90.5873 13.9677H84.2739V15.6738H90.4774C96.0999 15.6738 101 12.9844 101 7.76465V7.69235C100.968 2.89189 96.8851 0.101257 90.9643 0.101257Z"/>
+        <path d="M63.3389 13.9676L53.9943 0H52.0626L35.4151 25H37.4882L52.9892 2.02429L61.0774 13.9676H63.3389Z"/>
+        <path d="M66.4172 18.5511H64.187L68.5374 25H70.7361L66.4172 18.5511Z"/>
+      </svg>
+    </div>
     <h2>Tech Challenge <span style="color:var(--pink);">Grupo 20</span></h2>
     <p>Portal restrito aos membros do grupo.<br>Insira a senha para continuar.</p>
     <input class="login-input" id="pwInput" type="password" placeholder="Senha do grupo"
@@ -396,7 +405,17 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 <!-- HEADER -->
 <div class="header">
   <div class="header-left">
-    <div class="brand">POS TECH &nbsp;·&nbsp; DevOps e Arquitetura Cloud &nbsp;·&nbsp; FIAP</div>
+    <div class="brand" style="display:flex;align-items:center;gap:10px;">
+      <svg width="52" height="13" viewBox="0 0 101 25" fill="none" xmlns="http://www.w3.org/2000/svg" style="fill:var(--pink);flex-shrink:0;">
+        <path d="M30.7193 0H28.709V24.8265H30.7193V0Z"/>
+        <path d="M17.26 11.8854H7.47571V13.5916H17.26V11.8854Z"/>
+        <path d="M0 0V24.8265H2.01026V1.70619H22.7725V0H0Z"/>
+        <path d="M90.9643 0.101257H75.0078V24.9277H77.0181V15.6738H77.0338V13.9677H77.0181V1.80745H90.8229C95.6758 1.80745 98.9896 3.86065 98.9896 7.79356V7.86586C98.9896 11.553 95.5973 13.9677 90.5873 13.9677H84.2739V15.6738H90.4774C96.0999 15.6738 101 12.9844 101 7.76465V7.69235C100.968 2.89189 96.8851 0.101257 90.9643 0.101257Z"/>
+        <path d="M63.3389 13.9676L53.9943 0H52.0626L35.4151 25H37.4882L52.9892 2.02429L61.0774 13.9676H63.3389Z"/>
+        <path d="M66.4172 18.5511H64.187L68.5374 25H70.7361L66.4172 18.5511Z"/>
+      </svg>
+      <span>POS TECH &nbsp;·&nbsp; DevOps e Arquitetura Cloud</span>
+    </div>
     <h1>Tech Challenge &nbsp;<span>Grupo 20</span></h1>
     <div class="header-sub">ToggleMaster · DevOps e Arquitetura Cloud · FIAP Pós Tech 2026 &nbsp;·&nbsp; 4 Fases</div>
   </div>
@@ -637,7 +656,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 // ══════════════════════════════════════════════
 // VERSÃO — fonte única da verdade
 // ══════════════════════════════════════════════
-const APP_VERSION = 'v2.16.0';
+const APP_VERSION = 'v2.17.0';
 
 // ══════════════════════════════════════════════
 // UTILITÁRIOS
