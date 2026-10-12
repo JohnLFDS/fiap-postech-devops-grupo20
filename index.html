@@ -637,7 +637,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 // ══════════════════════════════════════════════
 // VERSÃO — fonte única da verdade
 // ══════════════════════════════════════════════
-const APP_VERSION = 'v2.15.0';
+const APP_VERSION = 'v2.16.0';
 
 // ══════════════════════════════════════════════
 // UTILITÁRIOS
@@ -872,24 +872,49 @@ function updateThemeBtn(t) {
 function renderMembers() {
   const grid = document.getElementById('membersGrid');
 
-  // byOwner: conta tarefas por pessoa + 'ALL' (todos)
-  const byOwner = {};
-  PEOPLE_CATALOG.forEach(p => byOwner[p.pid] = []);
-  byOwner['ALL'] = [];
+  // Separa tarefas individuais e tarefas de todos
+  const ownTasks = {};   // pid → títulos atribuídos só a ele
+  const allTasks = [];   // títulos atribuídos a 'ALL'
+  PEOPLE_CATALOG.forEach(p => ownTasks[p.pid] = []);
+
   tasks.forEach(t => {
     if (t.owner === 'ALL') {
-      PEOPLE_CATALOG.forEach(p => byOwner[p.pid].push(t.title));
-    } else if (byOwner[t.owner] !== undefined) {
-      byOwner[t.owner].push(t.title);
+      allTasks.push(t.title);
+    } else if (ownTasks[t.owner] !== undefined) {
+      ownTasks[t.owner].push(t.title);
     }
   });
 
   grid.innerHTML = PEOPLE_CATALOG.map(person => {
-    const myTasks = byOwner[person.pid] || [];
-    const tagsHtml = myTasks.length
-      ? myTasks.slice(0, 3).map(t => `<span class="task-tag ${person.tag}">${t.length > 22 ? t.slice(0, 22) + '…' : t}</span>`).join('')
-        + (myTasks.length > 3 ? `<span class="task-tag ${person.tag}">+${myTasks.length - 3} mais</span>` : '')
+    const mine   = ownTasks[person.pid] || [];
+    const shared = allTasks;
+    const total  = mine.length + shared.length;
+
+    // Tags individuais (cor do membro)
+    const mineTags = mine.slice(0, 3).map(t =>
+      `<span class="task-tag ${person.tag}">${t.length > 24 ? t.slice(0, 24) + '…' : t}</span>`
+    ).join('');
+    const mineExtra = mine.length > 3
+      ? `<span class="task-tag ${person.tag}">+${mine.length - 3} mais</span>` : '';
+
+    // Tags compartilhadas (tom roxo/neutro com ícone 👥)
+    const sharedVisible = shared.slice(0, Math.max(0, 3 - mine.length));
+    const sharedTags = sharedVisible.map(t =>
+      `<span class="task-tag tag-purple" style="opacity:.85;">👥 ${t.length > 20 ? t.slice(0, 20) + '…' : t}</span>`
+    ).join('');
+    const sharedExtra = shared.length > sharedVisible.length
+      ? `<span class="task-tag tag-purple" style="opacity:.75;">+${shared.length - sharedVisible.length} de todos</span>` : '';
+
+    const tagsHtml = total > 0
+      ? mineTags + mineExtra + sharedTags + sharedExtra
       : `<span class="task-tag" style="color:var(--muted);border-color:var(--border);">Sem tarefas</span>`;
+
+    // Rodapé com contagem
+    const countLine = total > 0 ? `
+      <div style="font-size:.6rem;color:var(--muted);margin-top:5px;display:flex;gap:8px;flex-wrap:wrap;">
+        ${mine.length > 0 ? `<span>${mine.length} individual${mine.length > 1 ? 'is' : ''}</span>` : ''}
+        ${shared.length > 0 ? `<span style="color:var(--purple);">👥 ${shared.length} de todos</span>` : ''}
+      </div>` : '';
 
     return `
     <div class="member-card">
@@ -897,6 +922,7 @@ function renderMembers() {
       <div class="member-name">${person.name.split(' ')[0]}</div>
       <div class="member-rm">${person.rm}</div>
       <div class="member-tasks">${tagsHtml}</div>
+      ${countLine}
     </div>`;
   }).join('');
 
