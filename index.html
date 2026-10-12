@@ -656,7 +656,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 // ══════════════════════════════════════════════
 // VERSÃO — fonte única da verdade
 // ══════════════════════════════════════════════
-const APP_VERSION = 'v2.17.0';
+const APP_VERSION = 'v2.18.0';
 
 // ══════════════════════════════════════════════
 // UTILITÁRIOS
@@ -782,19 +782,17 @@ function saveState() { _lsSaveState(); set(_stateRef, doneState).catch(() => {})
 function loadTasks() {
   try {
     const saved = JSON.parse(localStorage.getItem(TASKS_KEY));
-    // Migração: se tasks salvas ainda têm owners com P1-P5 hardcoded de versões antigas,
-    // descarta e parte do DEFAULT_TASKS (owner:'') para forçar o "a definir" pós-kick-off.
-    if (Array.isArray(saved) && saved.length > 0 && saved.some(t => t.owner && t.owner !== '')) {
-      localStorage.removeItem(TASKS_KEY);
-      tasks = DEFAULT_TASKS.map(t => ({ ...t }));
-    } else {
-      tasks = saved || DEFAULT_TASKS.map(t => ({ ...t }));
-    }
+    tasks = (Array.isArray(saved) && saved.length > 0)
+      ? saved
+      : DEFAULT_TASKS.map(t => ({ ...t }));
   } catch { tasks = DEFAULT_TASKS.map(t => ({ ...t })); }
 }
 function loadState() {
   try { doneState = JSON.parse(localStorage.getItem(STATE_KEY)) || {}; } catch { doneState = {}; }
 }
+
+// Owners válidos na versão atual
+const VALID_OWNERS = new Set(['ALL', 'P1', 'P2', 'P3', 'P4', 'P5', '']);
 
 function _attachFirebaseListeners() {
   onValue(_membRef, (snap) => {
@@ -817,15 +815,7 @@ function _attachFirebaseListeners() {
   onValue(_tasksRef, (snap) => {
     const remote = snap.val();
     if (remote !== null && Array.isArray(remote)) {
-      // Mesma migração: ignora tasks remotas com owners hardcoded de versões antigas
-      if (remote.some(t => t.owner && t.owner !== '')) {
-        // limpa no Firebase também: regrava sem owners
-        const clean = remote.map(t => ({ ...t, owner: '' }));
-        set(_tasksRef, clean).catch(() => {});
-        tasks = clean;
-      } else {
-        tasks = remote;
-      }
+      tasks = remote;
       _lsSaveTasks();
       renderChecklist();
       renderMembers();
