@@ -230,11 +230,15 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 .note-block textarea:focus{border-color:var(--pink);background:var(--bg);}
 
 /* ── LINKS ÚTEIS ── */
-.links-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;}
-.link-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
-.link-card .lc-label{font-size:.62rem;font-weight:700;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.6px;}
-.link-card a{color:var(--blue);font-size:.75rem;word-break:break-all;text-decoration:none;}
+.links-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;}
+.link-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;transition:border-color .15s;}
+.link-card:hover{border-color:var(--blue);}
+.link-card .lc-label{font-size:.62rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;}
+.link-card a{color:var(--blue);font-size:.78rem;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.link-card a::after{content:'↗';font-size:.65rem;flex-shrink:0;opacity:.7;}
 .link-card a:hover{text-decoration:underline;}
+.links-group-label{font-size:.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:clamp(16px,1.5vw,22px) 0 8px;display:flex;align-items:center;gap:8px;}
+.links-group-label::after{content:'';flex:1;height:1px;background:var(--border);}
 
 /* ── MODAL ── */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:1000;align-items:center;justify-content:center;padding:16px;}
@@ -584,15 +588,31 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 
   <!-- LINKS ÚTEIS -->
   <div class="sec-header"><div class="dot"></div><h2>Links úteis</h2></div>
+
+  <div class="links-group-label">🖥️ Consoles AWS</div>
   <div class="links-grid">
-    <div class="link-card"><div class="lc-label">Repositório do Projeto</div><a href="https://github.com/dougls/toggle-master-monolith" target="_blank" rel="noopener">github.com/dougls/toggle-master-monolith</a></div>
-    <div class="link-card"><div class="lc-label">12-Factor App (PT-BR)</div><a href="https://12factor.net/pt_br/" target="_blank" rel="noopener">12factor.net/pt_br</a></div>
-    <div class="link-card"><div class="lc-label">Diagrama — draw.io</div><a href="https://app.diagrams.net" target="_blank" rel="noopener">app.diagrams.net</a></div>
-    <div class="link-card"><div class="lc-label">Calculadora AWS</div><a href="https://calculator.aws/" target="_blank" rel="noopener">calculator.aws</a></div>
-    <div class="link-card"><div class="lc-label">Ícones AWS Oficiais</div><a href="https://awsicons.dev/" target="_blank" rel="noopener">awsicons.dev</a></div>
-    <div class="link-card"><div class="lc-label">AWS Academy</div><a href="https://awsacademy.instructure.com/" target="_blank" rel="noopener">awsacademy.instructure.com</a></div>
-    <div class="link-card"><div class="lc-label">Docker Desktop</div><a href="https://www.docker.com/products/docker-desktop/" target="_blank" rel="noopener">docker.com/products/docker-desktop</a></div>
-    <div class="link-card"><div class="lc-label">AWS Free Tier</div><a href="https://aws.amazon.com/free/" target="_blank" rel="noopener">aws.amazon.com/free</a></div>
+    <div class="link-card"><div class="lc-label">Console AWS (geral)</div><a href="https://console.aws.amazon.com/" target="_blank" rel="noopener">Abrir Console AWS</a></div>
+    <div class="link-card"><div class="lc-label">IAM — Usuários</div><a href="https://console.aws.amazon.com/iam/home#/users" target="_blank" rel="noopener">Abrir IAM</a></div>
+    <div class="link-card"><div class="lc-label">VPC — Redes</div><a href="https://console.aws.amazon.com/vpc/home#/vpcs" target="_blank" rel="noopener">Abrir VPC</a></div>
+    <div class="link-card"><div class="lc-label">EC2 — Instâncias</div><a href="https://console.aws.amazon.com/ec2/home#/instances" target="_blank" rel="noopener">Abrir EC2</a></div>
+    <div class="link-card"><div class="lc-label">RDS — Bancos de dados</div><a href="https://console.aws.amazon.com/rds/home#/databases" target="_blank" rel="noopener">Abrir RDS</a></div>
+    <div class="link-card"><div class="lc-label">Security Groups</div><a href="https://console.aws.amazon.com/ec2/home#/securityGroups" target="_blank" rel="noopener">Abrir Security Groups</a></div>
+  </div>
+
+  <div class="links-group-label">🛠️ Ferramentas</div>
+  <div class="links-grid">
+    <div class="link-card"><div class="lc-label">Calculadora de Custos AWS</div><a href="https://calculator.aws/" target="_blank" rel="noopener">Abrir Calculadora</a></div>
+    <div class="link-card"><div class="lc-label">Diagrama — draw.io</div><a href="https://app.diagrams.net" target="_blank" rel="noopener">Abrir draw.io</a></div>
+    <div class="link-card"><div class="lc-label">Ícones AWS Oficiais</div><a href="https://awsicons.dev/" target="_blank" rel="noopener">Abrir awsicons.dev</a></div>
+    <div class="link-card"><div class="lc-label">Docker Desktop</div><a href="https://www.docker.com/products/docker-desktop/" target="_blank" rel="noopener">Baixar Docker Desktop</a></div>
+  </div>
+
+  <div class="links-group-label">📚 Referências</div>
+  <div class="links-grid">
+    <div class="link-card"><div class="lc-label">Repositório ToggleMaster</div><a href="https://github.com/dougls/toggle-master-monolith" target="_blank" rel="noopener">Ver no GitHub</a></div>
+    <div class="link-card"><div class="lc-label">12-Factor App (PT-BR)</div><a href="https://12factor.net/pt_br/" target="_blank" rel="noopener">Ler documentação</a></div>
+    <div class="link-card"><div class="lc-label">AWS Free Tier</div><a href="https://aws.amazon.com/free/" target="_blank" rel="noopener">Ver Free Tier</a></div>
+    <div class="link-card"><div class="lc-label">AWS Academy (login)</div><a href="https://awsacademy.instructure.com/" target="_blank" rel="noopener">Acessar AWS Academy</a></div>
   </div>
 
 </div>
