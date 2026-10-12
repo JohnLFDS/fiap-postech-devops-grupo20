@@ -1,9 +1,0 @@
-# macOS
-.DS_Store
-.DS_Store?
-._*
-
-# Apenas index.html e .gitignore sobem — todo o resto é ignorado
-*
-!.gitignore
-!index.html
