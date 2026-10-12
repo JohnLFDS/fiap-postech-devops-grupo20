@@ -116,7 +116,7 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 .member-sel{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:5px 6px;font-size:.68rem;color:var(--txt);outline:none;cursor:pointer;transition:border-color .2s;margin-top:4px;}
 .member-sel:focus{border-color:var(--pink);}
 .member-tasks{display:flex;flex-direction:column;gap:4px;margin-top:6px;}
-.task-tag{font-size:.62rem;padding:3px 6px;border-radius:4px;text-align:center;line-height:1.4;}
+.task-tag{font-size:.62rem;padding:3px 6px;border-radius:4px;text-align:center;line-height:1.4;transition:opacity .2s;}
 .tag-pink{background:rgba(232,0,109,.15);color:#f472b6;border:1px solid rgba(232,0,109,.3);}
 .tag-blue{background:rgba(91,143,255,.12);color:#7aa8ff;border:1px solid rgba(91,143,255,.3);}
 .tag-purple{background:rgba(155,89,245,.12);color:#bb87ff;border:1px solid rgba(155,89,245,.3);}
@@ -125,6 +125,11 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 [data-theme="light"] .tag-pink{color:#9c0040;} [data-theme="light"] .tag-blue{color:#1a4db5;}
 [data-theme="light"] .tag-purple{color:#5b21b6;} [data-theme="light"] .tag-green{color:#166534;}
 [data-theme="light"] .tag-yellow{color:#92400e;}
+/* status overlay nas tags de membros */
+.task-tag.ts-done{background:rgba(46,204,113,.18)!important;color:#2ecc71!important;border-color:rgba(46,204,113,.55)!important;opacity:1;}
+.task-tag.ts-progress{background:rgba(245,197,24,.18)!important;color:#f5c518!important;border-color:rgba(245,197,24,.55)!important;opacity:1;}
+.task-tag.ts-todo{opacity:.75;}
+[data-theme="light"] .task-tag.ts-done{color:#166534!important;} [data-theme="light"] .task-tag.ts-progress{color:#92400e!important;}
 
 /* ── PROGRESS BAR ── */
 .progress-bar-wrap{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:10px;}
@@ -656,7 +661,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 // ══════════════════════════════════════════════
 // VERSÃO — fonte única da verdade
 // ══════════════════════════════════════════════
-const APP_VERSION = 'v2.20.0';
+const APP_VERSION = 'v2.21.0';
 
 // ══════════════════════════════════════════════
 // UTILITÁRIOS
@@ -882,35 +887,48 @@ function renderMembers() {
   const grid = document.getElementById('membersGrid');
 
   // Separa tarefas individuais e tarefas de todos
-  const ownTasks = {};   // pid → títulos atribuídos só a ele
-  const allTasks = [];   // títulos atribuídos a 'ALL'
+  // Cada entrada é { lbl, status } para refletir o status visualmente
+  const ownTasks = {};   // pid → [{lbl, status}]
+  const allTasks = [];   // [{lbl, status}] atribuídos a 'ALL'
   PEOPLE_CATALOG.forEach(p => ownTasks[p.pid] = []);
 
   tasks.forEach(t => {
-    const lbl = t.label || t.title;
+    const entry = { lbl: t.label || t.title, status: t.status || 'todo' };
     if (t.owner === 'ALL') {
-      allTasks.push(lbl);
+      allTasks.push(entry);
     } else if (ownTasks[t.owner] !== undefined) {
-      ownTasks[t.owner].push(lbl);
+      ownTasks[t.owner].push(entry);
     }
   });
+
+  // mapeia status → classe CSS e prefixo de ícone
+  function statusClass(s) {
+    if (s === 'done')        return 'ts-done';
+    if (s === 'in-progress') return 'ts-progress';
+    return 'ts-todo';
+  }
+  function statusIcon(s) {
+    if (s === 'done')        return '✅ ';
+    if (s === 'in-progress') return '🔄 ';
+    return '';
+  }
 
   grid.innerHTML = PEOPLE_CATALOG.map(person => {
     const mine   = ownTasks[person.pid] || [];
     const shared = allTasks;
     const total  = mine.length + shared.length;
 
-    // Tags individuais (cor do membro)
-    const mineTags = mine.slice(0, 3).map(t =>
-      `<span class="task-tag ${person.tag}">${t.length > 18 ? t.slice(0, 18) + '…' : t}</span>`
+    // Tags individuais (cor do membro + overlay de status)
+    const mineTags = mine.slice(0, 3).map(({ lbl, status }) =>
+      `<span class="task-tag ${person.tag} ${statusClass(status)}">${statusIcon(status)}${lbl.length > 18 ? lbl.slice(0, 18) + '…' : lbl}</span>`
     ).join('');
     const mineExtra = mine.length > 3
       ? `<span class="task-tag ${person.tag}">+${mine.length - 3} mais</span>` : '';
 
-    // Tags compartilhadas (tom roxo/neutro com ícone 👥)
+    // Tags compartilhadas (roxo + overlay de status + ícone 👥)
     const sharedVisible = shared.slice(0, Math.max(0, 3 - mine.length));
-    const sharedTags = sharedVisible.map(t =>
-      `<span class="task-tag tag-purple" style="opacity:.85;">👥 ${t.length > 16 ? t.slice(0, 16) + '…' : t}</span>`
+    const sharedTags = sharedVisible.map(({ lbl, status }) =>
+      `<span class="task-tag tag-purple ${statusClass(status)}">${statusIcon(status)}👥 ${lbl.length > 14 ? lbl.slice(0, 14) + '…' : lbl}</span>`
     ).join('');
     const sharedExtra = shared.length > sharedVisible.length
       ? `<span class="task-tag tag-purple" style="opacity:.75;">+${shared.length - sharedVisible.length} de todos</span>` : '';
@@ -920,10 +938,12 @@ function renderMembers() {
       : `<span class="task-tag" style="color:var(--muted);border-color:var(--border);">Sem tarefas</span>`;
 
     // Rodapé com contagem
+    const doneCount = [...mine, ...shared].filter(e => e.status === 'done').length;
     const countLine = total > 0 ? `
       <div style="font-size:.6rem;color:var(--muted);margin-top:5px;display:flex;gap:8px;flex-wrap:wrap;">
         ${mine.length > 0 ? `<span>${mine.length} individual${mine.length > 1 ? 'is' : ''}</span>` : ''}
         ${shared.length > 0 ? `<span style="color:var(--purple);">👥 ${shared.length} de todos</span>` : ''}
+        ${doneCount > 0 ? `<span style="color:var(--green);">✅ ${doneCount} concluída${doneCount > 1 ? 's' : ''}</span>` : ''}
       </div>` : '';
 
     return `
