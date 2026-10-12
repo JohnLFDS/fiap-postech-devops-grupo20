@@ -168,9 +168,12 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 
 /* owner pill — mantido para referência nos members */
 .owner-pill{font-size:.63rem;padding:3px 8px;border-radius:20px;white-space:nowrap;}
-/* número — mantido para ciclo de cores */
-.check-num{display:none;}
-.cn-pink,.cn-blue,.cn-purple,.cn-green{}
+/* Número da tarefa */
+.check-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:800;flex-shrink:0;}
+.cn-pink{background:var(--cn-pink-bg);color:var(--pink);border:1px solid var(--pink-dim);}
+.cn-blue{background:var(--cn-blue-bg);color:var(--blue);border:1px solid rgba(91,143,255,.4);}
+.cn-purple{background:var(--cn-pur-bg);color:var(--purple);border:1px solid rgba(155,89,245,.4);}
+.cn-green{background:var(--cn-grn-bg);color:var(--green);border:1px solid rgba(46,204,113,.4);}
 /* ── ADD TASK BUTTON (inline após a lista) ── */
 .checklist-add-btn{display:flex;align-items:center;gap:8px;width:100%;background:transparent;border:1.5px dashed var(--border);border-radius:8px;padding:11px 16px;cursor:pointer;font-size:.8rem;font-weight:600;color:var(--muted);transition:border-color .2s,color .2s,background .2s;margin-top:4px;}
 .checklist-add-btn:hover{border-color:var(--pink);color:var(--pink);background:var(--pink-glow);}
@@ -634,7 +637,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 // ══════════════════════════════════════════════
 // VERSÃO — fonte única da verdade
 // ══════════════════════════════════════════════
-const APP_VERSION = 'v2.14.0';
+const APP_VERSION = 'v2.15.0';
 
 // ══════════════════════════════════════════════
 // UTILITÁRIOS
@@ -927,18 +930,13 @@ function renderChecklist() {
     const inProg = !done && task.status === 'progress';
     const doneText = done ? `✓ por ${doneState[task.id].by_name} em ${doneState[task.id].at}` : '';
 
-    // Indicador de status — só visual
-    let siClass, siLabel;
-    if (done)       { siClass='si-done';     siLabel='✓ Concluída'; }
-    else if (inProg){ siClass='si-progress'; siLabel='● Em andamento'; }
-    else            { siClass='si-todo';     siLabel='○ Pendente'; }
-
     const guideBtn = GUIDE_IDS.has(task.id)
       ? `<button class="check-guide-btn" onclick="openGuide('${task.id}')">📋 Guia</button>` : '';
 
     const itemClass = done ? 'done' : (inProg ? 'in-progress' : '');
     return `
     <div class="check-item${itemClass ? ' '+itemClass : ''}" data-id="${task.id}">
+      <div class="check-num ${getNumColor(idx)}">${idx + 1}</div>
       <div class="check-body">
         <div class="check-title">${task.title}</div>
         ${task.desc ? `<div class="check-desc">${task.desc}</div>` : ''}
@@ -946,7 +944,6 @@ function renderChecklist() {
       </div>
       <div class="check-actions">
         ${guideBtn}
-        <span class="status-indicator ${siClass}">${siLabel}</span>
         <button class="check-edit-btn" onclick="openEditTaskModal('${task.id}')" aria-label="Editar tarefa">
           <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
             <path d="M9.5 2.5l2 2L4 12H2v-2L9.5 2.5z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
