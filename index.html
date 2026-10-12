@@ -372,7 +372,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
       autocomplete="off" onkeydown="if(event.key==='Enter')tryLogin()"/>
     <button class="login-btn" onclick="tryLogin()">Entrar no portal</button>
     <div class="login-error" id="loginError"></div>
-    <div class="login-hint">Dúvidas? Fale com o coordenador do grupo no WhatsApp.</div>
+    <div class="login-hint">Dúvidas? Entre em contato com o coordenador do grupo.</div>
     <div class="login-footer">
       <span class="login-footer-version" id="loginVersion"></span>
       <span class="login-footer-secure">
@@ -626,7 +626,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 // ══════════════════════════════════════════════
 // VERSÃO — fonte única da verdade
 // ══════════════════════════════════════════════
-const APP_VERSION = 'v2.10.0';
+const APP_VERSION = 'v2.11.0';
 
 // ══════════════════════════════════════════════
 // UTILITÁRIOS
@@ -988,7 +988,7 @@ function openCheckModal(task) {
     </select>`;
   document.getElementById('modalBtns').innerHTML = `
     <button class="btn btn-cancel" onclick="closeModal()">Cancelar</button>
-    <button class="btn btn-confirm" onclick="confirmCheck()">Confirmar &amp; Notificar</button>`;
+    <button class="btn btn-confirm" onclick="confirmCheck()">Confirmar conclusão</button>`;
   document.getElementById('memberSelect').addEventListener('change', function () {
     const p = PEOPLE_CATALOG.find(x => x.pid === this.value);
     document.getElementById('modalMemberName').textContent = p ? p.name : '—';
@@ -1522,10 +1522,10 @@ function showToast(msg) {
 // FECHAR MODAL AO CLICAR FORA
 // ══════════════════════════════════════════════
 document.getElementById('modalOverlay').addEventListener('click', function (e) {
-  if (e.target === this) { closeModal(); document.getElementById('tasksEditBtn')?.classList.remove('active'); }
+  if (e.target === this) { closeModal(); }
 });
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeModal(); document.getElementById('tasksEditBtn')?.classList.remove('active'); }
+  if (e.key === 'Escape') { closeModal(); }
 });
 
 // ══════════════════════════════════════════════
