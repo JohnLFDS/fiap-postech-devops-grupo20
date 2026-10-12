@@ -685,7 +685,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 // ══════════════════════════════════════════════
 // VERSÃO — fonte única da verdade
 // ══════════════════════════════════════════════
-const APP_VERSION = 'v2.27.0';
+const APP_VERSION = 'v2.28.0';
 
 // ══════════════════════════════════════════════
 // UTILITÁRIOS
@@ -1125,15 +1125,14 @@ function openGroupModal() {
   const tagColors = { 'tag-pink':'var(--pink)', 'tag-blue':'var(--blue)', 'tag-purple':'var(--purple)', 'tag-green':'var(--green)', 'tag-yellow':'var(--yellow)' };
   const rows = PEOPLE_CATALOG.map(p => `
     <tr>
-      <td><span class="gt-id" style="color:${tagColors[p.tag]||'var(--blue)'};">${p.pid}</span></td>
-      <td style="font-weight:600;">${p.name}</td>
+      <td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${tagColors[p.tag]||'var(--blue)'};margin-right:4px;"></span><span style="font-weight:600;">${p.name}</span></td>
       <td style="color:var(--muted);">${p.rm}</td>
     </tr>`).join('');
   document.getElementById('modalTitle').textContent    = '👥 Grupo 20 — Membros';
   document.getElementById('modalSubtitle').textContent = 'FIAP Pós Tech · DevOps e Arquitetura Cloud · 2026';
   document.getElementById('modalBody').innerHTML = `
     <table class="group-table">
-      <thead><tr><th>ID</th><th>Nome completo</th><th>RM</th></tr></thead>
+      <thead><tr><th>Nome completo</th><th>RM</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
   document.getElementById('modalBtns').innerHTML =
