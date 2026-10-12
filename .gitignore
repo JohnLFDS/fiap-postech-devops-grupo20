@@ -1,20 +1,9 @@
-# Segredos — NUNCA commitar
-SECRETS/
-
 # macOS
 .DS_Store
 .DS_Store?
 ._*
 
-# Bob
-.bob/
-
-# Lixo
-TRASH/
-
-# Projeto externo com repositório Git próprio — não commitar no repo do grupo
-toggle-master-monolith/
-
-# Pastas locais de trabalho — não sobem para o GitHub
-ENTREGAVEIS/
-REFERENCIA/
+# Apenas index.html e .gitignore sobem — todo o resto é ignorado
+*
+!.gitignore
+!index.html
