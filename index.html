@@ -136,55 +136,44 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 
 /* ── CHECKLIST ── */
 .checklist{display:flex;flex-direction:column;gap:6px;}
-.check-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px 12px 12px;display:flex;align-items:center;gap:10px;transition:border-color .18s,background .18s;position:relative;}
-.check-item:hover{border-color:rgba(91,143,255,.35);}
-.check-item.done{opacity:.7;border-color:var(--green);background:var(--cn-grn-bg);}
-.check-item.in-progress{border-color:rgba(245,197,24,.45);background:rgba(245,197,24,.04);}
-
-/* Checkbox — grande, claro, sem modal */
-.check-box{width:24px;height:24px;border-radius:7px;border:2px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background .18s,border-color .18s,transform .12s;user-select:none;}
-.check-box:hover{border-color:var(--green);background:rgba(46,204,113,.12);transform:scale(1.08);}
-.check-item.done .check-box{background:var(--green);border-color:var(--green);}
-.check-box svg{display:none;pointer-events:none;}
-.check-item.done .check-box svg{display:block;}
-
-/* Número */
-.check-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:800;flex-shrink:0;}
-.cn-pink{background:var(--cn-pink-bg);color:var(--pink);border:1px solid var(--pink-dim);}
-.cn-blue{background:var(--cn-blue-bg);color:var(--blue);border:1px solid rgba(91,143,255,.4);}
-.cn-purple{background:var(--cn-pur-bg);color:var(--purple);border:1px solid rgba(155,89,245,.4);}
-.cn-green{background:var(--cn-grn-bg);color:var(--green);border:1px solid rgba(46,204,113,.4);}
+.check-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 12px;display:flex;align-items:center;gap:10px;transition:border-color .18s,background .18s;}
+.check-item.done{opacity:.72;border-color:var(--green);background:var(--cn-grn-bg);}
+.check-item.in-progress{border-color:rgba(245,197,24,.5);background:rgba(245,197,24,.05);}
 
 /* Corpo */
 .check-body{flex:1;min-width:0;}
-.check-title{font-size:.85rem;font-weight:700;color:var(--txt);line-height:1.3;transition:color .18s;}
+.check-title{font-size:.85rem;font-weight:700;color:var(--txt);line-height:1.3;}
 .check-item.done .check-title{color:var(--muted);text-decoration:line-through;}
-.check-desc{font-size:.73rem;color:var(--muted);line-height:1.45;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
-.done-by{font-size:.63rem;color:var(--green);margin-top:2px;display:none;}
+.check-desc{font-size:.72rem;color:var(--muted);line-height:1.4;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.done-by{font-size:.62rem;color:var(--green);margin-top:2px;display:none;}
 .check-item.done .done-by{display:block;}
 
-/* Área de ações à direita */
+/* Área de ações */
 .check-actions{display:flex;align-items:center;gap:6px;flex-shrink:0;}
 
-/* Badge de status — clicável, cicla os estados */
-.status-badge{font-size:.62rem;font-weight:700;padding:3px 9px;border-radius:20px;cursor:pointer;white-space:nowrap;border:1px solid transparent;transition:opacity .15s,transform .1s;user-select:none;letter-spacing:.2px;}
-.status-badge:hover{opacity:.8;transform:scale(1.04);}
-.sb-todo{background:var(--surface2);color:var(--muted);border-color:var(--border);}
-.sb-progress{background:rgba(245,197,24,.15);color:var(--yellow);border-color:rgba(245,197,24,.4);}
-.sb-done{background:var(--cn-grn-bg);color:var(--green);border-color:rgba(46,204,113,.4);}
-
-/* Pill responsável */
-.owner-pill{font-size:.63rem;padding:3px 8px;border-radius:20px;white-space:nowrap;}
+/* ── STATUS PILL clicável — triestado, sempre visível ── */
+.status-pill{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:7px;border:1.5px solid;cursor:pointer;font-size:.72rem;font-weight:700;white-space:nowrap;user-select:none;transition:filter .15s,transform .1s;}
+.status-pill:hover{filter:brightness(1.12);transform:scale(1.03);}
+.status-pill:active{transform:scale(.97);}
+.sp-todo    {background:var(--surface2);color:var(--txt2);border-color:var(--border);}
+.sp-progress{background:rgba(245,197,24,.18);color:var(--yellow);border-color:rgba(245,197,24,.55);}
+.sp-done    {background:var(--cn-grn-bg);color:var(--green);border-color:rgba(46,204,113,.55);}
+.sp-icon    {font-size:.9rem;line-height:1;}
 
 /* Botão guia */
 .check-guide-btn{background:var(--cn-blue-bg);border:1px solid rgba(91,143,255,.35);border-radius:5px;padding:3px 8px;font-size:.63rem;font-weight:700;color:var(--blue);cursor:pointer;white-space:nowrap;transition:background .15s;}
 .check-guide-btn:hover{background:rgba(91,143,255,.25);}
 
-/* Ícone lápis — aparece em hover */
-.check-edit-btn{width:28px;height:28px;border-radius:6px;border:1px solid transparent;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;opacity:0;transition:opacity .15s,background .15s,border-color .15s;padding:0;}
-.check-item:hover .check-edit-btn{opacity:1;}
-.check-edit-btn:hover{background:var(--surface2);border-color:var(--border);}
-.check-edit-btn svg{display:block!important;pointer-events:none;}
+/* ── BOTÃO EDITAR — sempre visível, destacado ── */
+.check-edit-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:7px;border:1.5px solid var(--border);background:var(--surface2);cursor:pointer;font-size:.72rem;font-weight:700;color:var(--muted);white-space:nowrap;transition:border-color .15s,color .15s,background .15s;}
+.check-edit-btn:hover{border-color:var(--pink);color:var(--pink);background:var(--pink-glow);}
+.check-edit-btn svg{display:block!important;flex-shrink:0;pointer-events:none;}
+
+/* owner pill — mantido para referência nos members */
+.owner-pill{font-size:.63rem;padding:3px 8px;border-radius:20px;white-space:nowrap;}
+/* número — mantido para ciclo de cores */
+.check-num{display:none;}
+.cn-pink,.cn-blue,.cn-purple,.cn-green{}
 /* ── ADD TASK BUTTON (inline após a lista) ── */
 .checklist-add-btn{display:flex;align-items:center;gap:8px;width:100%;background:transparent;border:1.5px dashed var(--border);border-radius:8px;padding:11px 16px;cursor:pointer;font-size:.8rem;font-weight:600;color:var(--muted);transition:border-color .2s,color .2s,background .2s;margin-top:4px;}
 .checklist-add-btn:hover{border-color:var(--pink);color:var(--pink);background:var(--pink-glow);}
@@ -538,23 +527,18 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
     Nova tarefa
   </button>
 
-  <div class="legend">
-    <span style="font-size:.72rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:1px;">Como usar:</span>
-    <div class="legend-item">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="3.5" stroke="currentColor" stroke-width="1.5"/></svg>
-      Checkbox → Concluir
+  <div class="legend" style="flex-wrap:wrap;gap:10px 20px;">
+    <span style="font-size:.72rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:1px;width:100%;">Como usar o checklist:</span>
+    <div class="legend-item" style="gap:8px;">
+      <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:7px;border:1.5px solid var(--border);background:var(--surface2);color:var(--txt2);font-size:.72rem;font-weight:700;">○ Pendente</span>
+      <svg width="14" height="10" fill="none" viewBox="0 0 14 10"><path d="M1 5h12M8 1l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:7px;border:1.5px solid rgba(245,197,24,.6);background:rgba(245,197,24,.18);color:var(--yellow);font-size:.72rem;font-weight:700;">● Em andamento</span>
+      <svg width="14" height="10" fill="none" viewBox="0 0 14 10"><path d="M1 5h12M8 1l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:7px;border:1.5px solid rgba(46,204,113,.6);background:var(--cn-grn-bg);color:var(--green);font-size:.72rem;font-weight:700;">✓ Concluída</span>
     </div>
-    <div class="legend-item">
-      <span style="font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:20px;background:var(--surface2);color:var(--muted);border:1px solid var(--border);">○ Pendente</span>
-      clique → Em andamento
-    </div>
-    <div class="legend-item">
-      <span style="font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:20px;background:rgba(245,197,24,.15);color:var(--yellow);border:1px solid rgba(245,197,24,.4);">● Em andamento</span>
-      clique → Pendente
-    </div>
-    <div class="legend-item">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="opacity:.5;"><path d="M9.5 2.5l2 2L4 12H2v-2L9.5 2.5z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Lápis (hover) → Editar
+    <div class="legend-item" style="color:var(--muted);font-size:.73rem;">
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none" style="flex-shrink:0;"><path d="M9.5 2.5l2 2L4 12H2v-2L9.5 2.5z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Botão <strong>Editar</strong> → edita conteúdo, responsável e status
     </div>
   </div>
 
@@ -658,7 +642,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 // ══════════════════════════════════════════════
 // VERSÃO — fonte única da verdade
 // ══════════════════════════════════════════════
-const APP_VERSION = 'v2.12.0';
+const APP_VERSION = 'v2.13.0';
 
 // ══════════════════════════════════════════════
 // UTILITÁRIOS
@@ -947,18 +931,15 @@ function renderChecklist() {
   const el = document.getElementById('checklist');
 
   el.innerHTML = tasks.map((task, idx) => {
-    const done      = !!doneState[task.id];
-    const inProg    = !done && task.status === 'progress';
-    const member    = getMemberByOwner(task.owner);
-    const tagClass  = task.owner === 'ALL' ? 'tag-purple' : (member ? member.tag : 'tag-blue');
-    const ownerLbl  = task.owner === 'ALL' ? '👥 Todos' : (member && member.name ? member.name.split(' ')[0] : 'A definir');
-    const doneText  = done ? `✓ por ${doneState[task.id].by_name} em ${doneState[task.id].at}` : '';
+    const done   = !!doneState[task.id];
+    const inProg = !done && task.status === 'progress';
+    const doneText = done ? `✓ por ${doneState[task.id].by_name} em ${doneState[task.id].at}` : '';
 
-    // Badge de status clicável
-    let sbClass, sbLabel, sbTitle;
-    if (done)       { sbClass='sb-done';     sbLabel='✓ Concluída'; sbTitle='Clique para reabrir'; }
-    else if(inProg) { sbClass='sb-progress'; sbLabel='● Em andamento'; sbTitle='Clique para marcar como Concluída'; }
-    else            { sbClass='sb-todo';     sbLabel='○ Pendente';   sbTitle='Clique para marcar como Em andamento'; }
+    // Status pill triestado
+    let spClass, spIcon, spLabel, spNext;
+    if (done)      { spClass='sp-done';     spIcon='✓'; spLabel='Concluída';    spNext='Reabrir'; }
+    else if(inProg){ spClass='sp-progress'; spIcon='●'; spLabel='Em andamento'; spNext='→ Concluída'; }
+    else           { spClass='sp-todo';     spIcon='○'; spLabel='Pendente';     spNext='→ Em andamento'; }
 
     const guideBtn = GUIDE_IDS.has(task.id)
       ? `<button class="check-guide-btn" onclick="openGuide('${task.id}')">📋 Guia</button>` : '';
@@ -966,10 +947,6 @@ function renderChecklist() {
     const itemClass = done ? 'done' : (inProg ? 'in-progress' : '');
     return `
     <div class="check-item${itemClass ? ' '+itemClass : ''}" data-id="${task.id}">
-      <div class="check-box" onclick="handleCheck('${task.id}')" title="${done ? 'Desmarcar conclusão' : 'Marcar como concluída'}">
-        <svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <div class="check-num ${getNumColor(idx)}">${idx + 1}</div>
       <div class="check-body">
         <div class="check-title">${task.title}</div>
         ${task.desc ? `<div class="check-desc">${task.desc}</div>` : ''}
@@ -977,12 +954,14 @@ function renderChecklist() {
       </div>
       <div class="check-actions">
         ${guideBtn}
-        <span class="owner-pill ${tagClass}">${ownerLbl}</span>
-        <button class="status-badge ${sbClass}" onclick="cycleStatus('${task.id}')" title="${sbTitle}">${sbLabel}</button>
-        <button class="check-edit-btn" onclick="openEditTaskModal('${task.id}')" title="Editar tarefa" aria-label="Editar tarefa">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M9.5 2.5l2 2L4 12H2v-2L9.5 2.5z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <button class="status-pill ${spClass}" onclick="cycleStatus('${task.id}')" title="Clique para avançar status">
+          <span class="sp-icon">${spIcon}</span>${spLabel}
+        </button>
+        <button class="check-edit-btn" onclick="openEditTaskModal('${task.id}')" aria-label="Editar tarefa">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+            <path d="M9.5 2.5l2 2L4 12H2v-2L9.5 2.5z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
+          Editar
         </button>
       </div>
     </div>`;
@@ -995,33 +974,15 @@ function renderChecklist() {
 // CHECKLIST INTERACTION
 // ══════════════════════════════════════════════
 
-// Checkbox: toque direto — marca/desmarca conclusão sem modal de nome
-function handleCheck(id) {
-  if (doneState[id]) {
-    // já concluída → desmarcar direto, sem confirm
-    delete doneState[id];
-    // volta ao status que estava antes (progress ou todo)
-    const task = tasks.find(t => t.id === id);
-    if (task && task.status !== 'progress') task.status = 'todo';
-    saveTasks();
-    saveState();
-    renderChecklist();
-    renderMembers();
-    showToast('↩️ Tarefa reaberta.');
-    return;
-  }
-  // marcar como concluída — pergunta quem está fazendo (UX: rápido, sem sair da tela)
-  pendingTaskId = id;
-  const task = tasks.find(t => t.id === id);
-  openCheckModal(task);
-}
+// Não mais usado (checkbox removido), mantido para compatibilidade
+function handleCheck(id) { cycleStatus(id); }
 
-// Badge de status: cicla Pendente → Em andamento → (vai pro checkbox para Concluída)
+// Status pill: cicla Pendente → Em andamento → Concluída (pede quem) → Reabrir
 function cycleStatus(id) {
   const task = tasks.find(t => t.id === id);
   if (!task) return;
   if (doneState[id]) {
-    // está concluída — clicar no badge reabre
+    // Concluída → Reabrir direto
     delete doneState[id];
     task.status = 'todo';
     saveTasks(); saveState();
@@ -1029,11 +990,17 @@ function cycleStatus(id) {
     showToast('↩️ Tarefa reaberta.');
     return;
   }
-  if (task.status === 'todo')     { task.status = 'progress'; showToast(`🟡 "${task.title}" — Em andamento`); }
-  else if (task.status === 'progress') { task.status = 'todo'; showToast(`⚪ "${task.title}" — Pendente`); }
-  saveTasks();
-  renderChecklist();
-  renderMembers();
+  if (task.status === 'todo') {
+    task.status = 'progress';
+    saveTasks(); renderChecklist(); renderMembers();
+    showToast(`🟡 "${task.title}" — Em andamento`);
+    return;
+  }
+  if (task.status === 'progress') {
+    // Em andamento → Concluída: pede nome
+    pendingTaskId = id;
+    openCheckModal(task);
+  }
 }
 
 function openCheckModal(task) {
@@ -1319,35 +1286,60 @@ function _taskEditOwnerOpts(currentOwner) {
 }
 
 function _openTaskModal(task, isNew) {
+  const isDone    = !!doneState[task.id];
+  const curStatus = isDone ? 'done' : (task.status || 'todo');
   const box = document.getElementById('modalBox');
   box.classList.remove('modal-wide');
   box.classList.add('modal-guide');
-  document.getElementById('modalTitle').textContent    = isNew ? '＋ Nova tarefa' : '✏️ Editar tarefa';
+  document.getElementById('modalTitle').textContent    = isNew ? '+ Nova tarefa' : 'Editar tarefa';
   document.getElementById('modalSubtitle').textContent = isNew ? 'Preencha os campos e salve.' : task.title;
+
+  // CSS dos botões de status inline
+  const stBtnBase = 'border-radius:7px;border:2px solid;padding:7px 14px;font-size:.78rem;font-weight:700;cursor:pointer;flex:1;transition:opacity .15s;';
+  const stBtnSel  = (active) => active ? '' : 'opacity:.35;filter:grayscale(.5);';
+
   document.getElementById('modalBody').innerHTML = `
     <label class="task-edit-field-label">Título</label>
     <input id="teTitle" class="task-edit-field" placeholder="Ex: Criar VPC na AWS" value="${escHtml(task.title)}"/>
     <label class="task-edit-field-label">Descrição <span style="font-weight:400;opacity:.6;">(opcional)</span></label>
-    <textarea id="teDesc" class="task-edit-field" rows="3" placeholder="Detalhes, comandos, links…" style="resize:vertical;">${escHtml(task.desc)}</textarea>
-    <div class="task-edit-row" style="margin-bottom:10px;">
-      <div style="flex:1;min-width:120px;">
-        <label class="task-edit-field-label">Responsável</label>
-        <select id="teOwner" class="task-edit-field" style="margin-bottom:0;">${_taskEditOwnerOpts(task.owner)}</select>
-      </div>
-      <div style="flex:1;min-width:120px;">
-        <label class="task-edit-field-label">Status</label>
-        <select id="teStatus" class="task-edit-field" style="margin-bottom:0;">
-          <option value="todo"${task.status === 'todo' ? ' selected' : ''}>⚪ Pendente</option>
-          <option value="progress"${task.status === 'progress' ? ' selected' : ''}>🟡 Em andamento</option>
-        </select>
-      </div>
+    <textarea id="teDesc" class="task-edit-field" rows="2" placeholder="Detalhes, comandos, links…" style="resize:vertical;">${escHtml(task.desc)}</textarea>
+    <label class="task-edit-field-label">Responsável</label>
+    <select id="teOwner" class="task-edit-field">${_taskEditOwnerOpts(task.owner)}</select>
+    <label class="task-edit-field-label">Status</label>
+    <div style="display:flex;gap:7px;margin-bottom:12px;" id="teStatusBtns">
+      <button type="button" data-st="todo"
+        style="${stBtnBase}background:var(--surface2);color:var(--txt2);border-color:var(--border);${stBtnSel(curStatus==='todo')}"
+        onclick="_teSelectStatus('todo')">○ Pendente</button>
+      <button type="button" data-st="progress"
+        style="${stBtnBase}background:rgba(245,197,24,.18);color:var(--yellow);border-color:rgba(245,197,24,.6);${stBtnSel(curStatus==='progress')}"
+        onclick="_teSelectStatus('progress')">● Em andamento</button>
+      <button type="button" data-st="done"
+        style="${stBtnBase}background:var(--cn-grn-bg);color:var(--green);border-color:rgba(46,204,113,.6);${stBtnSel(curStatus==='done')}"
+        onclick="_teSelectStatus('done')">✓ Concluída</button>
+    </div>
+    <div id="teDoneByWrap" style="display:${curStatus==='done'?'block':'none'};">
+      <label class="task-edit-field-label">Concluída por</label>
+      <select id="teDoneBy" class="task-edit-field">
+        <option value="">— Selecione —</option>
+        ${PEOPLE_CATALOG.map(p=>`<option value="${p.pid}"${doneState[task.id]?.by===p.pid?' selected':''}>${p.name}</option>`).join('')}
+        <option value="ALL"${doneState[task.id]?.by==='ALL'?' selected':''}>👥 Todos</option>
+      </select>
     </div>`;
   document.getElementById('modalBtns').innerHTML = `
     ${!isNew ? `<button class="btn btn-danger" style="margin-right:auto;" onclick="_deleteTaskFromModal('${task.id}')">🗑 Excluir</button>` : ''}
     <button class="btn btn-cancel" onclick="closeModal()">Cancelar</button>
-    <button class="btn btn-confirm" onclick="_saveTaskFromModal('${task.id}',${isNew})">💾 Salvar</button>`;
+    <button class="btn btn-confirm" onclick="_saveTaskFromModal('${task.id}',${isNew})">Salvar</button>`;
   document.getElementById('modalOverlay').classList.add('active');
   setTimeout(() => document.getElementById('teTitle')?.focus(), 80);
+}
+
+function _teSelectStatus(val) {
+  document.querySelectorAll('#teStatusBtns [data-st]').forEach(btn => {
+    btn.style.opacity = btn.dataset.st === val ? '1' : '.35';
+    btn.style.filter  = btn.dataset.st === val ? '' : 'grayscale(.5)';
+  });
+  const wrap = document.getElementById('teDoneByWrap');
+  if (wrap) wrap.style.display = val === 'done' ? 'block' : 'none';
 }
 
 function openEditTaskModal(id) {
@@ -1368,16 +1360,46 @@ function _saveTaskFromModal(id, isNew) {
   const task = tasks.find(t => t.id === id);
   if (!task) return;
   const title = document.getElementById('teTitle')?.value.trim();
-  if (!title) { document.getElementById('teTitle')?.focus(); document.getElementById('teTitle')?.style && (document.getElementById('teTitle').style.borderColor = 'var(--red)'); return; }
-  task.title  = title;
-  task.desc   = document.getElementById('teDesc')?.value.trim() || '';
-  task.owner  = document.getElementById('teOwner')?.value || '';
-  task.status = document.getElementById('teStatus')?.value || 'todo';
+  if (!title) {
+    const f = document.getElementById('teTitle');
+    if (f) { f.focus(); f.style.borderColor = 'var(--red)'; }
+    return;
+  }
+  task.title = title;
+  task.desc  = document.getElementById('teDesc')?.value.trim() || '';
+  task.owner = document.getElementById('teOwner')?.value || '';
+
+  // Lê status dos botões visuais
+  const selSt = document.querySelector('#teStatusBtns [data-st][style*="opacity: 1"], #teStatusBtns [data-st]:not([style*="opacity"])');
+  const stVal = document.querySelector('#teStatusBtns [data-st]')
+    ? ([...document.querySelectorAll('#teStatusBtns [data-st]')].find(b => parseFloat(b.style.opacity || '1') > 0.5)?.dataset.st || 'todo')
+    : 'todo';
+
+  if (stVal === 'done') {
+    const byId = document.getElementById('teDoneBy')?.value || '';
+    if (!byId) {
+      const f = document.getElementById('teDoneBy');
+      if (f) { f.style.borderColor='var(--red)'; f.focus(); }
+      showToast('⚠️ Selecione quem concluiu a tarefa.');
+      return;
+    }
+    const person = byId === 'ALL' ? null : PEOPLE_CATALOG.find(p => p.pid === byId);
+    const byName = byId === 'ALL' ? 'Todos' : (person ? person.name.split(' ')[0] : byId);
+    const atStr  = new Date().toLocaleString('pt-BR', {dateStyle:'short', timeStyle:'short'});
+    doneState[id] = { by: byId, by_name: byName, at: atStr };
+    task.status = 'progress'; // base antes de concluir
+    saveState();
+  } else {
+    // Se estava concluída e voltou para outro estado
+    if (doneState[id]) { delete doneState[id]; saveState(); }
+    task.status = stVal;
+  }
+
   saveTasks();
   renderMembers();
   renderChecklist();
   closeModal();
-  showToast(isNew ? `✅ Tarefa "${task.title}" adicionada!` : `✅ Tarefa "${task.title}" salva!`);
+  showToast(isNew ? `✅ "${task.title}" adicionada!` : `✅ "${task.title}" salva!`);
   if (isNew) setTimeout(() => { const el = document.querySelector(`[data-id="${id}"]`); if (el) el.scrollIntoView({ behavior:'smooth', block:'center' }); }, 300);
 }
 
@@ -1638,6 +1660,7 @@ window.openAddTaskModal      = openAddTaskModal;
 window._saveTaskFromModal    = _saveTaskFromModal;
 window._deleteTaskFromModal  = _deleteTaskFromModal;
 window.cycleStatus           = cycleStatus;
+window._teSelectStatus       = _teSelectStatus;
 </script>
 </body>
 </html>
