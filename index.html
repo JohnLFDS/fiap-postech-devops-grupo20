@@ -712,7 +712,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 // ══════════════════════════════════════════════
 // VERSÃO — fonte única da verdade
 // ══════════════════════════════════════════════
-const APP_VERSION = 'v2.31.0';
+const APP_VERSION = 'v2.32.0';
 
 // ══════════════════════════════════════════════
 // UTILITÁRIOS
@@ -807,7 +807,7 @@ function getMemberByOwner(id) { return membersData.find(m => m.id === id) || nul
 // ── Tarefas padrão ────────────────────────────
 const DEFAULT_TASKS = [
   { id:'t1',  label:'Deploy local',    title:'Executar aplicação localmente (Docker Compose)',        desc:'Clonar repo · docker compose up --build · testar CRUD com curl · identificar por que é um monolito', owner:'', status:'todo' },
-  { id:'t2',  label:'Conta AWS',       title:'Criar conta AWS + usuário IAM + MFA',                   desc:'Criar conta AWS ou usar AWS Academy · habilitar MFA no root · criar usuário IAM com AdministratorAccess · definir região us-east-1', owner:'', status:'todo' },
+  { id:'t2',  label:'Conta AWS',       title:'Acesso ao AWS Academy Learner Lab',                     desc:'Aceitar convite no Canvas (awsacademy.instructure.com) · registrar com e-mail FIAP · clicar "Start Lab" · confirmar região us-east-1 · conta e IAM já provisionados pelo Lab', owner:'', status:'todo' },
   { id:'t3',  label:'Diagrama',        title:'Diagrama de arquitetura AWS (draw.io)',                  desc:'VPC 10.0.0.0/16 · subnets pública e privada · EC2 na pública (porta 5000) · RDS PostgreSQL na privada · Internet Gateway · Security Groups · ícones oficiais AWS', owner:'', status:'todo' },
   { id:'t4',  label:'12 Fatores',      title:'Análise dos 12 Fatores (12-Factor App)',                 desc:'Analisar app.py, Dockerfile, requirements.txt e docker-compose.yaml · status ✅/⚠️/❌ com justificativa por fator · entregar como parte da Documentação', owner:'', status:'todo' },
   { id:'t5',  label:'Pricing',         title:'Estimativa de custos na AWS Pricing Calculator',         desc:'calculator.aws · EC2 t3.micro + RDS db.t3.micro + Data Transfer · região us-east-1 · salvar link público · tirar print para o relatório', owner:'', status:'todo' },
@@ -1540,14 +1540,14 @@ const GUIDES = {
     ]
   },
   t2: {
-    title: 'T2 — Criar conta AWS + IAM + MFA',
-    subtitle: 'Responsável: Erick · Prazo: Dia 1 (PRIORIDADE MÁXIMA)',
+    title: 'T2 — Acesso ao AWS Academy Learner Lab',
+    subtitle: 'Responsável: Todos · Prazo: Dia 1 (PRIORIDADE MÁXIMA)',
     steps: [
-      { title: 'Verificar AWS Academy primeiro', body: 'Perguntar ao professor se há créditos no AWS Academy (awsacademy.instructure.com) — evita cartão de crédito.', tip: null },
-      { title: 'Criar conta AWS (se necessário)', body: 'aws.amazon.com → "Criar conta gratuita" · e-mail + telefone + cartão (cobrança de $1 estornada).', tip: null },
-      { title: 'Habilitar MFA no root', body: 'IAM → Security credentials → Multi-factor authentication → Add MFA · Use Google Authenticator ou Authy.', tip: '⚠️ Obrigatório.' },
-      { title: 'Criar usuário IAM', body: 'IAM → Users → Create user · tipo Console + Programmatic · política AdministratorAccess · compartilhe URL de login + usuário + senha com o grupo.', tip: null },
-      { title: 'Definir região padrão', body: 'Console AWS (canto superior direito) → US East (N. Virginia) — us-east-1.', tip: null },
+      { title: 'Aceitar o convite no Canvas', body: 'Abra o e-mail do AWS Academy (notifications@instructure.com) · clique em "Começar" · registre-se no Canvas com seu e-mail FIAP.', tip: '💡 O convite é individual — todos do grupo precisam aceitar.' },
+      { title: 'Acessar o Learner Lab', body: 'Entre em awsacademy.instructure.com · acesse o curso "AWS Academy Learner Lab [188263]" · clique em "Modules" → "Learner Lab".', tip: null },
+      { title: 'Iniciar a sessão', body: 'Clique em "Start Lab" (botão verde) · aguarde o indicador ficar verde (1–2 min) · clique em "AWS" para abrir o Console.', tip: '⚠️ A sessão tem timeout (~4h). Os recursos provisionados (EC2, RDS) persistem entre sessões.' },
+      { title: 'Confirmar região us-east-1', body: 'No Console AWS (canto superior direito) confirme: US East (N. Virginia) — us-east-1.', tip: '⚠️ Mudar de região pode esconder recursos já criados.' },
+      { title: 'Conta e IAM já prontos', body: 'Não é necessário criar conta, usuário IAM, MFA ou cartão de crédito. O Lab já provisiona tudo com $100 USD em créditos por aluno.', tip: '✅ Pode ir direto para T6 — Provisionar Infraestrutura AWS.' },
     ]
   },
   t3: {
