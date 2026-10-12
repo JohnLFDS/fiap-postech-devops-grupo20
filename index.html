@@ -102,8 +102,8 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 .tl-sub{font-size:.68rem;color:var(--muted);text-align:center;line-height:1.4;}
 
 /* ── MEMBERS GRID ── */
-.members{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:clamp(8px,1vw,14px);}
-.member-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:clamp(12px,1.2vw,18px) clamp(10px,1vw,16px);text-align:center;transition:border-color .2s;}
+.members{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:clamp(8px,1vw,14px);align-items:stretch;}
+.member-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:clamp(12px,1.2vw,18px) clamp(10px,1vw,16px);text-align:center;transition:border-color .2s;display:flex;flex-direction:column;}
 .member-card:hover{border-color:var(--pink);}
 .member-avatar{width:42px;height:42px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800;color:#fff;}
 .av-1{background:linear-gradient(135deg,#e8006d,#a8004f);} .av-2{background:linear-gradient(135deg,#5b8fff,#2e5cbf);}
@@ -661,7 +661,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 // ══════════════════════════════════════════════
 // VERSÃO — fonte única da verdade
 // ══════════════════════════════════════════════
-const APP_VERSION = 'v2.23.0';
+const APP_VERSION = 'v2.24.0';
 
 // ══════════════════════════════════════════════
 // UTILITÁRIOS
