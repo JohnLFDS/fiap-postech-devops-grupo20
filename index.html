@@ -661,7 +661,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 // ══════════════════════════════════════════════
 // VERSÃO — fonte única da verdade
 // ══════════════════════════════════════════════
-const APP_VERSION = 'v2.21.0';
+const APP_VERSION = 'v2.22.0';
 
 // ══════════════════════════════════════════════
 // UTILITÁRIOS
@@ -788,7 +788,7 @@ function loadTasks() {
   try {
     const saved = JSON.parse(localStorage.getItem(TASKS_KEY));
     tasks = (Array.isArray(saved) && saved.length > 0)
-      ? saved
+      ? _mergeTasks(saved)
       : DEFAULT_TASKS.map(t => ({ ...t }));
   } catch { tasks = DEFAULT_TASKS.map(t => ({ ...t })); }
 }
@@ -798,6 +798,23 @@ function loadState() {
 
 // Owners válidos na versão atual
 const VALID_OWNERS = new Set(['ALL', 'P1', 'P2', 'P3', 'P4', 'P5', '']);
+
+// Mescla tarefas remotas (Firebase/localStorage) com DEFAULT_TASKS para
+// garantir que campos estáticos como `label`, `title` e `desc` nunca se percam.
+function _mergeTasks(remote) {
+  const defMap = Object.fromEntries(DEFAULT_TASKS.map(d => [d.id, d]));
+  return remote.map(t => {
+    const def = defMap[t.id] || {};
+    return {
+      label: def.label || t.label || '',   // apelido curto — sempre do DEFAULT
+      title: def.title || t.title || '',
+      desc:  def.desc  || t.desc  || '',
+      id:    t.id,
+      owner: t.owner  ?? def.owner ?? '',
+      status: t.status ?? def.status ?? 'todo',
+    };
+  });
+}
 
 function _attachFirebaseListeners() {
   onValue(_membRef, (snap) => {
@@ -820,7 +837,7 @@ function _attachFirebaseListeners() {
   onValue(_tasksRef, (snap) => {
     const remote = snap.val();
     if (remote !== null && Array.isArray(remote)) {
-      tasks = remote;
+      tasks = _mergeTasks(remote);
       _lsSaveTasks();
       renderChecklist();
       renderMembers();
