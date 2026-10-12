@@ -442,6 +442,22 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
     <div class="tl-step"><div class="tl-circle tc-4">4</div><div class="tl-label">Doc &amp; Vídeo</div><div class="tl-sub">Diagrama finalizado<br>Relatório simples<br>Gravação do vídeo</div></div>
   </div>
 
+  <!-- DETALHES DO GRUPO -->
+  <div class="sec-header"><div class="dot"></div><h2>Detalhes do grupo</h2></div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:clamp(12px,1.5vw,20px);overflow-x:auto;">
+    <table style="width:100%;border-collapse:collapse;font-size:.78rem;">
+      <thead>
+        <tr style="border-bottom:1px solid var(--border);">
+          <th style="padding:7px 14px 7px 4px;text-align:left;color:var(--muted);font-weight:700;font-size:.65rem;text-transform:uppercase;letter-spacing:.8px;white-space:nowrap;">Papel</th>
+          <th style="padding:7px 14px;text-align:left;color:var(--muted);font-weight:700;font-size:.65rem;text-transform:uppercase;letter-spacing:.8px;">Nome completo</th>
+          <th style="padding:7px 14px;text-align:left;color:var(--muted);font-weight:700;font-size:.65rem;text-transform:uppercase;letter-spacing:.8px;white-space:nowrap;">RM</th>
+          <th style="padding:7px 4px;text-align:left;color:var(--muted);font-weight:700;font-size:.65rem;text-transform:uppercase;letter-spacing:.8px;">Função</th>
+        </tr>
+      </thead>
+      <tbody id="groupDetailsBody"><!-- renderizado por JS --></tbody>
+    </table>
+  </div>
+
   <!-- MEMBROS — seletor inline nos cards -->
   <div class="sec-header">
     <div class="dot"></div>
@@ -582,7 +598,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 </div>
 
 <div class="footer">
-  Tech Challenge · Grupo 20 &nbsp;·&nbsp; Erick Aleixo Aragão · John Lennon F. da Silva · Alan Santos · Marcelo Santos de Jesus · Cassio Tadashi Kawamura &nbsp;·&nbsp; FIAP Pós Tech 2026
+  Tech Challenge · Grupo 20 &nbsp;·&nbsp; Erick · John · Alan · Marcelo · Cassio &nbsp;·&nbsp; FIAP Pós Tech 2026
 </div>
 
 <!-- CONFIRM DIALOG -->
@@ -793,11 +809,11 @@ function renderMembers() {
       ? byOwner[m.id].slice(0, 3).map(t => `<span class="task-tag ${m.tag}">${t.length > 22 ? t.slice(0, 22) + '…' : t}</span>`).join('')
         + (byOwner[m.id].length > 3 ? `<span class="task-tag ${m.tag}">+${byOwner[m.id].length - 3} mais</span>` : '')
       : `<span class="task-tag" style="color:var(--muted);border-color:var(--border);">Sem tarefas</span>`;
+    const firstName = m.name.split(' ')[0];
     return `
     <div class="member-card">
       <div class="member-avatar ${m.av}">${m.id}</div>
-      <div class="member-name">${m.name}</div>
-      <div class="member-rm">${m.rm}</div>
+      <div class="member-name">${firstName}</div>
       <div class="member-role-label">${m.role}</div>
       <select class="member-sel" data-role="${m.id}" onchange="onMemberSelChange(this)" title="Reatribuir papel ${m.id}">
         ${membersData.map(opt => `<option value="${opt.id}"${opt.id === m.id ? ' selected' : ''}>${opt.name.split(' ')[0]} (${opt.id})</option>`).join('')}
@@ -808,6 +824,21 @@ function renderMembers() {
 
   // mostra botão salvar atribuições
   document.getElementById('membersSaveBtn').style.display = '';
+
+  // Renderiza tabela de detalhes do grupo
+  const tbody = document.getElementById('groupDetailsBody');
+  if (tbody) {
+    const tagColors = { 'tag-pink':'var(--pink)', 'tag-blue':'var(--blue)', 'tag-purple':'var(--purple)', 'tag-green':'var(--green)', 'tag-yellow':'var(--yellow)' };
+    tbody.innerHTML = membersData.map(m => `
+      <tr style="border-bottom:1px solid var(--surface2);">
+        <td style="padding:8px 14px 8px 4px;white-space:nowrap;">
+          <span style="font-size:.65rem;font-weight:800;background:var(--surface2);color:${tagColors[m.tag]||'var(--blue)'};border:1px solid var(--border);border-radius:4px;padding:2px 7px;">${m.id}</span>
+        </td>
+        <td style="padding:8px 14px;font-weight:600;color:var(--txt);">${m.name}</td>
+        <td style="padding:8px 14px;color:var(--muted);white-space:nowrap;">${m.rm}</td>
+        <td style="padding:8px 4px;color:var(--txt2);font-size:.72rem;">${m.role}</td>
+      </tr>`).join('');
+  }
 }
 
 function onMemberSelChange(sel) {
