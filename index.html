@@ -455,7 +455,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
       </div>
       <div class="phase-progress"><div class="phase-progress-fill ppf-active" id="phase1Fill" style="width:0%"></div></div>
     </div>
-    <div class="phase-card future">
+    <div class="phase-card future" id="phase2Card">
       <div class="phase-badge badge-future"><div class="badge-dot bd-future"></div>Em breve</div>
       <div class="phase-num">FASE 2</div>
       <div class="phase-title" style="color:var(--muted);">A definir</div>
@@ -653,6 +653,8 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
           <div style="font-size:1.6rem;font-weight:900;color:var(--green);line-height:1.1;">29</div>
           <div style="font-size:.65rem;font-weight:700;color:var(--green);line-height:1.2;">Out 2026</div>
         </div>
+        <!-- linha conectora -->
+        <div style="flex:1;width:2px;background:linear-gradient(to bottom,rgba(46,204,113,.3),rgba(46,204,113,.05));margin-top:6px;min-height:16px;"></div>
       </div>
       <!-- Card do evento -->
       <a href="https://fiapcom-my.sharepoint.com/:v:/g/personal/rm378332_fiap_com_br/IQC5N62mUBQvTq6TFpd7TLChAb-NMM30h2NPQWpAN4wiCx8" target="_blank" rel="noopener" style="text-decoration:none;margin-bottom:10px;">
@@ -668,6 +670,50 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
           </div>
         </div>
       </a>
+    </div>
+
+    <!-- ── Evento 5: Gravação últimas partes do vídeo ── -->
+    <div style="display:grid;grid-template-columns:88px 1fr;gap:0;align-items:stretch;">
+      <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px;padding-right:16px;">
+        <div style="background:var(--cn-grn-bg);border:1px solid rgba(46,204,113,.45);border-radius:8px;padding:8px 10px;text-align:center;min-width:68px;">
+          <div style="font-size:.6rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.8px;line-height:1;">Segunda</div>
+          <div style="font-size:1.6rem;font-weight:900;color:var(--green);line-height:1.1;">02</div>
+          <div style="font-size:.65rem;font-weight:700;color:var(--green);line-height:1.2;">Nov 2026</div>
+        </div>
+        <!-- linha conectora -->
+        <div style="flex:1;width:2px;background:linear-gradient(to bottom,rgba(46,204,113,.3),rgba(46,204,113,.05));margin-top:6px;min-height:16px;"></div>
+      </div>
+      <div style="background:var(--cn-grn-bg);border:1px solid rgba(46,204,113,.35);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:12px;opacity:.85;margin-bottom:10px;">
+        <div style="width:38px;height:38px;border-radius:8px;background:rgba(46,204,113,.2);border:1px solid rgba(46,204,113,.5);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">✅</div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
+            <span style="font-size:.82rem;font-weight:700;color:var(--txt);">Gravação · Últimas partes do vídeo</span>
+            <span style="font-size:.6rem;font-weight:700;background:rgba(46,204,113,.2);color:var(--green);border:1px solid rgba(46,204,113,.4);border-radius:20px;padding:1px 8px;">Concluído</span>
+          </div>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:3px;line-height:1.5;">App na EC2 ao vivo · RDS · Security Groups · Gestão de credenciais · Conclusão e encerramento</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Evento 6: Conferência e entrega final ── -->
+    <div style="display:grid;grid-template-columns:88px 1fr;gap:0;align-items:stretch;">
+      <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px;padding-right:16px;">
+        <div style="background:var(--cn-grn-bg);border:1px solid rgba(46,204,113,.45);border-radius:8px;padding:8px 10px;text-align:center;min-width:68px;">
+          <div style="font-size:.6rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.8px;line-height:1;">Terça</div>
+          <div style="font-size:1.6rem;font-weight:900;color:var(--green);line-height:1.1;">03</div>
+          <div style="font-size:.65rem;font-weight:700;color:var(--green);line-height:1.2;">Nov 2026</div>
+        </div>
+      </div>
+      <div style="background:var(--cn-grn-bg);border:1px solid rgba(46,204,113,.35);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:12px;opacity:.85;margin-bottom:10px;">
+        <div style="width:38px;height:38px;border-radius:8px;background:rgba(46,204,113,.2);border:1px solid rgba(46,204,113,.5);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">✅</div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
+            <span style="font-size:.82rem;font-weight:700;color:var(--txt);">Conferência · Relatório, documentação, vídeo e entrega</span>
+            <span style="font-size:.6rem;font-weight:700;background:rgba(46,204,113,.2);color:var(--green);border:1px solid rgba(46,204,113,.4);border-radius:20px;padding:1px 8px;">Concluído</span>
+          </div>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:3px;line-height:1.5;">Revisão final · Relatório PDF · Submissão na plataforma FIAP · Limpeza AWS</div>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -765,7 +811,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 // ══════════════════════════════════════════════
 // VERSÃO — fonte única da verdade
 // ══════════════════════════════════════════════
-const APP_VERSION = 'v2.33.0';
+const APP_VERSION = 'v2.34.0';
 
 // ══════════════════════════════════════════════
 // UTILITÁRIOS
@@ -1012,20 +1058,28 @@ function renderMembers() {
   const allTasks = [];   // [{lbl, status}] atribuídos a 'ALL'
   PEOPLE_CATALOG.forEach(p => ownTasks[p.pid] = []);
 
+  // Conta tarefas concluídas por pid (doneState.by é array)
+  const donePidCount = {};
+  PEOPLE_CATALOG.forEach(p => donePidCount[p.pid] = 0);
+  Object.values(doneState).forEach(ds => {
+    const byArr = Array.isArray(ds.by) ? ds.by : [ds.by];
+    byArr.forEach(pid => { if (pid !== 'ALL' && donePidCount[pid] !== undefined) donePidCount[pid]++; });
+    if (byArr.includes('ALL')) PEOPLE_CATALOG.forEach(p => donePidCount[p.pid]++);
+  });
+
   tasks.forEach(t => {
-    // Garante label mesmo se vier do Firebase sem o campo
     const def = DEFAULT_TASKS.find(d => d.id === t.id) || {};
     const lbl = t.label || def.label || t.title || '';
-    const entry = { lbl, status: t.status || 'todo' };
+    // status real: doneState tem prioridade
+    const realStatus = doneState[t.id] ? 'done' : (t.status || 'todo');
+    const entry = { lbl, status: realStatus };
     if (t.owner === 'ALL') {
       allTasks.push(entry);
     } else if (t.owner && ownTasks[t.owner] !== undefined) {
       ownTasks[t.owner].push(entry);
     }
-    // owner '' = sem atribuição → não aparece em nenhum card
   });
 
-  // mapeia status → classe CSS e ícone
   function stClass(s) {
     if (s === 'done')        return 'ts-done';
     if (s === 'in-progress') return 'ts-progress';
@@ -1037,8 +1091,7 @@ function renderMembers() {
     return '';
   }
   function mkTag(cls, { lbl, status }, prefix) {
-    const txt = (prefix || '') + lbl;
-    return `<span class="task-tag ${cls} ${stClass(status)}" title="${lbl}">${stIcon(status)}${txt}</span>`;
+    return `<span class="task-tag ${cls} ${stClass(status)}" title="${lbl}">${stIcon(status)}${prefix||''}${lbl}</span>`;
   }
 
   grid.innerHTML = PEOPLE_CATALOG.map(person => {
@@ -1046,18 +1099,22 @@ function renderMembers() {
     const shared = allTasks;
     const total  = mine.length + shared.length;
 
-    // Todas as tags individuais (sem corte — flex-wrap cuida do layout)
     const mineTags   = mine.map(e => mkTag(person.tag, e, '')).join('');
-    // Todas as tags compartilhadas
     const sharedTags = shared.map(e => mkTag('tag-purple', e, '👥 ')).join('');
 
     const tagsHtml = total > 0
       ? mineTags + sharedTags
       : `<span class="task-tag ts-todo" style="color:var(--muted);border-color:var(--border);">Sem tarefas</span>`;
 
-    // Rodapé com contagens
     const doneCount     = [...mine, ...shared].filter(e => e.status === 'done').length;
     const progressCount = [...mine, ...shared].filter(e => e.status === 'in-progress').length;
+    const pts = donePidCount[person.pid] || 0;
+
+    // Badge de pontos (tarefas concluídas)
+    const ptsBadge = pts > 0
+      ? `<div style="position:absolute;top:-6px;right:-6px;background:var(--green);color:#fff;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:800;border:2px solid var(--bg);" title="${pts} tarefa${pts>1?'s':''} concluída${pts>1?'s':''}">${pts}</div>`
+      : '';
+
     const countLine = total > 0 ? `
       <div style="font-size:.6rem;color:var(--muted);margin-top:5px;display:flex;gap:8px;flex-wrap:wrap;">
         ${mine.length   > 0 ? `<span>${mine.length} individual${mine.length > 1 ? 'is' : ''}</span>` : ''}
@@ -1067,7 +1124,8 @@ function renderMembers() {
       </div>` : '';
 
     return `
-    <div class="member-card">
+    <div class="member-card" style="position:relative;">
+      ${ptsBadge}
       <div class="member-avatar ${person.av}">${person.name.split(' ')[0].charAt(0)}</div>
       <div class="member-name">${person.name.split(' ')[0]}</div>
       <div class="member-rm">${person.rm}</div>
@@ -1144,25 +1202,38 @@ function cycleStatus(id) {}
 function openCheckModal(task) {
   document.getElementById('modalTitle').textContent    = '✅ Concluir tarefa';
   document.getElementById('modalSubtitle').textContent = task ? task.title : '';
+  const tagColors = { 'tag-pink':'var(--pink)', 'tag-blue':'var(--blue)', 'tag-purple':'var(--purple)', 'tag-green':'var(--green)', 'tag-yellow':'var(--yellow)' };
   document.getElementById('modalBody').innerHTML = `
-    <p style="font-size:.82rem;color:var(--muted);margin-bottom:14px;line-height:1.5;">Quem está marcando esta tarefa como concluída?</p>
-    <select class="modal-select" id="memberSelect" style="margin-bottom:6px;">
-      <option value="">— Selecione seu nome —</option>
-      ${PEOPLE_CATALOG.map(p => `<option value="${p.pid}">${p.name}</option>`).join('')}
-      <option value="ALL">👥 Todos (concluímos juntos)</option>
-    </select>
-    <div id="modalMemberName" style="font-size:.78rem;color:var(--green);min-height:18px;text-align:center;font-weight:600;"></div>`;
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px;line-height:1.5;">Quem concluiu esta tarefa? Selecione um ou mais membros:</p>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;" id="memberCheckboxes">
+      ${PEOPLE_CATALOG.map(p => `
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:7px 10px;border-radius:7px;border:1.5px solid var(--border);background:var(--surface2);">
+          <input type="checkbox" value="${p.pid}" style="width:15px;height:15px;cursor:pointer;" id="chk_${p.pid}" onchange="_chkIndivToggle()"/>
+          <span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${tagColors[p.tag]||'var(--blue)'};flex-shrink:0;"></span>
+          <span style="font-size:.82rem;font-weight:600;color:var(--txt);">${p.name.split(' ')[0]}</span>
+          <span style="font-size:.72rem;color:var(--muted);">${p.rm}</span>
+        </label>`).join('')}
+      <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:7px 10px;border-radius:7px;border:1.5px solid var(--border);background:var(--surface2);">
+        <input type="checkbox" value="ALL" style="width:15px;height:15px;cursor:pointer;" id="chk_ALL" onchange="_chkAllToggle(this)"/>
+        <span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--purple);flex-shrink:0;"></span>
+        <span style="font-size:.82rem;font-weight:600;color:var(--txt);">👥 Todos</span>
+      </label>
+    </div>`;
   document.getElementById('modalBtns').innerHTML = `
     <button class="btn btn-cancel" onclick="closeModal()">Cancelar</button>
     <button class="btn btn-confirm" onclick="confirmCheck()">✓ Marcar como concluída</button>`;
-  document.getElementById('memberSelect').addEventListener('change', function () {
-    const p = this.value === 'ALL' ? { name: 'Todos' } : PEOPLE_CATALOG.find(x => x.pid === this.value);
-    document.getElementById('modalMemberName').textContent = p ? p.name : '';
-  });
   const box = document.getElementById('modalBox');
   box.classList.remove('modal-wide');
   box.classList.add('modal-guide');
   document.getElementById('modalOverlay').classList.add('active');
+}
+
+function _chkAllToggle(allChk) {
+  if (allChk.checked) PEOPLE_CATALOG.forEach(p => { const c = document.getElementById('chk_' + p.pid); if (c) c.checked = false; });
+}
+function _chkIndivToggle() {
+  const allChk = document.getElementById('chk_ALL');
+  if (allChk) allChk.checked = false;
 }
 
 function closeModal() {
@@ -1175,17 +1246,29 @@ function closeModal() {
 }
 
 async function confirmCheck() {
-  const ownerId = document.getElementById('memberSelect')?.value;
-  if (!ownerId) { alert('Selecione seu nome antes de confirmar.'); return; }
-  const person = ownerId === 'ALL' ? null : PEOPLE_CATALOG.find(p => p.pid === ownerId);
   const id = pendingTaskId;
-  const atStr = new Date().toLocaleString('pt-BR', {dateStyle:'short', timeStyle:'short'});
-  const byName = ownerId === 'ALL' ? 'Todos' : (person ? person.name.split(' ')[0] : ownerId);
-  doneState[id] = { by: ownerId, by_name: byName, at: atStr };
+  // Lê checkboxes múltiplos
+  const allChk = document.getElementById('chk_ALL');
+  let selectedPids = [];
+  if (allChk && allChk.checked) {
+    selectedPids = ['ALL'];
+  } else {
+    selectedPids = PEOPLE_CATALOG.map(p => p.pid).filter(pid => {
+      const c = document.getElementById('chk_' + pid);
+      return c && c.checked;
+    });
+  }
+  if (!selectedPids.length) { showToast('⚠️ Selecione ao menos um membro antes de confirmar.'); return; }
+  const atStr  = new Date().toLocaleString('pt-BR', {dateStyle:'short', timeStyle:'short'});
+  const isAll  = selectedPids[0] === 'ALL';
+  const names  = isAll ? 'Todos' : selectedPids.map(pid => { const p = PEOPLE_CATALOG.find(x => x.pid === pid); return p ? p.name.split(' ')[0] : pid; }).join(', ');
+  // by agora é array de pids (ou ['ALL'])
+  doneState[id] = { by: selectedPids, by_name: names, at: atStr };
   saveState();
   renderChecklist();
+  renderMembers();
   closeModal();
-  showToast(`✅ ${byName} marcou "${tasks.find(t => t.id === id)?.title || id}" como concluída!`);
+  showToast(`✅ ${names} concluiu "${tasks.find(t => t.id === id)?.title || id}"!`);
 }
 
 function updateProgress() {
@@ -1196,6 +1279,17 @@ function updateProgress() {
   document.getElementById('progressText').textContent = `${done} / ${total} concluídas`;
   const f = document.getElementById('phase1Fill');
   if (f) f.style.width = pct + '%';
+
+  // Libera fase 2 ao concluir todas as tarefas da fase 1
+  const fase2 = document.getElementById('phase2Card');
+  if (fase2 && pct === 100) {
+    fase2.classList.remove('future');
+    fase2.classList.add('active');
+    const badge = fase2.querySelector('.phase-badge');
+    if (badge) { badge.className = 'phase-badge badge-active'; badge.innerHTML = '<div class="badge-dot bd-active"></div>Disponível'; }
+    const coming = fase2.querySelector('.phase-coming');
+    if (coming) coming.style.display = 'none';
+  }
 }
 
 // ══════════════════════════════════════════════
@@ -1203,18 +1297,49 @@ function updateProgress() {
 // ══════════════════════════════════════════════
 function openGroupModal() {
   const tagColors = { 'tag-pink':'var(--pink)', 'tag-blue':'var(--blue)', 'tag-purple':'var(--purple)', 'tag-green':'var(--green)', 'tag-yellow':'var(--yellow)' };
-  const rows = PEOPLE_CATALOG.map(p => `
+  const totalTasks = tasks.length;
+
+  // Conta concluídas por pid (suporta array e string legada)
+  const donePidCount = {};
+  PEOPLE_CATALOG.forEach(p => donePidCount[p.pid] = 0);
+  Object.values(doneState).forEach(ds => {
+    const byArr = Array.isArray(ds.by) ? ds.by : [ds.by];
+    byArr.forEach(pid => { if (pid !== 'ALL' && donePidCount[pid] !== undefined) donePidCount[pid]++; });
+    if (byArr.includes('ALL')) PEOPLE_CATALOG.forEach(p => donePidCount[p.pid]++);
+  });
+  const maxPts = Math.max(...Object.values(donePidCount), 1);
+
+  const rows = PEOPLE_CATALOG.map(p => {
+    const pts = donePidCount[p.pid] || 0;
+    const pct = totalTasks > 0 ? Math.round((pts / totalTasks) * 100) : 0;
+    const barColor = tagColors[p.tag] || 'var(--blue)';
+    return `
     <tr>
-      <td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${tagColors[p.tag]||'var(--blue)'};margin-right:4px;"></span><span style="font-weight:600;">${p.name}</span></td>
-      <td style="color:var(--muted);">${p.rm}</td>
-    </tr>`).join('');
+      <td><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${barColor};margin-right:5px;"></span><span style="font-weight:600;">${p.name}</span></td>
+      <td style="color:var(--muted);white-space:nowrap;">${p.rm}</td>
+      <td style="text-align:center;font-weight:700;color:${pts > 0 ? 'var(--green)' : 'var(--muted)'};">${pts}</td>
+      <td style="min-width:80px;">
+        <div style="background:var(--surface2);border-radius:4px;height:7px;overflow:hidden;">
+          <div style="height:100%;width:${pct}%;background:${barColor};border-radius:4px;transition:width .4s;"></div>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  const totalDone = Object.keys(doneState).filter(id => tasks.find(t => t.id === id)).length;
+
   document.getElementById('modalTitle').textContent    = '👥 Grupo 20 — Membros';
   document.getElementById('modalSubtitle').textContent = 'FIAP Pós Tech · DevOps e Arquitetura Cloud · 2026';
   document.getElementById('modalBody').innerHTML = `
     <table class="group-table">
-      <thead><tr><th>Nome completo</th><th>RM</th></tr></thead>
+      <thead><tr><th>Nome completo</th><th>RM</th><th style="text-align:center;">✅</th><th>Desempenho</th></tr></thead>
       <tbody>${rows}</tbody>
-    </table>`;
+    </table>
+    <div style="margin-top:14px;padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:.78rem;color:var(--muted);display:flex;gap:16px;flex-wrap:wrap;align-items:center;">
+      <span>Total de tarefas: <strong style="color:var(--txt);">${totalTasks}</strong></span>
+      <span>Concluídas: <strong style="color:var(--green);">${totalDone}</strong></span>
+      <span>Progresso: <strong style="color:var(--blue);">${totalTasks > 0 ? Math.round((totalDone/totalTasks)*100) : 0}%</strong></span>
+    </div>`;
   document.getElementById('modalBtns').innerHTML =
     `<button class="btn btn-cancel" onclick="closeModal()">Fechar</button>`;
   const box = document.getElementById('modalBox');
@@ -1523,8 +1648,9 @@ function _saveTaskFromModal(id, isNew) {
     const person = byId === 'ALL' ? null : PEOPLE_CATALOG.find(p => p.pid === byId);
     const byName = byId === 'ALL' ? 'Todos' : (person ? person.name.split(' ')[0] : byId);
     const atStr  = new Date().toLocaleString('pt-BR', {dateStyle:'short', timeStyle:'short'});
-    doneState[id] = { by: byId, by_name: byName, at: atStr };
-    task.status = 'progress'; // base antes de concluir
+    // normaliza para array (compatível com confirmCheck)
+    doneState[id] = { by: byId === 'ALL' ? ['ALL'] : [byId], by_name: byName, at: atStr };
+    task.status = 'progress';
     saveState();
   } else {
     // Se estava concluída e voltou para outro estado
@@ -1815,6 +1941,8 @@ window._saveTaskFromModal    = _saveTaskFromModal;
 window._deleteTaskFromModal  = _deleteTaskFromModal;
 window.cycleStatus           = cycleStatus;
 window._teSelectStatus       = _teSelectStatus;
+window._chkAllToggle         = _chkAllToggle;
+window._chkIndivToggle       = _chkIndivToggle;
 </script>
 </body>
 </html>
