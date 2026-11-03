@@ -60,9 +60,11 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 .phase-badge{display:inline-flex;align-items:center;gap:6px;font-size:.65rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 9px;border-radius:20px;margin-bottom:10px;}
 .badge-active{background:var(--pink-glow);color:var(--pink);border:1px solid var(--pink-dim);}
 .badge-future{background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
+.badge-done{background:rgba(46,204,113,.15);color:var(--green);border:1px solid rgba(46,204,113,.4);}
 .badge-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
 .bd-active{background:var(--pink);animation:pulse 1.8s infinite;}
 .bd-future{background:var(--muted);}
+.bd-done{background:var(--green);}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
 .phase-num{font-size:.7rem;font-weight:700;color:var(--muted);margin-bottom:4px;}
 .phase-title{font-size:1rem;font-weight:800;color:var(--txt);margin-bottom:4px;line-height:1.2;}
@@ -102,10 +104,21 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 .tl-sub{font-size:.68rem;color:var(--muted);text-align:center;line-height:1.4;}
 
 /* ── MEMBERS GRID ── */
-.members{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:clamp(8px,1vw,14px);align-items:stretch;}
-.member-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:clamp(12px,1.2vw,18px) clamp(10px,1vw,16px);text-align:center;transition:border-color .2s;display:flex;flex-direction:column;}
-.member-card:hover{border-color:var(--pink);}
-.member-avatar{width:42px;height:42px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800;color:#fff;}
+.members{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:clamp(8px,1vw,14px);align-items:stretch;}
+.member-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:clamp(14px,1.2vw,20px) clamp(12px,1vw,18px);text-align:center;transition:border-color .2s,box-shadow .2s;display:flex;flex-direction:column;position:relative;}
+.member-card:hover{border-color:var(--pink);box-shadow:0 4px 16px rgba(232,0,109,.08);}
+/* stat strip */
+.member-stats{display:flex;gap:0;margin-top:8px;border-radius:8px;overflow:hidden;border:1px solid var(--border);}
+.member-stat{flex:1;display:flex;flex-direction:column;align-items:center;padding:6px 4px;background:var(--surface2);border-right:1px solid var(--border);}
+.member-stat:last-child{border-right:none;}
+.member-stat-val{font-size:.9rem;font-weight:800;line-height:1;color:var(--txt);}
+.member-stat-lbl{font-size:.52rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;line-height:1;}
+.member-stat.done-stat .member-stat-val{color:var(--green);}
+.member-stat.prog-stat .member-stat-val{color:var(--yellow);}
+/* mini progress bar no card */
+.member-prog-bar{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;margin-top:6px;}
+.member-prog-fill{height:100%;border-radius:2px;transition:width .5s ease;}
+.member-avatar{width:44px;height:44px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:1.05rem;font-weight:800;color:#fff;}
 .av-1{background:linear-gradient(135deg,#e8006d,#a8004f);} .av-2{background:linear-gradient(135deg,#5b8fff,#2e5cbf);}
 .av-3{background:linear-gradient(135deg,#9b59f5,#6c3bbf);} .av-4{background:linear-gradient(135deg,#2ecc71,#1a8a4c);}
 .av-5{background:linear-gradient(135deg,#f5c518,#c49c0e);}
@@ -144,6 +157,9 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 .check-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 12px;display:flex;align-items:center;gap:10px;transition:border-color .18s,background .18s;}
 .check-item.done{opacity:.72;border-color:var(--green);background:var(--cn-grn-bg);}
 .check-item.in-progress{border-color:rgba(245,197,24,.5);background:rgba(245,197,24,.05);}
+.drag-handle{display:flex;align-items:center;cursor:grab;padding:0 2px;color:var(--muted);flex-shrink:0;}
+.drag-handle:active{cursor:grabbing;}
+.check-item.dnd-over{border-color:var(--pink);background:rgba(232,0,109,.06);}
 
 /* Corpo */
 .check-body{flex:1;min-width:0;}
@@ -811,7 +827,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 // ══════════════════════════════════════════════
 // VERSÃO — fonte única da verdade
 // ══════════════════════════════════════════════
-const APP_VERSION = 'v2.34.0';
+const APP_VERSION = 'v2.35.0';
 
 // ══════════════════════════════════════════════
 // UTILITÁRIOS
@@ -1108,29 +1124,39 @@ function renderMembers() {
 
     const doneCount     = [...mine, ...shared].filter(e => e.status === 'done').length;
     const progressCount = [...mine, ...shared].filter(e => e.status === 'in-progress').length;
-    const pts = donePidCount[person.pid] || 0;
+    const pts  = donePidCount[person.pid] || 0;
+    const pct  = total > 0 ? Math.round((doneCount / total) * 100) : 0;
+    // Cor da barra de progresso individual
+    const tagColorMap = { 'tag-pink':'#e8006d','tag-blue':'#5b8fff','tag-purple':'#9b59f5','tag-green':'#2ecc71','tag-yellow':'#f5c518' };
+    const barColor = tagColorMap[person.tag] || '#5b8fff';
 
-    // Badge de pontos (tarefas concluídas)
-    const ptsBadge = pts > 0
-      ? `<div style="position:absolute;top:-6px;right:-6px;background:var(--green);color:#fff;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:800;border:2px solid var(--bg);" title="${pts} tarefa${pts>1?'s':''} concluída${pts>1?'s':''}">${pts}</div>`
-      : '';
-
-    const countLine = total > 0 ? `
-      <div style="font-size:.6rem;color:var(--muted);margin-top:5px;display:flex;gap:8px;flex-wrap:wrap;">
-        ${mine.length   > 0 ? `<span>${mine.length} individual${mine.length > 1 ? 'is' : ''}</span>` : ''}
-        ${shared.length > 0 ? `<span style="color:var(--purple);">👥 ${shared.length} de todos</span>` : ''}
-        ${doneCount     > 0 ? `<span style="color:var(--green);">✅ ${doneCount} concluída${doneCount > 1 ? 's' : ''}</span>` : ''}
-        ${progressCount > 0 ? `<span style="color:var(--yellow);">🔄 ${progressCount} em andamento</span>` : ''}
-      </div>` : '';
+    // Stat strip: Atribuídas | Concluídas | Em andamento
+    const statStrip = `
+      <div class="member-stats">
+        <div class="member-stat">
+          <span class="member-stat-val">${total}</span>
+          <span class="member-stat-lbl">Atrib.</span>
+        </div>
+        <div class="member-stat done-stat">
+          <span class="member-stat-val">${doneCount}</span>
+          <span class="member-stat-lbl">Conc.</span>
+        </div>
+        <div class="member-stat prog-stat">
+          <span class="member-stat-val">${progressCount}</span>
+          <span class="member-stat-lbl">Andto.</span>
+        </div>
+      </div>
+      <div class="member-prog-bar">
+        <div class="member-prog-fill" style="width:${pct}%;background:${barColor};"></div>
+      </div>`;
 
     return `
-    <div class="member-card" style="position:relative;">
-      ${ptsBadge}
+    <div class="member-card">
       <div class="member-avatar ${person.av}">${person.name.split(' ')[0].charAt(0)}</div>
       <div class="member-name">${person.name.split(' ')[0]}</div>
       <div class="member-rm">${person.rm}</div>
       <div class="member-tasks">${tagsHtml}</div>
-      ${countLine}
+      ${total > 0 ? statStrip : ''}
     </div>`;
   }).join('');
 
@@ -1148,13 +1174,14 @@ function saveInlineMembers() {
 }
 
 // ══════════════════════════════════════════════
-// RENDER CHECKLIST
+// RENDER CHECKLIST + DRAG-AND-DROP REORDER
 // ══════════════════════════════════════════════
 const NUM_COLORS = ['cn-pink','cn-pink','cn-blue','cn-blue','cn-blue','cn-purple','cn-purple','cn-purple','cn-green','cn-green','cn-green'];
 function getNumColor(idx) { return NUM_COLORS[idx] || 'cn-green'; }
 
-// IDs de tarefas que têm guia de passo-a-passo
 const GUIDE_IDS = new Set(['t1','t2','t3','t4','t5','t6','t7','t10']);
+
+let _dndSrcId = null;
 
 function renderChecklist() {
   const el = document.getElementById('checklist');
@@ -1163,13 +1190,18 @@ function renderChecklist() {
     const done   = !!doneState[task.id];
     const inProg = !done && task.status === 'progress';
     const doneText = done ? `✓ por ${doneState[task.id].by_name} em ${doneState[task.id].at}` : '';
-
     const guideBtn = GUIDE_IDS.has(task.id)
       ? `<button class="check-guide-btn" onclick="openGuide('${task.id}')">📋 Guia</button>` : '';
-
     const itemClass = done ? 'done' : (inProg ? 'in-progress' : '');
     return `
-    <div class="check-item${itemClass ? ' '+itemClass : ''}" data-id="${task.id}">
+    <div class="check-item${itemClass ? ' '+itemClass : ''}" data-id="${task.id}" draggable="true">
+      <div class="drag-handle" title="Arrastar para reordenar">
+        <svg width="10" height="16" viewBox="0 0 10 16" fill="none" style="opacity:.35;flex-shrink:0;">
+          <circle cx="3" cy="3" r="1.5" fill="currentColor"/><circle cx="7" cy="3" r="1.5" fill="currentColor"/>
+          <circle cx="3" cy="8" r="1.5" fill="currentColor"/><circle cx="7" cy="8" r="1.5" fill="currentColor"/>
+          <circle cx="3" cy="13" r="1.5" fill="currentColor"/><circle cx="7" cy="13" r="1.5" fill="currentColor"/>
+        </svg>
+      </div>
       <div class="check-num ${getNumColor(idx)}">${idx + 1}</div>
       <div class="check-body">
         <div class="check-title">${task.title}</div>
@@ -1188,7 +1220,35 @@ function renderChecklist() {
     </div>`;
   }).join('');
 
+  _attachChecklistDnD();
   updateProgress();
+}
+
+function _attachChecklistDnD() {
+  const el = document.getElementById('checklist');
+  el.querySelectorAll('.check-item[draggable]').forEach(item => {
+    item.addEventListener('dragstart', e => {
+      _dndSrcId = item.dataset.id;
+      item.style.opacity = '.4';
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    item.addEventListener('dragend', () => { item.style.opacity = ''; el.querySelectorAll('.check-item').forEach(i => i.classList.remove('dnd-over')); });
+    item.addEventListener('dragover', e => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; item.classList.add('dnd-over'); });
+    item.addEventListener('dragleave', () => item.classList.remove('dnd-over'));
+    item.addEventListener('drop', e => {
+      e.preventDefault();
+      item.classList.remove('dnd-over');
+      const targetId = item.dataset.id;
+      if (!_dndSrcId || _dndSrcId === targetId) return;
+      const srcIdx = tasks.findIndex(t => t.id === _dndSrcId);
+      const tgtIdx = tasks.findIndex(t => t.id === targetId);
+      if (srcIdx < 0 || tgtIdx < 0) return;
+      const [moved] = tasks.splice(srcIdx, 1);
+      tasks.splice(tgtIdx, 0, moved);
+      saveTasks();
+      renderChecklist();
+    });
+  });
 }
 
 // ══════════════════════════════════════════════
@@ -1280,6 +1340,21 @@ function updateProgress() {
   const f = document.getElementById('phase1Fill');
   if (f) f.style.width = pct + '%';
 
+  // Fase 1: muda badge para "Concluído" ao atingir 100%
+  const fase1Card = document.querySelector('.phase-card.active');
+  if (fase1Card) {
+    const b1 = fase1Card.querySelector('.phase-badge');
+    if (b1) {
+      if (pct === 100) {
+        b1.className = 'phase-badge badge-done';
+        b1.innerHTML = '<div class="badge-dot bd-done"></div>Concluído';
+      } else {
+        b1.className = 'phase-badge badge-active';
+        b1.innerHTML = '<div class="badge-dot bd-active"></div>Em andamento';
+      }
+    }
+  }
+
   // Libera fase 2 ao concluir todas as tarefas da fase 1
   const fase2 = document.getElementById('phase2Card');
   if (fase2 && pct === 100) {
@@ -1343,7 +1418,8 @@ function openGroupModal() {
   document.getElementById('modalBtns').innerHTML =
     `<button class="btn btn-cancel" onclick="closeModal()">Fechar</button>`;
   const box = document.getElementById('modalBox');
-  box.classList.remove('modal-wide');
+  box.classList.add('modal-wide');
+  box.classList.remove('modal-guide');
   document.getElementById('modalOverlay').classList.add('active');
 }
 
