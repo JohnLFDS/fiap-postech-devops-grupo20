@@ -108,7 +108,7 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 .member-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:clamp(14px,1.2vw,20px) clamp(12px,1vw,18px);text-align:center;transition:border-color .2s,box-shadow .2s;display:flex;flex-direction:column;position:relative;}
 .member-card:hover{border-color:var(--pink);box-shadow:0 4px 16px rgba(232,0,109,.08);}
 /* stat strip */
-.member-stats{display:flex;gap:0;margin-top:8px;border-radius:8px;overflow:hidden;border:1px solid var(--border);}
+.member-stats{display:flex;gap:0;margin-top:auto;padding-top:8px;border-radius:8px;overflow:hidden;border:1px solid var(--border);}
 .member-stat{flex:1;display:flex;flex-direction:column;align-items:center;padding:6px 4px;background:var(--surface2);border-right:1px solid var(--border);}
 .member-stat:last-child{border-right:none;}
 .member-stat-val{font-size:.9rem;font-weight:800;line-height:1;color:var(--txt);}
@@ -116,7 +116,7 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 .member-stat.done-stat .member-stat-val{color:var(--green);}
 .member-stat.prog-stat .member-stat-val{color:var(--yellow);}
 /* mini progress bar no card */
-.member-prog-bar{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;margin-top:6px;}
+.member-prog-bar{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;margin-top:6px;flex-shrink:0;}
 .member-prog-fill{height:100%;border-radius:2px;transition:width .5s ease;}
 .member-avatar{width:44px;height:44px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:1.05rem;font-weight:800;color:#fff;}
 .av-1{background:linear-gradient(135deg,#e8006d,#a8004f);} .av-2{background:linear-gradient(135deg,#5b8fff,#2e5cbf);}
@@ -827,7 +827,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 // ══════════════════════════════════════════════
 // VERSÃO — fonte única da verdade
 // ══════════════════════════════════════════════
-const APP_VERSION = 'v2.35.0';
+const APP_VERSION = 'v2.36.0';
 
 // ══════════════════════════════════════════════
 // UTILITÁRIOS
@@ -1122,15 +1122,19 @@ function renderMembers() {
       ? mineTags + sharedTags
       : `<span class="task-tag ts-todo" style="color:var(--muted);border-color:var(--border);">Sem tarefas</span>`;
 
-    const doneCount     = [...mine, ...shared].filter(e => e.status === 'done').length;
-    const progressCount = [...mine, ...shared].filter(e => e.status === 'in-progress').length;
-    const pts  = donePidCount[person.pid] || 0;
+    // doneCount: usa donePidCount — já considera corretamente o array `by` de cada doneState
+    // (tarefas ALL só contam se o pid estiver em by[] ou by=['ALL'])
+    const doneCount     = donePidCount[person.pid] || 0;
+    // progressCount: tarefas individuais do membro em andamento
+    //   + tarefas ALL em andamento que o membro ainda não concluiu individualmente
+    const progressCount = mine.filter(e => e.status === 'in-progress').length
+      + shared.filter(e => e.status === 'in-progress').length;
     const pct  = total > 0 ? Math.round((doneCount / total) * 100) : 0;
     // Cor da barra de progresso individual
     const tagColorMap = { 'tag-pink':'#e8006d','tag-blue':'#5b8fff','tag-purple':'#9b59f5','tag-green':'#2ecc71','tag-yellow':'#f5c518' };
     const barColor = tagColorMap[person.tag] || '#5b8fff';
 
-    // Stat strip: Atribuídas | Concluídas | Em andamento
+    // Stat strip: sempre renderizado para manter alinhamento ao rodapé do card
     const statStrip = `
       <div class="member-stats">
         <div class="member-stat">
@@ -1156,7 +1160,7 @@ function renderMembers() {
       <div class="member-name">${person.name.split(' ')[0]}</div>
       <div class="member-rm">${person.rm}</div>
       <div class="member-tasks">${tagsHtml}</div>
-      ${total > 0 ? statStrip : ''}
+      ${statStrip}
     </div>`;
   }).join('');
 
