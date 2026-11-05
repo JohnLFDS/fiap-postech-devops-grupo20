@@ -985,7 +985,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js';
 import { getDatabase, ref, set, onValue } from 'https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js';
 
-const APP_VERSION = 'v3.2.0';
+const APP_VERSION = 'v3.3.0';
 
 const firebaseConfig = {
   apiKey:            'AIzaSyBw4uD-FAKE_API_KEY_PROTECTED',
@@ -1025,17 +1025,21 @@ const PEOPLE_CATALOG = [
 // DADOS HISTÓRICOS DA FASE 1 (ESTÁTICOS / CONCLUÍDOS)
 // ══════════════════════════════════════════════
 const FASE1_TASKS = [
-  { id:'f1_t1',  label:'Deploy local',    title:'Executar aplicação localmente (Docker Compose)',        desc:'Clonar repo · docker compose up --build · testar CRUD com curl · identificar por que é um monolito', owner:'P5', doneBy:'Cassio', doneAt:'19/10/2026 17:30' },
-  { id:'f1_t2',  label:'Conta AWS',       title:'Acesso ao AWS Academy Learner Lab',                     desc:'Aceitar convite no Canvas · registrar com e-mail FIAP · Start Lab · us-east-1 · créditos provisionados', owner:'ALL', doneBy:'Todos', doneAt:'14/10/2026 19:00' },
-  { id:'f1_t3',  label:'Diagrama',        title:'Diagrama de arquitetura AWS (draw.io)',                  desc:'VPC 10.0.0.0/16 · subnets pública e privada · EC2 na pública · RDS na privada · IGW · SGs', owner:'P4', doneBy:'Marcelo', doneAt:'29/10/2026 20:00' },
-  { id:'f1_t4',  label:'12 Fatores',      title:'Análise dos 12 Fatores (12-Factor App)',                 desc:'Analisar app.py, Dockerfile, requirements.txt e docker-compose.yaml · status com justificativa', owner:'P4', doneBy:'Marcelo', doneAt:'02/11/2026 18:00' },
-  { id:'f1_t5',  label:'Pricing',         title:'Estimativa de custos na AWS Pricing Calculator',         desc:'calculator.aws · EC2 t3.micro + RDS db.t3.micro + Data Transfer · região us-east-1 · print para relatório', owner:'P3', doneBy:'Alan', doneAt:'02/11/2026 19:30' },
-  { id:'f1_t6',  label:'Infra AWS',       title:'Provisionar infraestrutura AWS (VPC, EC2, RDS, SGs)',    desc:'VPC · subnet pública + privada · IGW · Route Table · sg-ec2 · sg-rds · EC2 t3.micro · RDS PostgreSQL 15', owner:'P1', doneBy:'Erick, John', doneAt:'14/10/2026 21:00' },
-  { id:'f1_t7',  label:'Deploy EC2',      title:'Deploy da aplicação na EC2 via SSH',                     desc:'SSH na EC2 · clone repo · venv · pip install · env vars de banco · flask init-db · gunicorn --bind 0.0.0.0:5000', owner:'P2', doneBy:'John, Erick', doneAt:'02/11/2026 21:00' },
-  { id:'f1_t8',  label:'Validar API',     title:'Validar API pública na EC2',                             desc:'curl /health · POST /flags · GET /flags · PUT /flags · confirmação de persistência no RDS', owner:'ALL', doneBy:'Todos', doneAt:'02/11/2026 21:30' },
-  { id:'f1_t9',  label:'Relatório',       title:'Compilar relatório de entrega (.PDF ou .txt)',           desc:'Nomes dos participantes · link da documentação e vídeo · resumo dos desafios e custos AWS', owner:'P3', doneBy:'Alan', doneAt:'03/11/2026 10:00' },
-  { id:'f1_t10', label:'Vídeo',           title:'Gravar vídeo de demonstração (até 15 min)',              desc:'App local · diagrama · EC2 com RDS ao vivo · Security Groups · credenciais · link compartilhável', owner:'ALL', doneBy:'Todos', doneAt:'03/11/2026 10:30' },
-  { id:'f1_t11', label:'Submission',      title:'Submissão final + limpeza AWS',                          desc:'Reunir vídeo + diagrama + PDF · submeter na FIAP · parar EC2 e remover RDS para evitar custos', owner:'P1', doneBy:'Erick, Alan, John, Marcelo, Cassio', doneAt:'03/11/2026 11:00' },
+  { id:'f1_t1',  label:'Deploy local',       title:'Executar aplicação localmente (Docker Compose)',                                desc:'Clonar repo · docker compose up --build · testar CRUD com curl · identificar por que é um monolito', owner:['P5','P2'], doneBy:'Cassio e John', doneAt:'19/10/2026 17:30' },
+  { id:'f1_t2',  label:'Conta AWS',          title:'Acesso ao AWS Academy Learner Lab',                                             desc:'Aceitar convite no Canvas · registrar com e-mail FIAP · Start Lab · us-east-1 · créditos provisionados', owner:'ALL', doneBy:'Todos', doneAt:'14/10/2026 19:00' },
+  { id:'f1_t3',  label:'Diagrama',           title:'Diagrama de arquitetura AWS (draw.io)',                                          desc:'VPC 10.0.0.0/16 · subnets pública e privada · EC2 na pública · RDS na privada · IGW · SGs', owner:['P4','P2'], doneBy:'Marcelo e John', doneAt:'29/10/2026 20:00' },
+  { id:'f1_t4',  label:'12 Fatores',         title:'Análise dos 12 Fatores (12-Factor App)',                                         desc:'Analisar app.py, Dockerfile, requirements.txt e docker-compose.yaml · status com justificativa técnica', owner:['P5','P2'], doneBy:'Cassio e John', doneAt:'02/11/2026 18:00' },
+  { id:'f1_t5',  label:'Pricing',            title:'Estimativa de custos na AWS Pricing Calculator',                                 desc:'calculator.aws · EC2 t3.micro + RDS db.t3.micro + Data Transfer · região us-east-1 · print para relatório', owner:['P5','P2'], doneBy:'Cassio e John', doneAt:'02/11/2026 19:30' },
+  { id:'f1_t6',  label:'Infra AWS',          title:'Provisionar infraestrutura AWS (VPC, EC2, RDS, SGs)',                            desc:'VPC · subnet pública + privada · IGW · Route Table · sg-ec2 · sg-rds · EC2 t3.micro · RDS PostgreSQL 15', owner:'ALL', doneBy:'Todos', doneAt:'14/10/2026 21:00' },
+  { id:'f1_t7',  label:'Deploy EC2',         title:'Deploy da aplicação na EC2 via SSH',                                             desc:'SSH na EC2 · clone repo · venv · pip install · env vars de banco · flask init-db · gunicorn --bind 0.0.0.0:5000', owner:'ALL', doneBy:'Todos', doneAt:'02/11/2026 21:00' },
+  { id:'f1_t8',  label:'Validar API',        title:'Validar API pública na EC2',                                                     desc:'curl /health · POST /flags · GET /flags · PUT /flags · confirmação de persistência no RDS', owner:'P2', doneBy:'John', doneAt:'02/11/2026 21:30' },
+  { id:'f1_t9',  label:'Vídeo (Local)',      title:'Gravação: Apresentação da aplicação rodando localmente',                        desc:'Gravação do bloco 1 do vídeo demonstrativo: Docker Compose local e teste inicial de rotas', owner:'P5', doneBy:'Cassio', doneAt:'02/11/2026 22:00' },
+  { id:'f1_t10', label:'Vídeo (Diagrama)',   title:'Gravação: Explicação do diagrama de arquitetura proposto',                       desc:'Gravação do bloco 2 do vídeo demonstrativo: Topologia VPC, Subnets, EC2, RDS e Security Groups', owner:'P4', doneBy:'Marcelo', doneAt:'02/11/2026 22:30' },
+  { id:'f1_t11', label:'Vídeo (EC2 + RDS)',  title:'Gravação: Demonstração da aplicação rodando na EC2 com RDS',                    desc:'Gravação do bloco 3 do vídeo demonstrativo: Teste de API pública ao vivo e persistência no banco RDS', owner:'P2', doneBy:'John', doneAt:'03/11/2026 00:00' },
+  { id:'f1_t12', label:'Vídeo (SGs/Env)',    title:'Gravação: Demonstração dos Security Groups e Gestão de Credenciais',             desc:'Gravação do bloco 4 do vídeo demonstrativo: Regras de firewall (SGs) e segurança de variáveis de ambiente', owner:'P2', doneBy:'John', doneAt:'03/11/2026 00:30' },
+  { id:'f1_t13', label:'Relatório',          title:'Compilar relatório de entrega (.PDF ou .txt)',                                   desc:'Nomes dos participantes, RMs · links da documentação, repo e vídeo · resumo dos desafios e custos AWS', owner:'P2', doneBy:'John', doneAt:'03/11/2026 10:00' },
+  { id:'f1_t14', label:'Edição Vídeo',       title:'Editar vídeo de demonstração (até 15 min)',                                     desc:'Edição e sincronização dos 4 blocos em arquivo único até 15 min · upload no YouTube (não listado)', owner:'P2', doneBy:'John', doneAt:'03/11/2026 10:30' },
+  { id:'f1_t15', label:'Submission',         title:'Submissão final + limpeza AWS',                                                  desc:'Reunir vídeo + diagrama + PDF · submeter na FIAP · parar EC2 e remover RDS para evitar custos', owner:'P2', doneBy:'John', doneAt:'03/11/2026 11:00' },
 ];
 
 // ── Tarefas padrão da FASE 2 ────────────────────────────
@@ -1302,8 +1306,14 @@ function renderFase1Members() {
 
   FASE1_TASKS.forEach(t => {
     const entry = { lbl: t.label, status: 'done' };
-    if (t.owner === 'ALL') allTasks.push(entry);
-    else if (t.owner && ownTasks[t.owner]) ownTasks[t.owner].push(entry);
+    if (t.owner === 'ALL') {
+      allTasks.push(entry);
+    } else {
+      const owners = Array.isArray(t.owner) ? t.owner : [t.owner];
+      owners.forEach(pid => {
+        if (ownTasks[pid]) ownTasks[pid].push(entry);
+      });
+    }
   });
 
   grid.innerHTML = PEOPLE_CATALOG.map(person => {
@@ -1337,7 +1347,7 @@ function renderFase1Checklist() {
   const el = document.getElementById('checklistFase1');
   if (!el) return;
 
-  const numColors = ['cn-pink','cn-pink','cn-blue','cn-blue','cn-blue','cn-purple','cn-purple','cn-purple','cn-green','cn-green','cn-green'];
+  const numColors = ['cn-pink','cn-pink','cn-blue','cn-blue','cn-blue','cn-purple','cn-purple','cn-purple','cn-green','cn-green','cn-green','cn-pink','cn-blue','cn-purple','cn-green'];
 
   el.innerHTML = FASE1_TASKS.map((task, idx) => {
     const guideKey = task.id.replace('f1_', '');
@@ -1799,8 +1809,8 @@ function openGroupModal() {
 // ══════════════════════════════════════════════
 const GUIDES_FASE1 = {
   t1: {
-    title: 'T1 — Executar a aplicação localmente',
-    subtitle: 'Fase 1 · Responsável: Cassio · Concluído',
+    title: 'T1 — Executar aplicação localmente (Docker Compose)',
+    subtitle: 'Fase 1 · Responsável: Cassio e John · Concluído',
     steps: [
       { title: 'Clonar o repositório', body: 'git clone https://github.com/dougls/toggle-master-monolith\ncd toggle-master-monolith' },
       { title: 'Subir os contêineres', body: 'docker compose up --build', tip: 'Aguarde "Listening at: http://0.0.0.0:5000".' },
@@ -1815,45 +1825,94 @@ const GUIDES_FASE1 = {
     ]
   },
   t3: {
-    title: 'T3 — Diagrama de Arquitetura AWS',
-    subtitle: 'Fase 1 · Responsável: Marcelo · Concluído',
+    title: 'T3 — Diagrama de Arquitetura AWS (draw.io)',
+    subtitle: 'Fase 1 · Responsável: Marcelo e John · Concluído',
     steps: [
       { title: 'Layout no draw.io', body: 'VPC 10.0.0.0/16 · Subnet Pública (EC2) · Subnet Privada (RDS PostgreSQL) · Internet Gateway · Security Groups detalhados.' }
     ]
   },
   t4: {
-    title: 'T4 — Análise dos 12 Fatores',
-    subtitle: 'Fase 1 · Responsável: Marcelo · Concluído',
+    title: 'T4 — Análise dos 12 Fatores (12-Factor App)',
+    subtitle: 'Fase 1 · Responsável: Cassio e John · Concluído',
     steps: [
       { title: 'Mapeamento no código', body: 'Classificação detalhada dos 12 fatores arquiteturais no monólito com status e justificativa técnica.' }
     ]
   },
   t5: {
-    title: 'T5 — Estimativa de Custo AWS',
-    subtitle: 'Fase 1 · Responsável: Alan · Concluído',
+    title: 'T5 — Estimativa de Custo AWS (Pricing Calculator)',
+    subtitle: 'Fase 1 · Responsável: Cassio e John · Concluído',
     steps: [
       { title: 'Calculadora AWS', body: 'EC2 t3.micro + RDS db.t3.micro na região us-east-1 · exportação do link público e print para o relatório.' }
     ]
   },
   t6: {
-    title: 'T6 — Provisionar Infraestrutura AWS',
-    subtitle: 'Fase 1 · Responsável: Erick + John · Concluído',
+    title: 'T6 — Provisionar Infraestrutura AWS (VPC, EC2, RDS, SGs)',
+    subtitle: 'Fase 1 · Responsável: Todos · Concluído',
     steps: [
       { title: 'Provisionamento', body: 'Criação de VPC, sub-redes, Route Tables, Internet Gateway, Security Groups, instância EC2 Amazon Linux e RDS PostgreSQL 15.' }
     ]
   },
   t7: {
-    title: 'T7 — Deploy na EC2 via SSH',
-    subtitle: 'Fase 1 · Responsável: Erick + John · Concluído',
+    title: 'T7 — Deploy da aplicação na EC2 via SSH',
+    subtitle: 'Fase 1 · Responsável: Todos · Concluído',
     steps: [
       { title: 'Deploy e execução', body: 'SSH na EC2 · clone · venv · instalação de dependências · exportação de variáveis de banco · flask init-db · Gunicorn rodando.' }
     ]
   },
-  t10: {
-    title: 'T10 — Gravação do Vídeo Demonstrativo',
-    subtitle: 'Fase 1 · Responsável: Todos · Concluído',
+  t8: {
+    title: 'T8 — Validar API pública na EC2',
+    subtitle: 'Fase 1 · Responsável: John · Concluído',
     steps: [
-      { title: 'Gravação conjunta', body: 'Demonstração do Docker local, diagrama, EC2 ao vivo com RDS, Security Groups e gestão de credenciais.' }
+      { title: 'Testes de endpoints públicos', body: 'Validar rotas /health, /flags (POST, GET, PUT) e checar persistência dos registros no banco RDS.' }
+    ]
+  },
+  t9: {
+    title: 'T9 — Gravação: Apresentação da aplicação rodando localmente',
+    subtitle: 'Fase 1 · Responsável: Cassio · Concluído',
+    steps: [
+      { title: 'Gravação do Bloco 1', body: 'Demonstração em vídeo do Docker Compose local rodando, rotas funcionando e arquitetura do monólito.' }
+    ]
+  },
+  t10: {
+    title: 'T10 — Gravação: Explicação do diagrama de arquitetura proposto',
+    subtitle: 'Fase 1 · Responsável: Marcelo · Concluído',
+    steps: [
+      { title: 'Gravação do Bloco 2', body: 'Apresentação detalhada do diagrama draw.io com topologia VPC, Subnets Pública/Privada, EC2, RDS e SGs.' }
+    ]
+  },
+  t11: {
+    title: 'T11 — Gravação: Demonstração da aplicação rodando na EC2 com RDS',
+    subtitle: 'Fase 1 · Responsável: John · Concluído',
+    steps: [
+      { title: 'Gravação do Bloco 3', body: 'Demonstração ao vivo da EC2 em execução na AWS chamando o RDS PostgreSQL e persistindo dados.' }
+    ]
+  },
+  t12: {
+    title: 'T12 — Gravação: Demonstração dos Security Groups e Gestão de Credenciais',
+    subtitle: 'Fase 1 · Responsável: John · Concluído',
+    steps: [
+      { title: 'Gravação do Bloco 4', body: 'Apresentação das regras de entrada/saída dos Security Groups e uso de variáveis de ambiente para credenciais seguras.' }
+    ]
+  },
+  t13: {
+    title: 'T13 — Compilar relatório de entrega (.PDF ou .txt)',
+    subtitle: 'Fase 1 · Responsável: John · Concluído',
+    steps: [
+      { title: 'Elaboração do documento', body: 'Compilação dos nomes/RMs do grupo, links do GitHub, vídeo, diagrama draw.io, estimativa de custos e boas práticas.' }
+    ]
+  },
+  t14: {
+    title: 'T14 — Editar vídeo de demonstração (até 15 min)',
+    subtitle: 'Fase 1 · Responsável: John · Concluído',
+    steps: [
+      { title: 'Edição e montagem', body: 'Unificação dos 4 blocos de gravação dos integrantes em vídeo único de 15 minutos e publicação como não-listado no YouTube.' }
+    ]
+  },
+  t15: {
+    title: 'T15 — Submissão final + limpeza AWS',
+    subtitle: 'Fase 1 · Responsável: John · Concluído',
+    steps: [
+      { title: 'Envio no portal e desligamento', body: 'Submissão formal dos links no portal FIAP e exclusão dos recursos na AWS para economia de créditos.' }
     ]
   }
 };
