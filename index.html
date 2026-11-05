@@ -233,7 +233,7 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(3px);z-index:999;display:none;align-items:center;justify-content:center;padding:16px;}
 .modal-overlay.active{display:flex;}
 .modal-box{background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--pink);border-radius:14px;padding:24px 28px;width:100%;max-width:540px;box-shadow:var(--shadow);max-height:90vh;overflow-y:auto;position:relative;}
-.modal-box.modal-wide{max-width:680px;}
+.modal-box.modal-wide{max-width:740px;}
 .modal-box.modal-guide{max-width:620px;}
 .modal-title{font-size:1.1rem;font-weight:800;color:var(--txt);margin-bottom:2px;}
 .modal-subtitle{font-size:.75rem;color:var(--muted);margin-bottom:18px;}
@@ -618,7 +618,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
     <!-- MEMBROS FASE 2 -->
     <div class="sec-header">
       <div class="dot"></div>
-      <h2>Atribuição de tarefas por membro — Grupo 24</h2>
+      <h2>Desempenho e Atribuições — Grupo 24 (Fase 2)</h2>
       <button class="sec-edit-btn" id="membersSaveBtn" onclick="saveInlineMembers()" style="display:none;">💾 Salvar atribuições</button>
     </div>
     <div class="members" id="membersGrid"><!-- renderizado por JS --></div>
@@ -1667,51 +1667,125 @@ function openAddTaskModal() {
 }
 
 // ══════════════════════════════════════════════
-// MODAL — SOBRE O GRUPO
+// MODAL — SOBRE O GRUPO (DESEMPENHO HISTÓRICO GLOBAL)
 // ══════════════════════════════════════════════
 function openGroupModal() {
   const tagColors = { 'tag-pink':'var(--pink)', 'tag-blue':'var(--blue)', 'tag-purple':'var(--purple)', 'tag-green':'var(--green)', 'tag-yellow':'var(--yellow)' };
-  const totalTasks = tasks.length;
 
-  const donePidCount = {};
-  PEOPLE_CATALOG.forEach(p => donePidCount[p.pid] = 0);
+  // 1. Estatísticas da Fase 1 (Histórico 100% concluído)
+  const totalTasksF1 = FASE1_TASKS.length; // 11
+  const totalDoneF1  = totalTasksF1;        // 11
+
+  // 2. Estatísticas da Fase 2 (Interativa / Em andamento)
+  const totalTasksF2 = tasks.length;
+  const donePidCountF2 = {};
+  PEOPLE_CATALOG.forEach(p => donePidCountF2[p.pid] = 0);
   Object.values(doneState).forEach(ds => {
     const byArr = Array.isArray(ds.by) ? ds.by : [ds.by];
-    byArr.forEach(pid => { if (pid !== 'ALL' && donePidCount[pid] !== undefined) donePidCount[pid]++; });
-    if (byArr.includes('ALL')) PEOPLE_CATALOG.forEach(p => donePidCount[p.pid]++);
+    byArr.forEach(pid => { if (pid !== 'ALL' && donePidCountF2[pid] !== undefined) donePidCountF2[pid]++; });
+    if (byArr.includes('ALL')) PEOPLE_CATALOG.forEach(p => donePidCountF2[p.pid]++);
   });
+  const totalDoneF2 = Object.keys(doneState).filter(id => tasks.find(t => t.id === id)).length;
 
+  // 3. Totais Globais Acumulados
+  const totalTasksGlobal = totalTasksF1 + totalTasksF2;
+  const totalDoneGlobal  = totalDoneF1 + totalDoneF2;
+  const pctGlobalCourse  = totalTasksGlobal > 0 ? Math.round((totalDoneGlobal / totalTasksGlobal) * 100) : 0;
+  const pctF2Course      = totalTasksF2 > 0 ? Math.round((totalDoneF2 / totalTasksF2) * 100) : 0;
+
+  // 4. Montar linhas por membro somando todas as fases
   const rows = PEOPLE_CATALOG.map(p => {
-    const pts = donePidCount[p.pid] || 0;
-    const pct = totalTasks > 0 ? Math.round((pts / totalTasks) * 100) : 0;
-    const barColor = tagColors[p.tag] || 'var(--blue)';
+    // Fase 1 por membro (individual + tarefas compartilhadas ALL)
+    const mineF1   = FASE1_TASKS.filter(t => t.owner === p.pid).length;
+    const sharedF1 = FASE1_TASKS.filter(t => t.owner === 'ALL').length;
+    const totalF1Mem = mineF1 + sharedF1;
+    const doneF1Mem  = totalF1Mem; // 100% entregue
+
+    // Fase 2 por membro (individual + tarefas compartilhadas ALL)
+    const mineF2   = tasks.filter(t => t.owner === p.pid).length;
+    const sharedF2 = tasks.filter(t => t.owner === 'ALL').length;
+    const totalF2Mem = mineF2 + sharedF2;
+    const doneF2Mem  = donePidCountF2[p.pid] || 0;
+    const pctF2Mem   = totalF2Mem > 0 ? Math.round((doneF2Mem / totalF2Mem) * 100) : 0;
+
+    // Total Histórico Consolidado por membro
+    const totalGlobalMem = totalF1Mem + totalF2Mem;
+    const doneGlobalMem  = doneF1Mem + doneF2Mem;
+    const pctGlobalMem   = totalGlobalMem > 0 ? Math.round((doneGlobalMem / totalGlobalMem) * 100) : 0;
+    const barColor       = tagColors[p.tag] || 'var(--blue)';
+
     return `
     <tr>
-      <td><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${barColor};margin-right:5px;"></span><span style="font-weight:600;">${p.name}</span></td>
-      <td style="color:var(--muted);white-space:nowrap;">${p.rm}</td>
-      <td style="text-align:center;font-weight:700;color:${pts > 0 ? 'var(--green)' : 'var(--muted)'};">${pts}</td>
-      <td style="min-width:80px;">
-        <div style="background:var(--surface2);border-radius:4px;height:7px;overflow:hidden;">
-          <div style="height:100%;width:${pct}%;background:${barColor};border-radius:4px;transition:width .4s;"></div>
+      <td>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${barColor};flex-shrink:0;"></span>
+          <span style="font-weight:700;color:var(--txt);">${p.name}</span>
+        </div>
+      </td>
+      <td style="color:var(--muted);white-space:nowrap;font-size:.74rem;">${p.rm}</td>
+      <td style="text-align:center;">
+        <span style="font-weight:700;color:var(--green);font-size:.76rem;">${doneF1Mem}/${totalF1Mem}</span>
+        <span style="font-size:.64rem;color:var(--green);font-weight:700;background:rgba(46,204,113,.12);border:1px solid rgba(46,204,113,.3);padding:1px 5px;border-radius:10px;margin-left:3px;">100%</span>
+      </td>
+      <td style="text-align:center;">
+        <span style="font-weight:700;color:${doneF2Mem > 0 ? 'var(--pink)' : 'var(--muted)'};font-size:.76rem;">${doneF2Mem}/${totalF2Mem}</span>
+        <span style="font-size:.64rem;color:${doneF2Mem > 0 ? 'var(--pink)' : 'var(--muted)'};font-weight:700;background:var(--surface2);border:1px solid var(--border);padding:1px 5px;border-radius:10px;margin-left:3px;">${pctF2Mem}%</span>
+      </td>
+      <td style="text-align:center;font-weight:800;color:var(--txt);font-size:.78rem;">
+        ${doneGlobalMem} <span style="font-size:.7rem;font-weight:400;color:var(--muted);">/ ${totalGlobalMem}</span>
+      </td>
+      <td style="min-width:115px;">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <div style="flex:1;background:var(--surface2);border-radius:4px;height:7px;overflow:hidden;">
+            <div style="height:100%;width:${pctGlobalMem}%;background:${barColor};border-radius:4px;transition:width .4s;"></div>
+          </div>
+          <span style="font-size:.7rem;font-weight:700;color:${barColor};min-width:30px;text-align:right;">${pctGlobalMem}%</span>
         </div>
       </td>
     </tr>`;
   }).join('');
 
-  const totalDone = Object.keys(doneState).filter(id => tasks.find(t => t.id === id)).length;
-
-  document.getElementById('modalTitle').textContent    = '👥 Grupo 24 — Membros (ex-Grupo 20 · Fase 1)';
-  document.getElementById('modalSubtitle').textContent = 'FIAP Pós Tech · DevOps e Arquitetura Cloud · Fase 2 (2026)';
+  document.getElementById('modalTitle').textContent    = '👥 Desempenho Histórico do Grupo — Todas as Fases';
+  document.getElementById('modalSubtitle').textContent = 'FIAP Pós Tech · DevOps e Arquitetura Cloud · Histórico Consolidado (Grupo 20 / Grupo 24)';
   document.getElementById('modalBody').innerHTML = `
+    <!-- CARDS RESUMO DE TODAS AS FASES -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:14px;">
+      <div style="background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:8px;padding:9px 12px;">
+        <div style="font-size:.65rem;color:var(--muted);font-weight:700;text-transform:uppercase;">Fase 1 (Grupo 20)</div>
+        <div style="font-size:1.05rem;font-weight:800;color:var(--green);margin-top:2px;">11 / 11 <span style="font-size:.7rem;font-weight:600;">(100%)</span></div>
+        <div style="font-size:.66rem;color:var(--muted);margin-top:2px;">Monolito AWS · Concluído</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--pink);border-radius:8px;padding:9px 12px;">
+        <div style="font-size:.65rem;color:var(--muted);font-weight:700;text-transform:uppercase;">Fase 2 (Grupo 24 · Atual)</div>
+        <div style="font-size:1.05rem;font-weight:800;color:var(--pink);margin-top:2px;">${totalDoneF2} / ${totalTasksF2} <span style="font-size:.7rem;font-weight:600;">(${pctF2Course}%)</span></div>
+        <div style="font-size:.66rem;color:var(--muted);margin-top:2px;">Microsserviços &amp; EKS · Em curso</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--blue);border-radius:8px;padding:9px 12px;">
+        <div style="font-size:.65rem;color:var(--muted);font-weight:700;text-transform:uppercase;">Total Histórico Acumulado</div>
+        <div style="font-size:1.05rem;font-weight:800;color:var(--blue);margin-top:2px;">${totalDoneGlobal} / ${totalTasksGlobal} <span style="font-size:.7rem;font-weight:600;">(${pctGlobalCourse}%)</span></div>
+        <div style="font-size:.66rem;color:var(--muted);margin-top:2px;">Soma de todas as fases</div>
+      </div>
+    </div>
+
+    <!-- TABELA CONSOLIDADA HISTÓRICA -->
     <table class="group-table">
-      <thead><tr><th>Nome completo</th><th>RM</th><th style="text-align:center;">✅</th><th>Desempenho (Fase 2)</th></tr></thead>
+      <thead>
+        <tr>
+          <th>Membro</th>
+          <th>RM</th>
+          <th style="text-align:center;">Fase 1 (G20)</th>
+          <th style="text-align:center;">Fase 2 (G24)</th>
+          <th style="text-align:center;">Total Geral</th>
+          <th>Desempenho Geral</th>
+        </tr>
+      </thead>
       <tbody>${rows}</tbody>
     </table>
-    <div style="margin-top:14px;padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:.78rem;color:var(--muted);display:flex;gap:16px;flex-wrap:wrap;align-items:center;">
-      <span>Total de tarefas: <strong style="color:var(--txt);">${totalTasks}</strong></span>
-      <span>Concluídas: <strong style="color:var(--green);">${totalDone}</strong></span>
-      <span>Progresso: <strong style="color:var(--blue);">${totalTasks > 0 ? Math.round((totalDone/totalTasks)*100) : 0}%</strong></span>
+
+    <div style="margin-top:14px;padding:10px 12px;background:rgba(91,143,255,.07);border:1px solid rgba(91,143,255,.25);border-radius:8px;font-size:.72rem;color:var(--txt2);line-height:1.45;">
+      💡 <strong>Visão Consolidada:</strong> Esta tela contabiliza o histórico acumulado de todas as entregas do grupo durante a pós-graduação. A visão específica de cada fase (com checklists e tarefas editáveis) permanece disponível nas abas correspondentes do Roadmap.
     </div>`;
+
   document.getElementById('modalBtns').innerHTML =
     `<button class="btn btn-cancel" onclick="closeModal()">Fechar</button>`;
   const box = document.getElementById('modalBox');
