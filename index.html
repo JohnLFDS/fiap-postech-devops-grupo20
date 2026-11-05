@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Tech Challenge – Grupo 24 · Fase 2: Microsserviços &amp; Kubernetes (EKS)</title>
+<title id="pageTitle">Tech Challenge – Grupo 24 · Fase 2: Microsserviços &amp; Kubernetes (EKS)</title>
 <style>
 :root {
   --bg:#1a1a1a; --surface:#242424; --surface2:#2e2e2e; --border:#383838;
@@ -27,14 +27,19 @@ html{font-size:clamp(14px,1.25vw,18px);scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",system-ui,sans-serif;font-size:1rem;line-height:1.6;transition:background .25s,color .25s;}
 
 /* ── HEADER ── */
-.header{background:var(--surface);border-bottom:3px solid var(--pink);padding:clamp(16px,2.5vw,32px) clamp(16px,3.5vw,48px) clamp(14px,2vw,24px);display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.header{background:var(--surface);border-bottom:3px solid var(--pink);padding:clamp(16px,2.5vw,32px) clamp(16px,3.5vw,48px) clamp(14px,2vw,24px);display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;transition:border-color .3s;}
+.header.phase1-mode{border-bottom-color:var(--green);}
 .brand{font-size:.68rem;font-weight:700;letter-spacing:3px;color:var(--pink);text-transform:uppercase;margin-bottom:4px;}
+.header.phase1-mode .brand{color:var(--green);}
 .header h1{font-size:clamp(18px,2.2vw,30px);font-weight:800;color:var(--txt);line-height:1.2;}
 .header h1 span{color:var(--pink);}
+.header.phase1-mode h1 span{color:var(--green);}
 .header-sub{font-size:.78rem;color:var(--muted);margin-top:4px;}
 .header-right{display:flex;align-items:center;gap:10px;flex-shrink:0;flex-wrap:wrap;}
-.badge-group{background:var(--pink-glow);border:1px solid var(--pink-dim);border-radius:8px;padding:10px 16px;text-align:center;}
+.badge-group{background:var(--pink-glow);border:1px solid var(--pink-dim);border-radius:8px;padding:10px 16px;text-align:center;transition:background .3s,border-color .3s;}
+.header.phase1-mode .badge-group{background:rgba(46,204,113,.12);border-color:rgba(46,204,113,.4);}
 .badge-group .num{font-size:clamp(22px,2.8vw,38px);font-weight:900;color:var(--pink);line-height:1;}
+.header.phase1-mode .badge-group .num{color:var(--green);}
 .badge-group .lbl{font-size:.6rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
 .theme-btn{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer;font-size:.75rem;font-weight:700;color:var(--txt);display:flex;align-items:center;gap:6px;transition:background .2s,border-color .2s;white-space:nowrap;}
 .theme-btn:hover{border-color:var(--pink);}
@@ -45,13 +50,24 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 /* ── SEC HEADER ── */
 .sec-header{display:flex;align-items:center;gap:10px;margin:clamp(28px,3vw,44px) 0 14px;flex-wrap:wrap;}
 .sec-header .dot{width:4px;height:26px;background:var(--pink);border-radius:2px;flex-shrink:0;}
+.sec-header.green-dot .dot{background:var(--green);}
 .sec-header h2{font-size:.78rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--pink);flex:1;}
+.sec-header.green-dot h2{color:var(--green);}
 .sec-edit-btn{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-size:.7rem;font-weight:700;color:var(--muted);cursor:pointer;transition:border-color .2s,color .2s;white-space:nowrap;}
 .sec-edit-btn:hover,.sec-edit-btn.active{border-color:var(--pink);color:var(--pink);}
 
-/* ── PHASES ── */
+/* ── HISTORY BANNER ── */
+.history-banner{background:linear-gradient(135deg,rgba(46,204,113,.12),rgba(91,143,255,.08));border:1.5px solid rgba(46,204,113,.45);border-radius:12px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin:18px 0 24px;flex-wrap:wrap;}
+.hb-left{display:flex;flex-direction:column;gap:3px;}
+.hb-badge{font-size:.62rem;font-weight:800;color:var(--green);text-transform:uppercase;letter-spacing:1px;background:rgba(46,204,113,.18);border:1px solid rgba(46,204,113,.4);padding:2px 8px;border-radius:12px;width:fit-content;}
+.hb-title{font-size:.95rem;font-weight:800;color:var(--txt);}
+.hb-sub{font-size:.75rem;color:var(--muted);line-height:1.4;}
+.hb-btn{background:var(--pink);color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:.8rem;font-weight:700;cursor:pointer;transition:opacity .15s,transform .1s;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;}
+.hb-btn:hover{opacity:.9;transform:translateY(-1px);}
+
+/* ── PHASES ROADMAP ── */
 .phases-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:clamp(10px,1.2vw,18px);}
-.phase-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:clamp(16px,1.8vw,24px);position:relative;overflow:hidden;transition:border-color .2s;}
+.phase-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:clamp(16px,1.8vw,24px);position:relative;overflow:hidden;transition:border-color .2s,transform .2s,box-shadow .2s;}
 .phase-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
 .phase-card.active{border-color:var(--pink);}
 .phase-card.active::before{background:var(--pink);}
@@ -59,6 +75,11 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 .phase-card.done::before{background:var(--green);}
 .phase-card.future{opacity:.6;}
 .phase-card.future::before{background:var(--border);}
+.phase-card.clickable{cursor:pointer;}
+.phase-card.clickable:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.35);}
+.phase-card.selected-phase{box-shadow:0 0 0 2px var(--pink),0 8px 24px var(--pink-glow);}
+.phase-card.done.selected-phase{box-shadow:0 0 0 2px var(--green),0 8px 24px rgba(46,204,113,.25);border-color:var(--green);}
+
 .phase-badge{display:inline-flex;align-items:center;gap:6px;font-size:.65rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 9px;border-radius:20px;margin-bottom:10px;}
 .badge-active{background:var(--pink-glow);color:var(--pink);border:1px solid var(--pink-dim);}
 .badge-future{background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
@@ -95,6 +116,7 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 .del-card ul{list-style:none;display:flex;flex-direction:column;gap:6px;}
 .del-card ul li{font-size:.78rem;color:var(--txt2);display:flex;align-items:flex-start;gap:7px;}
 .del-card ul li::before{content:'›';color:var(--pink);font-weight:700;font-size:.9rem;line-height:1.4;flex-shrink:0;}
+.phase1-del-card ul li::before{content:'✓';color:var(--green);font-weight:700;font-size:.85rem;}
 
 /* ── SERVICES CHIPS ── */
 .services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:12px;}
@@ -164,7 +186,7 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 /* ── CHECKLIST ── */
 .checklist{display:flex;flex-direction:column;gap:6px;}
 .check-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 12px;display:flex;align-items:center;gap:10px;transition:border-color .18s,background .18s;}
-.check-item.done{opacity:.72;border-color:var(--green);background:var(--cn-grn-bg);}
+.check-item.done{opacity:.82;border-color:rgba(46,204,113,.4);background:var(--cn-grn-bg);}
 .check-item.in-progress{border-color:rgba(245,197,24,.5);background:rgba(245,197,24,.05);}
 .drag-handle{display:flex;align-items:center;cursor:grab;padding:0 2px;color:var(--muted);flex-shrink:0;}
 .drag-handle:active{cursor:grabbing;}
@@ -172,7 +194,7 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 
 .check-body{flex:1;min-width:0;}
 .check-title{font-size:.85rem;font-weight:700;color:var(--txt);line-height:1.3;}
-.check-item.done .check-title{color:var(--muted);text-decoration:line-through;}
+.check-item.done .check-title{color:var(--txt);}
 .check-desc{font-size:.72rem;color:var(--muted);line-height:1.4;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .done-by{font-size:.62rem;color:var(--green);margin-top:2px;display:none;}
 .check-item.done .done-by{display:block;}
@@ -331,10 +353,10 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 </div>
 
 <!-- HEADER -->
-<div class="header">
+<div class="header" id="mainHeader">
   <div class="header-left">
     <div class="brand" style="display:flex;align-items:center;gap:10px;">
-      <svg width="52" height="13" viewBox="0 0 101 25" fill="none" xmlns="http://www.w3.org/2000/svg" style="fill:var(--pink);flex-shrink:0;">
+      <svg width="52" height="13" viewBox="0 0 101 25" fill="none" xmlns="http://www.w3.org/2000/svg" style="fill:currentColor;flex-shrink:0;">
         <path d="M30.7193 0H28.709V24.8265H30.7193V0Z"/>
         <path d="M17.26 11.8854H7.47571V13.5916H17.26V11.8854Z"/>
         <path d="M0 0V24.8265H2.01026V1.70619H22.7725V0H0Z"/>
@@ -344,8 +366,8 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
       </svg>
       <span>POS TECH &nbsp;·&nbsp; DevOps e Arquitetura Cloud</span>
     </div>
-    <h1>Tech Challenge &nbsp;<span>Grupo 24</span></h1>
-    <div class="header-sub">Fase 2: Microsserviços &amp; Kubernetes (EKS) · <span style="color:var(--txt);">Grupo 24</span> <span style="opacity:.65;">(ex-Grupo 20 na Fase 1)</span> · FIAP Pós Tech 2026</div>
+    <h1 id="headerMainTitle">Tech Challenge &nbsp;<span>Grupo 24</span></h1>
+    <div class="header-sub" id="headerSubTitle">Fase 2: Microsserviços &amp; Kubernetes (EKS) · <span style="color:var(--txt);">Grupo 24</span> <span style="opacity:.65;">(ex-Grupo 20 na Fase 1)</span> · FIAP Pós Tech 2026</div>
   </div>
   <div class="header-right">
     <button class="theme-btn" onclick="openGroupModal()" id="groupBtn">
@@ -354,8 +376,8 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
     <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">
       <span class="icon">☀️</span><span id="themeLabel">Modo Claro</span>
     </button>
-    <div class="badge-group">
-      <div class="num">24</div>
+    <div class="badge-group" id="headerBadgeGroup">
+      <div class="num" id="headerGroupNum">24</div>
       <div class="lbl">Grupo</div>
     </div>
   </div>
@@ -363,14 +385,19 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 
 <div class="wrap">
 
-  <!-- ROADMAP -->
-  <div class="sec-header"><div class="dot"></div><h2>Roadmap do projeto — 4 fases</h2></div>
+  <!-- ROADMAP (SELETOR DE FASES) -->
+  <div class="sec-header">
+    <div class="dot"></div>
+    <h2>Roadmap do projeto — 4 fases</h2>
+    <span style="font-size:.7rem;color:var(--muted);font-weight:600;margin-left:auto;">Clique em uma fase para navegar</span>
+  </div>
   <div class="phases-grid">
-    <div class="phase-card done">
-      <div class="phase-badge badge-done"><div class="badge-dot bd-done"></div>Concluído</div>
+    <!-- CARD FASE 1 (HISTÓRICO) -->
+    <div class="phase-card done clickable" id="phase1Card" onclick="switchPhase(1)" title="Clique para ver o histórico concluído da Fase 1">
+      <div class="phase-badge badge-done" id="phase1Badge"><div class="badge-dot bd-done"></div>Concluído</div>
       <div class="phase-num">FASE 1</div>
       <div class="phase-title">MVP Monolítico na AWS</div>
-      <div class="phase-sub">Deploy monolítico · EC2 + RDS · VPC/SGs · Vídeo e Relatório entregues</div>
+      <div class="phase-sub">Deploy monolítico · EC2 + RDS · VPC/SGs · Entregas finalizadas</div>
       <div class="phase-tags">
         <span class="phase-tag">Python / Flask</span><span class="phase-tag">EC2 t3.micro</span>
         <span class="phase-tag">RDS PostgreSQL</span><span class="phase-tag">VPC / SGs</span>
@@ -379,8 +406,9 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
       <div class="phase-progress"><div class="phase-progress-fill ppf-done" style="width:100%"></div></div>
     </div>
 
-    <div class="phase-card active" id="phase2Card">
-      <div class="phase-badge badge-active"><div class="badge-dot bd-active"></div>Em andamento</div>
+    <!-- CARD FASE 2 (ATUAL) -->
+    <div class="phase-card active selected-phase clickable" id="phase2Card" onclick="switchPhase(2)" title="Clique para interagir com a Fase 2 (atual)">
+      <div class="phase-badge badge-active" id="phase2Badge"><div class="badge-dot bd-active"></div>Em andamento · Atual</div>
       <div class="phase-num">FASE 2 · ATUAL</div>
       <div class="phase-title">Microsserviços &amp; EKS</div>
       <div class="phase-sub">5 Microsserviços · Docker Multi-stage · EKS · ECR · 3 RDS · ElastiCache · DynamoDB · SQS · Ingress · HPA/KEDA</div>
@@ -393,6 +421,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
       <div class="phase-progress"><div class="phase-progress-fill ppf-active" id="phase2Fill" style="width:0%"></div></div>
     </div>
 
+    <!-- CARD FASE 3 -->
     <div class="phase-card future">
       <div class="phase-badge badge-future"><div class="badge-dot bd-future"></div>Em breve</div>
       <div class="phase-num">FASE 3</div>
@@ -402,6 +431,7 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
       <div class="phase-progress"><div class="phase-progress-fill ppf-future"></div></div>
     </div>
 
+    <!-- CARD FASE 4 -->
     <div class="phase-card future">
       <div class="phase-badge badge-future"><div class="badge-dot bd-future"></div>Em breve</div>
       <div class="phase-num">FASE 4 · FINAL</div>
@@ -412,190 +442,430 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
     </div>
   </div>
 
-  <!-- OS 5 MICROSSERVIÇOS -->
-  <div class="sec-header"><div class="dot"></div><h2>Fase 2 — Ecossistema dos 5 Microsserviços</h2></div>
-  <div class="services-grid">
-    <div class="service-box">
-      <div class="service-header">
-        <span class="service-name">auth-service</span>
-        <span class="service-lang lang-go">Go</span>
-      </div>
-      <div class="service-desc">Gerencia chaves de API e validação de autenticação dos clientes.</div>
-      <div class="service-store">🗄️ AWS RDS PostgreSQL</div>
-    </div>
-    <div class="service-box">
-      <div class="service-header">
-        <span class="service-name">flag-service</span>
-        <span class="service-lang lang-py">Python</span>
-      </div>
-      <div class="service-desc">CRUD e gerenciamento das definições e status das feature flags.</div>
-      <div class="service-store">🗄️ AWS RDS PostgreSQL</div>
-    </div>
-    <div class="service-box">
-      <div class="service-header">
-        <span class="service-name">targeting-service</span>
-        <span class="service-lang lang-py">Python</span>
-      </div>
-      <div class="service-desc">Processa e armazena regras complexas de segmentação de usuários.</div>
-      <div class="service-store">🗄️ AWS RDS PostgreSQL</div>
-    </div>
-    <div class="service-box">
-      <div class="service-header">
-        <span class="service-name">evaluation-service</span>
-        <span class="service-lang lang-go">Go</span>
-      </div>
-      <div class="service-desc">Hot path de alta performance: avalia flags em milissegundos e emite eventos para a fila.</div>
-      <div class="service-store">⚡ ElastiCache Redis + AWS SQS</div>
-    </div>
-    <div class="service-box">
-      <div class="service-header">
-        <span class="service-name">analytics-service</span>
-        <span class="service-lang lang-py">Python</span>
-      </div>
-      <div class="service-desc">Consome eventos assíncronos da fila SQS e grava telemetria e métricas de uso.</div>
-      <div class="service-store">📬 AWS SQS + AWS DynamoDB</div>
-    </div>
-  </div>
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- VIEW FASE 2: ATUAL / INTERATIVA                            -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div id="viewFase2">
 
-  <!-- ENTREGÁVEIS FASE 2 -->
-  <div class="sec-header"><div class="dot"></div><h2>Fase 2 — Entregáveis Obrigatórios &amp; Avaliação (90 pts + 10 pts extras)</h2></div>
-  <div class="deliverables">
-    <div class="del-card video"><div class="del-icon">🎬</div>
-      <h3>Vídeo de Demonstração <span style="font-size:.72rem;color:var(--muted);font-weight:400;">até 20 min</span></h3>
-      <ul>
-        <li>Docker Compose local rodando (9 contêineres: 5 apps + 4 DBs)</li>
-        <li>Cluster Kubernetes na AWS (EKS) com 5 Pods via kubectl</li>
-        <li>Nginx Ingress respondendo a chamadas curl / Postman</li>
-        <li>Carga no evaluation-service + HPA aumentando réplicas</li>
-        <li>Mensagens na fila SQS + analytics-service escalando + DynamoDB</li>
-        <li>Explicação da arquitetura, 3 data stores e desafios da LabRole</li>
-      </ul>
-    </div>
-    <div class="del-card arch"><div class="del-icon">☸️</div>
-      <h3>Infraestrutura &amp; Orquestração</h3>
-      <ul>
-        <li>Dockerfiles multi-stage otimizados + docker-compose.yml</li>
-        <li>5 Repositórios ECR + 3 RDS Postgres + Redis + DynamoDB + SQS</li>
-        <li>Metrics Server + Nginx Ingress Controller (Load Balancer)</li>
-        <li>Deployments (requests/limits, probes), Secrets (base64) e Services</li>
-        <li>HPA por CPU (Opção A: Academy) ou KEDA por fila SQS (Opção B: Pessoal)</li>
-      </ul>
-    </div>
-    <div class="del-card report"><div class="del-icon">📄</div>
-      <h3>Relatório de Entrega <span style="font-size:.72rem;color:var(--muted);font-weight:400;">.PDF ou .txt</span></h3>
-      <ul>
-        <li>Nomes dos participantes, RMs e Discord do Grupo 24</li>
-        <li>Links dos repositórios GitHub com código e manifestos</li>
-        <li>Link do vídeo demonstrativo (YouTube não listado)</li>
-        <li>Justificativas de escalabilidade e comparação dos data stores</li>
-      </ul>
-    </div>
-    <div class="del-card bonus"><div class="del-icon">🌟</div>
-      <h3>Pontuação Extra <span style="font-size:.72rem;color:var(--green);font-weight:700;">+10 Pontos</span></h3>
-      <ul>
-        <li>Trilha Google Cloud Skills Boost para aprimoramento</li>
-        <li>Conclusão 100% opcional (sem perda de pontos)</li>
-        <li>Perfil e badge pública adicionados ao relatório de entrega</li>
-        <li>Totaliza pontuação máxima de 90 + 10 = 100 pontos na Fase 2</li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- FLUXO DE EXECUÇÃO -->
-  <div class="sec-header"><div class="dot"></div><h2>Fluxo de execução da Fase 2</h2></div>
-  <div class="timeline">
-    <div class="tl-step"><div class="tl-circle tc-1">1</div><div class="tl-label">Docker &amp; Local</div><div class="tl-sub">5 Dockerfiles multi-stage<br>Compose com 9 contêineres<br>Validação CRUD local</div></div>
-    <div class="tl-step"><div class="tl-circle tc-2">2</div><div class="tl-label">Infra AWS &amp; EKS</div><div class="tl-sub">Cluster EKS + LabRole<br>5 ECR + 3 RDS Postgres<br>ElastiCache + Dynamo + SQS</div></div>
-    <div class="tl-step"><div class="tl-circle tc-3">3</div><div class="tl-label">Manifestos &amp; Ingress</div><div class="tl-sub">Metrics Server + Nginx Ingress<br>Deployments, Secrets, SVCs<br>Roteamento /auth, /flags...</div></div>
-    <div class="tl-step"><div class="tl-circle tc-4">4</div><div class="tl-label">HPA &amp; Validação</div><div class="tl-sub">HPA CPU / KEDA SQS<br>Teste de carga (hey/ab)<br>Vídeo + Relatório final</div></div>
-  </div>
-
-  <!-- MEMBROS — atribuição de tarefas -->
-  <div class="sec-header">
-    <div class="dot"></div>
-    <h2>Atribuição de tarefas por membro — Grupo 24</h2>
-    <button class="sec-edit-btn" id="membersSaveBtn" onclick="saveInlineMembers()" style="display:none;">💾 Salvar atribuições</button>
-  </div>
-  <div class="members" id="membersGrid"><!-- renderizado por JS --></div>
-
-  <!-- CHECKLIST -->
-  <div class="sec-header" style="margin-top:clamp(28px,3vw,44px);">
-    <div class="dot"></div>
-    <h2>Checklist de tarefas — Fase 2</h2>
-  </div>
-
-  <div class="progress-bar-wrap" style="margin-top:12px;">
-    <div class="progress-bar-label">
-      <span>Progresso da Fase 2</span>
-      <strong id="progressText">0 / 0 concluídas</strong>
-    </div>
-    <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill"></div></div>
-  </div>
-
-  <div class="checklist" id="checklist"><!-- renderizado por JS --></div>
-
-  <button class="checklist-add-btn" onclick="openAddTaskModal()">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v6M5 8h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-    Nova tarefa
-  </button>
-
-  <div class="legend">
-    <span style="font-size:.72rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:1px;">Status:</span>
-    <div class="legend-item"><span class="status-indicator si-todo">○ Pendente</span></div>
-    <div class="legend-item"><span class="status-indicator si-progress">● Em andamento</span></div>
-    <div class="legend-item"><span class="status-indicator si-done">✓ Concluída</span></div>
-    <div class="legend-item" style="color:var(--muted);font-size:.73rem;margin-left:8px;">
-      — altere pelo botão <strong>Editar</strong> ou consulte o <strong>Guia</strong> passo a passo
-    </div>
-  </div>
-
-  <!-- LINKS ÚTEIS -->
-  <div class="sec-header"><div class="dot"></div><h2>Links úteis &amp; Consoles Cloud</h2></div>
-
-  <!-- Google Drive — destaque -->
-  <a href="https://drive.google.com/drive/folders/1XMRkgXA7OegbMk2MqhQj-wE4eu0LzyGt?usp=drive_link" target="_blank" rel="noopener" style="text-decoration:none;display:block;margin-bottom:18px;">
-    <div style="background:linear-gradient(135deg,rgba(66,133,244,.12),rgba(52,168,83,.1));border:1.5px solid rgba(66,133,244,.4);border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:16px;transition:border-color .18s,box-shadow .18s;" onmouseover="this.style.borderColor='rgba(66,133,244,.8)';this.style.boxShadow='0 0 0 3px rgba(66,133,244,.12)'" onmouseout="this.style.borderColor='rgba(66,133,244,.4)';this.style.boxShadow='none'">
-      <div style="width:44px;height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
-        <svg width="36" height="32" viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg">
-          <path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/>
-          <path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44a9.06 9.06 0 0 0 -1.2 4.5h27.5z" fill="#00ac47"/>
-          <path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.502l5.852 11.5z" fill="#ea4335"/>
-          <path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/>
-          <path d="m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/>
-          <path d="m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 28h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/>
-        </svg>
-      </div>
-      <div style="flex:1;min-width:0;">
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
-          <span style="font-size:.9rem;font-weight:800;color:var(--txt);">📁 Pasta Compartilhada do Grupo (Drive)</span>
-          <span style="font-size:.6rem;font-weight:700;background:rgba(66,133,244,.15);color:#4285f4;border:1px solid rgba(66,133,244,.35);border-radius:20px;padding:2px 9px;">Google Drive</span>
-          <span style="font-size:.6rem;font-weight:700;background:rgba(52,168,83,.15);color:#34a853;border:1px solid rgba(52,168,83,.35);border-radius:20px;padding:2px 9px;">Grupo 24 · Fase 2</span>
+    <!-- OS 5 MICROSSERVIÇOS -->
+    <div class="sec-header"><div class="dot"></div><h2>Fase 2 — Ecossistema dos 5 Microsserviços</h2></div>
+    <div class="services-grid">
+      <div class="service-box">
+        <div class="service-header">
+          <span class="service-name">auth-service</span>
+          <span class="service-lang lang-go">Go</span>
         </div>
-        <div style="font-size:.75rem;color:var(--muted);line-height:1.5;">Docker Compose · Manifestos K8s · Gravações · Relatório de Entrega · Materiais de apoio</div>
-        <div style="font-size:.68rem;color:#4285f4;margin-top:3px;font-weight:600;">drive.google.com ↗</div>
+        <div class="service-desc">Gerencia chaves de API e validação de autenticação dos clientes.</div>
+        <div class="service-store">🗄️ AWS RDS PostgreSQL</div>
       </div>
-      <div style="font-size:.75rem;color:#4285f4;font-weight:700;white-space:nowrap;flex-shrink:0;">Abrir →</div>
+      <div class="service-box">
+        <div class="service-header">
+          <span class="service-name">flag-service</span>
+          <span class="service-lang lang-py">Python</span>
+        </div>
+        <div class="service-desc">CRUD e gerenciamento das definições e status das feature flags.</div>
+        <div class="service-store">🗄️ AWS RDS PostgreSQL</div>
+      </div>
+      <div class="service-box">
+        <div class="service-header">
+          <span class="service-name">targeting-service</span>
+          <span class="service-lang lang-py">Python</span>
+        </div>
+        <div class="service-desc">Processa e armazena regras complexas de segmentação de usuários.</div>
+        <div class="service-store">🗄️ AWS RDS PostgreSQL</div>
+      </div>
+      <div class="service-box">
+        <div class="service-header">
+          <span class="service-name">evaluation-service</span>
+          <span class="service-lang lang-go">Go</span>
+        </div>
+        <div class="service-desc">Hot path de alta performance: avalia flags em milissegundos e emite eventos para a fila.</div>
+        <div class="service-store">⚡ ElastiCache Redis + AWS SQS</div>
+      </div>
+      <div class="service-box">
+        <div class="service-header">
+          <span class="service-name">analytics-service</span>
+          <span class="service-lang lang-py">Python</span>
+        </div>
+        <div class="service-desc">Consome eventos assíncronos da fila SQS e grava telemetria e métricas de uso.</div>
+        <div class="service-store">📬 AWS SQS + AWS DynamoDB</div>
+      </div>
     </div>
-  </a>
 
-  <div class="links-group-label">🖥️ Consoles AWS &amp; Serviços Gerenciados</div>
-  <div class="links-grid">
-    <div class="link-card"><div class="lc-label">AWS EKS (Kubernetes)</div><a href="https://console.aws.amazon.com/eks/home" target="_blank" rel="noopener">Abrir EKS Console</a></div>
-    <div class="link-card"><div class="lc-label">AWS ECR (Container Registry)</div><a href="https://console.aws.amazon.com/ecr/repositories" target="_blank" rel="noopener">Abrir ECR Repos</a></div>
-    <div class="link-card"><div class="lc-label">AWS RDS (PostgreSQL)</div><a href="https://console.aws.amazon.com/rds/home#/databases" target="_blank" rel="noopener">Abrir RDS</a></div>
-    <div class="link-card"><div class="lc-label">AWS ElastiCache (Redis)</div><a href="https://console.aws.amazon.com/elasticache/home" target="_blank" rel="noopener">Abrir ElastiCache</a></div>
-    <div class="link-card"><div class="lc-label">AWS DynamoDB (NoSQL)</div><a href="https://console.aws.amazon.com/dynamodbv2/home" target="_blank" rel="noopener">Abrir DynamoDB</a></div>
-    <div class="link-card"><div class="lc-label">AWS SQS (Filas de Mensagem)</div><a href="https://console.aws.amazon.com/sqs/v3/home" target="_blank" rel="noopener">Abrir SQS Console</a></div>
+    <!-- ENTREGÁVEIS FASE 2 -->
+    <div class="sec-header"><div class="dot"></div><h2>Fase 2 — Entregáveis Obrigatórios &amp; Avaliação (90 pts + 10 pts extras)</h2></div>
+    <div class="deliverables">
+      <div class="del-card video"><div class="del-icon">🎬</div>
+        <h3>Vídeo de Demonstração <span style="font-size:.72rem;color:var(--muted);font-weight:400;">até 20 min</span></h3>
+        <ul>
+          <li>Docker Compose local rodando (9 contêineres: 5 apps + 4 DBs)</li>
+          <li>Cluster Kubernetes na AWS (EKS) com 5 Pods via kubectl</li>
+          <li>Nginx Ingress respondendo a chamadas curl / Postman</li>
+          <li>Carga no evaluation-service + HPA aumentando réplicas</li>
+          <li>Mensagens na fila SQS + analytics-service escalando + DynamoDB</li>
+          <li>Explicação da arquitetura, 3 data stores e desafios da LabRole</li>
+        </ul>
+      </div>
+      <div class="del-card arch"><div class="del-icon">☸️</div>
+        <h3>Infraestrutura &amp; Orquestração</h3>
+        <ul>
+          <li>Dockerfiles multi-stage otimizados + docker-compose.yml</li>
+          <li>5 Repositórios ECR + 3 RDS Postgres + Redis + DynamoDB + SQS</li>
+          <li>Metrics Server + Nginx Ingress Controller (Load Balancer)</li>
+          <li>Deployments (requests/limits, probes), Secrets (base64) e Services</li>
+          <li>HPA por CPU (Opção A: Academy) ou KEDA por fila SQS (Opção B: Pessoal)</li>
+        </ul>
+      </div>
+      <div class="del-card report"><div class="del-icon">📄</div>
+        <h3>Relatório de Entrega <span style="font-size:.72rem;color:var(--muted);font-weight:400;">.PDF ou .txt</span></h3>
+        <ul>
+          <li>Nomes dos participantes, RMs e Discord do Grupo 24</li>
+          <li>Links dos repositórios GitHub com código e manifestos</li>
+          <li>Link do vídeo demonstrativo (YouTube não listado)</li>
+          <li>Justificativas de escalabilidade e comparação dos data stores</li>
+        </ul>
+      </div>
+      <div class="del-card bonus"><div class="del-icon">🌟</div>
+        <h3>Pontuação Extra <span style="font-size:.72rem;color:var(--green);font-weight:700;">+10 Pontos</span></h3>
+        <ul>
+          <li>Trilha Google Cloud Skills Boost para aprimoramento</li>
+          <li>Conclusão 100% opcional (sem perda de pontos)</li>
+          <li>Perfil e badge pública adicionados ao relatório de entrega</li>
+          <li>Totaliza pontuação máxima de 90 + 10 = 100 pontos na Fase 2</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- FLUXO DE EXECUÇÃO FASE 2 -->
+    <div class="sec-header"><div class="dot"></div><h2>Fluxo de execução da Fase 2</h2></div>
+    <div class="timeline">
+      <div class="tl-step"><div class="tl-circle tc-1">1</div><div class="tl-label">Docker &amp; Local</div><div class="tl-sub">5 Dockerfiles multi-stage<br>Compose com 9 contêineres<br>Validação CRUD local</div></div>
+      <div class="tl-step"><div class="tl-circle tc-2">2</div><div class="tl-label">Infra AWS &amp; EKS</div><div class="tl-sub">Cluster EKS + LabRole<br>5 ECR + 3 RDS Postgres<br>ElastiCache + Dynamo + SQS</div></div>
+      <div class="tl-step"><div class="tl-circle tc-3">3</div><div class="tl-label">Manifestos &amp; Ingress</div><div class="tl-sub">Metrics Server + Nginx Ingress<br>Deployments, Secrets, SVCs<br>Roteamento /auth, /flags...</div></div>
+      <div class="tl-step"><div class="tl-circle tc-4">4</div><div class="tl-label">HPA &amp; Validação</div><div class="tl-sub">HPA CPU / KEDA SQS<br>Teste de carga (hey/ab)<br>Vídeo + Relatório final</div></div>
+    </div>
+
+    <!-- MEMBROS FASE 2 -->
+    <div class="sec-header">
+      <div class="dot"></div>
+      <h2>Atribuição de tarefas por membro — Grupo 24</h2>
+      <button class="sec-edit-btn" id="membersSaveBtn" onclick="saveInlineMembers()" style="display:none;">💾 Salvar atribuições</button>
+    </div>
+    <div class="members" id="membersGrid"><!-- renderizado por JS --></div>
+
+    <!-- CHECKLIST FASE 2 -->
+    <div class="sec-header" style="margin-top:clamp(28px,3vw,44px);">
+      <div class="dot"></div>
+      <h2>Checklist de tarefas — Fase 2</h2>
+    </div>
+
+    <div class="progress-bar-wrap" style="margin-top:12px;">
+      <div class="progress-bar-label">
+        <span>Progresso da Fase 2</span>
+        <strong id="progressText">0 / 0 concluídas</strong>
+      </div>
+      <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill"></div></div>
+    </div>
+
+    <div class="checklist" id="checklist"><!-- renderizado por JS --></div>
+
+    <button class="checklist-add-btn" onclick="openAddTaskModal()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v6M5 8h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Nova tarefa
+    </button>
+
+    <div class="legend">
+      <span style="font-size:.72rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:1px;">Status:</span>
+      <div class="legend-item"><span class="status-indicator si-todo">○ Pendente</span></div>
+      <div class="legend-item"><span class="status-indicator si-progress">● Em andamento</span></div>
+      <div class="legend-item"><span class="status-indicator si-done">✓ Concluída</span></div>
+      <div class="legend-item" style="color:var(--muted);font-size:.73rem;margin-left:8px;">
+        — altere pelo botão <strong>Editar</strong> ou consulte o <strong>Guia</strong> passo a passo
+      </div>
+    </div>
+
+    <!-- LINKS ÚTEIS FASE 2 -->
+    <div class="sec-header"><div class="dot"></div><h2>Links úteis &amp; Consoles Cloud</h2></div>
+
+    <a href="https://drive.google.com/drive/folders/1XMRkgXA7OegbMk2MqhQj-wE4eu0LzyGt?usp=drive_link" target="_blank" rel="noopener" style="text-decoration:none;display:block;margin-bottom:18px;">
+      <div style="background:linear-gradient(135deg,rgba(66,133,244,.12),rgba(52,168,83,.1));border:1.5px solid rgba(66,133,244,.4);border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:16px;transition:border-color .18s,box-shadow .18s;" onmouseover="this.style.borderColor='rgba(66,133,244,.8)';this.style.boxShadow='0 0 0 3px rgba(66,133,244,.12)'" onmouseout="this.style.borderColor='rgba(66,133,244,.4)';this.style.boxShadow='none'">
+        <div style="width:44px;height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+          <svg width="36" height="32" viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg">
+            <path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/>
+            <path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44a9.06 9.06 0 0 0 -1.2 4.5h27.5z" fill="#00ac47"/>
+            <path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.502l5.852 11.5z" fill="#ea4335"/>
+            <path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/>
+            <path d="m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/>
+            <path d="m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 28h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/>
+          </svg>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
+            <span style="font-size:.9rem;font-weight:800;color:var(--txt);">📁 Pasta Compartilhada do Grupo (Drive)</span>
+            <span style="font-size:.6rem;font-weight:700;background:rgba(66,133,244,.15);color:#4285f4;border:1px solid rgba(66,133,244,.35);border-radius:20px;padding:2px 9px;">Google Drive</span>
+            <span style="font-size:.6rem;font-weight:700;background:rgba(52,168,83,.15);color:#34a853;border:1px solid rgba(52,168,83,.35);border-radius:20px;padding:2px 9px;">Grupo 24 · Fase 2</span>
+          </div>
+          <div style="font-size:.75rem;color:var(--muted);line-height:1.5;">Docker Compose · Manifestos K8s · Gravações · Relatório de Entrega · Materiais de apoio</div>
+          <div style="font-size:.68rem;color:#4285f4;margin-top:3px;font-weight:600;">drive.google.com ↗</div>
+        </div>
+        <div style="font-size:.75rem;color:#4285f4;font-weight:700;white-space:nowrap;flex-shrink:0;">Abrir →</div>
+      </div>
+    </a>
+
+    <div class="links-group-label">🖥️ Consoles AWS &amp; Serviços Gerenciados</div>
+    <div class="links-grid">
+      <div class="link-card"><div class="lc-label">AWS EKS (Kubernetes)</div><a href="https://console.aws.amazon.com/eks/home" target="_blank" rel="noopener">Abrir EKS Console</a></div>
+      <div class="link-card"><div class="lc-label">AWS ECR (Container Registry)</div><a href="https://console.aws.amazon.com/ecr/repositories" target="_blank" rel="noopener">Abrir ECR Repos</a></div>
+      <div class="link-card"><div class="lc-label">AWS RDS (PostgreSQL)</div><a href="https://console.aws.amazon.com/rds/home#/databases" target="_blank" rel="noopener">Abrir RDS</a></div>
+      <div class="link-card"><div class="lc-label">AWS ElastiCache (Redis)</div><a href="https://console.aws.amazon.com/elasticache/home" target="_blank" rel="noopener">Abrir ElastiCache</a></div>
+      <div class="link-card"><div class="lc-label">AWS DynamoDB (NoSQL)</div><a href="https://console.aws.amazon.com/dynamodbv2/home" target="_blank" rel="noopener">Abrir DynamoDB</a></div>
+      <div class="link-card"><div class="lc-label">AWS SQS (Filas de Mensagem)</div><a href="https://console.aws.amazon.com/sqs/v3/home" target="_blank" rel="noopener">Abrir SQS Console</a></div>
+    </div>
+
+    <div class="links-group-label">🛠️ Ferramentas &amp; Documentações Oficiais</div>
+    <div class="links-grid">
+      <div class="link-card"><div class="lc-label">Metrics Server K8s</div><a href="https://github.com/kubernetes-sigs/metrics-server" target="_blank" rel="noopener">Repositório &amp; Releases</a></div>
+      <div class="link-card"><div class="lc-label">Nginx Ingress Controller</div><a href="https://kubernetes.github.io/ingress-nginx/" target="_blank" rel="noopener">Docs Ingress Nginx</a></div>
+      <div class="link-card"><div class="lc-label">KEDA (Event-driven K8s)</div><a href="https://keda.sh/" target="_blank" rel="noopener">Documentação KEDA</a></div>
+      <div class="link-card"><div class="lc-label">Hey — Load Testing</div><a href="https://github.com/rakyll/hey" target="_blank" rel="noopener">Ferramenta de Carga Hey</a></div>
+      <div class="link-card"><div class="lc-label">Google Cloud Skills Boost (+10 pts)</div><a href="https://www.cloudskillsboost.google/" target="_blank" rel="noopener">Acessar Skills Boost</a></div>
+      <div class="link-card"><div class="lc-label">AWS Academy Learner Lab</div><a href="https://awsacademy.instructure.com/courses/188263" target="_blank" rel="noopener">Abrir Lab [188263]</a></div>
+    </div>
+
   </div>
 
-  <div class="links-group-label">🛠️ Ferramentas &amp; Documentações Oficiais</div>
-  <div class="links-grid">
-    <div class="link-card"><div class="lc-label">Metrics Server K8s</div><a href="https://github.com/kubernetes-sigs/metrics-server" target="_blank" rel="noopener">Repositório &amp; Releases</a></div>
-    <div class="link-card"><div class="lc-label">Nginx Ingress Controller</div><a href="https://kubernetes.github.io/ingress-nginx/" target="_blank" rel="noopener">Docs Ingress Nginx</a></div>
-    <div class="link-card"><div class="lc-label">KEDA (Event-driven K8s)</div><a href="https://keda.sh/" target="_blank" rel="noopener">Documentação KEDA</a></div>
-    <div class="link-card"><div class="lc-label">Hey — Load Testing</div><a href="https://github.com/rakyll/hey" target="_blank" rel="noopener">Ferramenta de Carga Hey</a></div>
-    <div class="link-card"><div class="lc-label">Google Cloud Skills Boost (+10 pts)</div><a href="https://www.cloudskillsboost.google/" target="_blank" rel="noopener">Acessar Skills Boost</a></div>
-    <div class="link-card"><div class="lc-label">AWS Academy Learner Lab</div><a href="https://awsacademy.instructure.com/courses/188263" target="_blank" rel="noopener">Abrir Lab [188263]</a></div>
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- VIEW FASE 1: HISTÓRICO / MODO LEITURA / CONCLUÍDO          -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div id="viewFase1" style="display:none;">
+
+    <!-- BANNER DE HISTÓRICO -->
+    <div class="history-banner">
+      <div class="hb-left">
+        <span class="hb-badge">🔒 Visualização Somente Leitura</span>
+        <span class="hb-title">Histórico da Fase 1 — MVP Monolítico na AWS (100% Concluído)</span>
+        <span class="hb-sub">Exibindo o registro final da Fase 1 como foi entregue pelo Grupo 20. Modificações bloqueadas.</span>
+      </div>
+      <button class="hb-btn" onclick="switchPhase(2)">
+        ⚡ Ir para Fase 2 (Grupo 24 · Atual) →
+      </button>
+    </div>
+
+    <!-- ENTREGÁVEIS FASE 1 -->
+    <div class="sec-header green-dot"><div class="dot"></div><h2>Fase 1 — Entregáveis Concluídos</h2></div>
+    <div class="deliverables">
+      <div class="del-card video phase1-del-card"><div class="del-icon">🎬</div>
+        <h3>Vídeo de Demonstração <span style="font-size:.72rem;color:var(--green);font-weight:700;">✓ Entregue (15 min)</span></h3>
+        <ul>
+          <li>App rodando localmente (Docker Compose)</li>
+          <li>Explicação completa do diagrama de arquitetura</li>
+          <li>App na EC2 acessando o RDS PostgreSQL ao vivo</li>
+          <li>Configurações de Security Group e Portas (22, 5000, 5432)</li>
+          <li>Gestão segura de credenciais via variáveis de ambiente</li>
+        </ul>
+      </div>
+      <div class="del-card arch phase1-del-card"><div class="del-icon">📐</div>
+        <h3>Documentação de Arquitetura <span style="font-size:.72rem;color:var(--green);font-weight:700;">✓ Entregue</span></h3>
+        <ul>
+          <li>Link do diagrama público draw.io (VPC, Subnets, EC2, RDS, IGW, SGs)</li>
+          <li>Análise completa dos 12-Factor App aplicada ao código</li>
+          <li>Estimativa de custos oficial na AWS Pricing Calculator</li>
+        </ul>
+      </div>
+      <div class="del-card report phase1-del-card"><div class="del-icon">📄</div>
+        <h3>Relatório de Entrega <span style="font-size:.72rem;color:var(--green);font-weight:700;">✓ Submetido</span></h3>
+        <ul>
+          <li>Nomes e RMs de todos os 5 integrantes do Grupo 20</li>
+          <li>Links da documentação, repositório e vídeo demonstrativo</li>
+          <li>Resumo dos desafios, decisões tomadas e boas práticas</li>
+          <li>Print oficial da estimativa de custos na AWS</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- FLUXO DE EXECUÇÃO FASE 1 -->
+    <div class="sec-header green-dot"><div class="dot"></div><h2>Fluxo de execução da Fase 1</h2></div>
+    <div class="timeline">
+      <div class="tl-step"><div class="tl-circle tc-1">✓</div><div class="tl-label">Setup Local</div><div class="tl-sub">Docker Compose<br>PostgreSQL local<br>CRUD testado</div></div>
+      <div class="tl-step"><div class="tl-circle tc-2">✓</div><div class="tl-label">Infra AWS</div><div class="tl-sub">VPC · Subnets<br>Security Groups<br>EC2 + RDS</div></div>
+      <div class="tl-step"><div class="tl-circle tc-3">✓</div><div class="tl-label">Deploy &amp; Validação</div><div class="tl-sub">Gunicorn rodando<br>RDS integrado<br>Healthcheck 200 OK</div></div>
+      <div class="tl-step"><div class="tl-circle tc-4">✓</div><div class="tl-label">Doc &amp; Vídeo</div><div class="tl-sub">Diagrama draw.io<br>Gravações no Teams<br>Submissão final</div></div>
+    </div>
+
+    <!-- MEMBROS FASE 1 -->
+    <div class="sec-header green-dot">
+      <div class="dot"></div>
+      <h2>Desempenho e Atribuições — Grupo 20 (Fase 1)</h2>
+    </div>
+    <div class="members" id="membersGridFase1"><!-- renderizado por JS --></div>
+
+    <!-- CHECKLIST FASE 1 (SOMENTE LEITURA) -->
+    <div class="sec-header green-dot" style="margin-top:clamp(28px,3vw,44px);">
+      <div class="dot"></div>
+      <h2>Checklist de tarefas — Fase 1 (100% Concluído)</h2>
+    </div>
+
+    <div class="progress-bar-wrap" style="margin-top:12px;">
+      <div class="progress-bar-label">
+        <span>Progresso da Fase 1</span>
+        <strong style="color:var(--green);">11 / 11 concluídas (100%)</strong>
+      </div>
+      <div class="progress-bar-track"><div class="progress-bar-fill" style="width:100%;background:var(--green);"></div></div>
+    </div>
+
+    <div class="checklist" id="checklistFase1"><!-- renderizado por JS --></div>
+
+    <!-- EVENTOS FASE 1 -->
+    <div class="sec-header green-dot"><div class="dot"></div><h2>Histórico de Eventos &amp; Gravações da Fase 1</h2></div>
+    <div style="display:flex;flex-direction:column;gap:0;">
+
+      <!-- Evento 1 -->
+      <div style="display:grid;grid-template-columns:88px 1fr;gap:0;align-items:stretch;">
+        <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px;padding-right:16px;">
+          <div style="background:var(--cn-grn-bg);border:1px solid rgba(46,204,113,.45);border-radius:8px;padding:8px 10px;text-align:center;min-width:68px;">
+            <div style="font-size:.6rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.8px;line-height:1;">Segunda</div>
+            <div style="font-size:1.6rem;font-weight:900;color:var(--green);line-height:1.1;">12</div>
+            <div style="font-size:.65rem;font-weight:700;color:var(--green);line-height:1.2;">Out 2026</div>
+          </div>
+          <div style="flex:1;width:2px;background:linear-gradient(to bottom,rgba(46,204,113,.3),rgba(46,204,113,.05));margin-top:6px;min-height:16px;"></div>
+        </div>
+        <div style="background:var(--cn-grn-bg);border:1px solid rgba(46,204,113,.35);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:12px;opacity:.9;margin-bottom:10px;">
+          <div style="width:38px;height:38px;border-radius:8px;background:rgba(46,204,113,.2);border:1px solid rgba(46,204,113,.5);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">✅</div>
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
+              <span style="font-size:.82rem;font-weight:700;color:var(--txt);">Kick-off · Fase 1</span>
+              <span style="font-size:.6rem;font-weight:700;background:rgba(46,204,113,.2);color:var(--green);border:1px solid rgba(46,204,113,.4);border-radius:20px;padding:1px 8px;">Concluído</span>
+            </div>
+            <div style="font-size:.72rem;color:var(--muted);margin-top:3px;line-height:1.5;">Alinhamento inicial · Divisão de tarefas · Estratégia de deploy conjunto e gravação</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Evento 2 -->
+      <div style="display:grid;grid-template-columns:88px 1fr;gap:0;align-items:stretch;">
+        <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px;padding-right:16px;">
+          <div style="background:var(--cn-grn-bg);border:1px solid rgba(46,204,113,.45);border-radius:8px;padding:8px 10px;text-align:center;min-width:68px;">
+            <div style="font-size:.6rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.8px;line-height:1;">Quarta</div>
+            <div style="font-size:1.6rem;font-weight:900;color:var(--green);line-height:1.1;">14</div>
+            <div style="font-size:.65rem;font-weight:700;color:var(--green);line-height:1.2;">Out 2026</div>
+          </div>
+          <div style="flex:1;width:2px;background:linear-gradient(to bottom,rgba(46,204,113,.3),rgba(46,204,113,.05));margin-top:6px;min-height:16px;"></div>
+        </div>
+        <div style="background:var(--cn-grn-bg);border:1px solid rgba(46,204,113,.35);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:12px;opacity:.9;margin-bottom:10px;">
+          <div style="width:38px;height:38px;border-radius:8px;background:rgba(46,204,113,.2);border:1px solid rgba(46,204,113,.5);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">✅</div>
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
+              <span style="font-size:.82rem;font-weight:700;color:var(--txt);">Reunião · Deploy na AWS</span>
+              <span style="font-size:.6rem;font-weight:700;background:rgba(46,204,113,.2);color:var(--green);border:1px solid rgba(46,204,113,.4);border-radius:20px;padding:1px 8px;">Concluído</span>
+            </div>
+            <div style="font-size:.72rem;color:var(--muted);margin-top:3px;line-height:1.5;">Deploy local + Deploy AWS ao vivo + Integração RDS PostgreSQL</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Evento 3 -->
+      <div style="display:grid;grid-template-columns:88px 1fr;gap:0;align-items:stretch;">
+        <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px;padding-right:16px;">
+          <div style="background:var(--cn-grn-bg);border:1px solid rgba(46,204,113,.45);border-radius:8px;padding:8px 10px;text-align:center;min-width:68px;">
+            <div style="font-size:.6rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.8px;line-height:1;">Segunda</div>
+            <div style="font-size:1.6rem;font-weight:900;color:var(--green);line-height:1.1;">19</div>
+            <div style="font-size:.65rem;font-weight:700;color:var(--green);line-height:1.2;">Out 2026</div>
+          </div>
+          <div style="flex:1;width:2px;background:linear-gradient(to bottom,rgba(46,204,113,.3),rgba(46,204,113,.05));margin-top:6px;min-height:16px;"></div>
+        </div>
+        <a href="https://fiapcom-my.sharepoint.com/personal/rm378022_fiap_com_br/_layouts/15/stream.aspx?id=%2Fpersonal%2Frm378022%5Ffiap%5Fcom%5Fbr%2FDocuments%2FGrava%C3%A7%C3%B5es%2FReuni%C3%A3o%20em%20Tech%20Challenge%20%2D%20Grupo%2020%2D20261019%5F172924%2DGrava%C3%A7%C3%A3o%20de%20Reuni%C3%A3o%2Emp4&ga=1&referrer=StreamWebApp%2EWeb&referrerScenario=AddressBarCopied%2Eview%2E8dfdbc0d%2De966%2D4752%2Da490%2Db58a0b164d98" target="_blank" rel="noopener" style="text-decoration:none;margin-bottom:10px;">
+          <div style="background:var(--cn-grn-bg);border:1px solid rgba(46,204,113,.35);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:12px;opacity:.9;transition:border-color .15s;" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='rgba(46,204,113,.35)'">
+            <div style="width:38px;height:38px;border-radius:8px;background:rgba(46,204,113,.2);border:1px solid rgba(46,204,113,.5);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">✅</div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
+                <span style="font-size:.82rem;font-weight:700;color:var(--txt);">Gravação · Aplicação rodando localmente</span>
+                <span style="font-size:.6rem;font-weight:700;background:rgba(46,204,113,.2);color:var(--green);border:1px solid rgba(46,204,113,.4);border-radius:20px;padding:1px 8px;">Concluído</span>
+              </div>
+              <div style="font-size:.72rem;color:var(--muted);margin-top:3px;line-height:1.5;">Cassio · Docker Compose local · CRUD demonstrado · Gravação no Teams ↗</div>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Evento 4 -->
+      <div style="display:grid;grid-template-columns:88px 1fr;gap:0;align-items:stretch;">
+        <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px;padding-right:16px;">
+          <div style="background:var(--cn-grn-bg);border:1px solid rgba(46,204,113,.45);border-radius:8px;padding:8px 10px;text-align:center;min-width:68px;">
+            <div style="font-size:.6rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.8px;line-height:1;">Quinta</div>
+            <div style="font-size:1.6rem;font-weight:900;color:var(--green);line-height:1.1;">29</div>
+            <div style="font-size:.65rem;font-weight:700;color:var(--green);line-height:1.2;">Out 2026</div>
+          </div>
+          <div style="flex:1;width:2px;background:linear-gradient(to bottom,rgba(46,204,113,.3),rgba(46,204,113,.05));margin-top:6px;min-height:16px;"></div>
+        </div>
+        <a href="https://fiapcom-my.sharepoint.com/:v:/g/personal/rm378332_fiap_com_br/IQC5N62mUBQvTq6TFpd7TLChAb-NMM30h2NPQWpAN4wiCx8" target="_blank" rel="noopener" style="text-decoration:none;margin-bottom:10px;">
+          <div style="background:var(--cn-grn-bg);border:1px solid rgba(46,204,113,.35);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:12px;opacity:.9;transition:border-color .15s;" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='rgba(46,204,113,.35)'">
+            <div style="width:38px;height:38px;border-radius:8px;background:rgba(46,204,113,.2);border:1px solid rgba(46,204,113,.5);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">✅</div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
+                <span style="font-size:.82rem;font-weight:700;color:var(--txt);">Gravação · Diagrama de arquitetura proposto</span>
+                <span style="font-size:.6rem;font-weight:700;background:rgba(46,204,113,.2);color:var(--green);border:1px solid rgba(46,204,113,.4);border-radius:20px;padding:1px 8px;">Concluído</span>
+              </div>
+              <div style="font-size:.72rem;color:var(--muted);margin-top:3px;line-height:1.5;">Marcelo · Explicação detalhada do diagrama AWS · Gravação no Teams ↗</div>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Evento 5 -->
+      <div style="display:grid;grid-template-columns:88px 1fr;gap:0;align-items:stretch;">
+        <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px;padding-right:16px;">
+          <div style="background:var(--cn-grn-bg);border:1px solid rgba(46,204,113,.45);border-radius:8px;padding:8px 10px;text-align:center;min-width:68px;">
+            <div style="font-size:.6rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.8px;line-height:1;">Segunda</div>
+            <div style="font-size:1.6rem;font-weight:900;color:var(--green);line-height:1.1;">02</div>
+            <div style="font-size:.65rem;font-weight:700;color:var(--green);line-height:1.2;">Nov 2026</div>
+          </div>
+          <div style="flex:1;width:2px;background:linear-gradient(to bottom,rgba(46,204,113,.3),rgba(46,204,113,.05));margin-top:6px;min-height:16px;"></div>
+        </div>
+        <div style="background:var(--cn-grn-bg);border:1px solid rgba(46,204,113,.35);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:12px;opacity:.9;margin-bottom:10px;">
+          <div style="width:38px;height:38px;border-radius:8px;background:rgba(46,204,113,.2);border:1px solid rgba(46,204,113,.5);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">✅</div>
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
+              <span style="font-size:.82rem;font-weight:700;color:var(--txt);">Gravação · App ao vivo na EC2 &amp; Conclusão</span>
+              <span style="font-size:.6rem;font-weight:700;background:rgba(46,204,113,.2);color:var(--green);border:1px solid rgba(46,204,113,.4);border-radius:20px;padding:1px 8px;">Concluído</span>
+            </div>
+            <div style="font-size:.72rem;color:var(--muted);margin-top:3px;line-height:1.5;">App na EC2 acessando RDS · Security Groups · Encerramento e considerações</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Evento 6 -->
+      <div style="display:grid;grid-template-columns:88px 1fr;gap:0;align-items:stretch;">
+        <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px;padding-right:16px;">
+          <div style="background:var(--cn-grn-bg);border:1px solid rgba(46,204,113,.45);border-radius:8px;padding:8px 10px;text-align:center;min-width:68px;">
+            <div style="font-size:.6rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.8px;line-height:1;">Terça</div>
+            <div style="font-size:1.6rem;font-weight:900;color:var(--green);line-height:1.1;">03</div>
+            <div style="font-size:.65rem;font-weight:700;color:var(--green);line-height:1.2;">Nov 2026</div>
+          </div>
+        </div>
+        <div style="background:var(--cn-grn-bg);border:1px solid rgba(46,204,113,.35);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:12px;opacity:.9;margin-bottom:10px;">
+          <div style="width:38px;height:38px;border-radius:8px;background:rgba(46,204,113,.2);border:1px solid rgba(46,204,113,.5);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">✅</div>
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
+              <span style="font-size:.82rem;font-weight:700;color:var(--txt);">Conferência · Relatório final e Submissão</span>
+              <span style="font-size:.6rem;font-weight:700;background:rgba(46,204,113,.2);color:var(--green);border:1px solid rgba(46,204,113,.4);border-radius:20px;padding:1px 8px;">Concluído</span>
+            </div>
+            <div style="font-size:.72rem;color:var(--muted);margin-top:3px;line-height:1.5;">Revisão final · Relatório PDF · Submissão na plataforma FIAP · Limpeza AWS</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- LINKS ÚTEIS FASE 1 -->
+    <div class="sec-header green-dot"><div class="dot"></div><h2>Links úteis da Fase 1</h2></div>
+    <div class="links-grid">
+      <div class="link-card"><div class="lc-label">Repositório ToggleMaster (Monólito)</div><a href="https://github.com/dougls/toggle-master-monolith" target="_blank" rel="noopener">Abrir no GitHub</a></div>
+      <div class="link-card"><div class="lc-label">Metodologia 12-Factor App</div><a href="https://12factor.net/pt_br/" target="_blank" rel="noopener">Ler em PT-BR</a></div>
+      <div class="link-card"><div class="lc-label">Calculadora de Custos AWS</div><a href="https://calculator.aws/" target="_blank" rel="noopener">Abrir Calculadora</a></div>
+      <div class="link-card"><div class="lc-label">Diagrama — draw.io</div><a href="https://app.diagrams.net" target="_blank" rel="noopener">Abrir draw.io</a></div>
+      <div class="link-card"><div class="lc-label">AWS Academy Learner Lab</div><a href="https://awsacademy.instructure.com/courses/188263" target="_blank" rel="noopener">Abrir Lab [188263]</a></div>
+    </div>
+
   </div>
 
 </div>
@@ -630,12 +900,12 @@ html.login-open,body.login-open{overflow:hidden!important;height:100%!important;
 
 <div id="toast"></div>
 
-<!-- FIREBASE SDK -->
+<!-- FIREBASE SDK & APP LOGIC -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js';
 import { getDatabase, ref, set, onValue } from 'https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js';
 
-const APP_VERSION = 'v3.0.0';
+const APP_VERSION = 'v3.1.0';
 
 const firebaseConfig = {
   apiKey:            'AIzaSyBw4uD-FAKE_API_KEY_PROTECTED',
@@ -654,7 +924,7 @@ const _tasksRef = ref(_db, 'tc-g24/v1/tasks');
 const _membRef  = ref(_db, 'tc-g24/v1/members');
 
 // ══════════════════════════════════════════════
-// CONSTANTES
+// CONSTANTES & CATALOG
 // ══════════════════════════════════════════════
 const PW_HASH    = '0d1d19c56750f6d01b81ca3597f9a68d4512bbe45d48cb9ae0486e3e3b906c5b';
 const AUTH_KEY   = 'tc-g24-auth';
@@ -662,7 +932,7 @@ const TASKS_KEY  = 'tc-g24-tasks-cfg-v1';
 const STATE_KEY  = 'tc-g24-state-v1';
 const MEMBERS_KEY= 'tc-g24-members-v1';
 
-// Catálogo fixo dos 5 membros do Grupo 24 (mesmos da Fase 1)
+// Catálogo fixo dos 5 membros
 const PEOPLE_CATALOG = [
   { pid:'P3', av:'av-3', tag:'tag-purple', name:'Alan Santos',             rm:'RM 378561' },
   { pid:'P5', av:'av-5', tag:'tag-yellow', name:'Cassio Tadashi Kawamura', rm:'RM 378022' },
@@ -671,42 +941,25 @@ const PEOPLE_CATALOG = [
   { pid:'P4', av:'av-4', tag:'tag-green',  name:'Marcelo Santos de Jesus', rm:'RM 378332' },
 ];
 
-const DEFAULT_SLOT_MAP = { P1: null, P2: null, P3: null, P4: null, P5: null };
-let membersData = [];
-let slotMap = { ...DEFAULT_SLOT_MAP };
-
-function _buildMembersData() {
-  membersData = ['P1','P2','P3','P4','P5'].map(slotId => {
-    const pid = slotMap[slotId];
-    const person = pid ? PEOPLE_CATALOG.find(p => p.pid === pid) : null;
-    const av  = person ? person.av  : 'av-' + slotId.slice(1);
-    const tag = person ? person.tag : ['tag-pink','tag-blue','tag-purple','tag-green','tag-yellow'][parseInt(slotId.slice(1))-1];
-    return {
-      id:   slotId,
-      name: person ? person.name : '',
-      rm:   person ? person.rm   : '',
-      av, tag,
-    };
-  });
-}
-
-function loadMembers() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(MEMBERS_KEY));
-    slotMap = (saved && typeof saved === 'object' && !Array.isArray(saved))
-      ? { ...DEFAULT_SLOT_MAP, ...saved }
-      : { ...DEFAULT_SLOT_MAP };
-  } catch { slotMap = { ...DEFAULT_SLOT_MAP }; }
-  _buildMembersData();
-}
-
-function saveMembers() {
-  try { localStorage.setItem(MEMBERS_KEY, JSON.stringify(slotMap)); } catch {}
-  try { set(_membRef, slotMap).catch(() => {}); } catch {}
-}
+// ══════════════════════════════════════════════
+// DADOS HISTÓRICOS DA FASE 1 (ESTÁTICOS / CONCLUÍDOS)
+// ══════════════════════════════════════════════
+const FASE1_TASKS = [
+  { id:'f1_t1',  label:'Deploy local',    title:'Executar aplicação localmente (Docker Compose)',        desc:'Clonar repo · docker compose up --build · testar CRUD com curl · identificar por que é um monolito', owner:'P5', doneBy:'Cassio', doneAt:'19/10/2026 17:30' },
+  { id:'f1_t2',  label:'Conta AWS',       title:'Acesso ao AWS Academy Learner Lab',                     desc:'Aceitar convite no Canvas · registrar com e-mail FIAP · Start Lab · us-east-1 · créditos provisionados', owner:'ALL', doneBy:'Todos', doneAt:'14/10/2026 19:00' },
+  { id:'f1_t3',  label:'Diagrama',        title:'Diagrama de arquitetura AWS (draw.io)',                  desc:'VPC 10.0.0.0/16 · subnets pública e privada · EC2 na pública · RDS na privada · IGW · SGs', owner:'P4', doneBy:'Marcelo', doneAt:'29/10/2026 20:00' },
+  { id:'f1_t4',  label:'12 Fatores',      title:'Análise dos 12 Fatores (12-Factor App)',                 desc:'Analisar app.py, Dockerfile, requirements.txt e docker-compose.yaml · status com justificativa', owner:'P4', doneBy:'Marcelo', doneAt:'02/11/2026 18:00' },
+  { id:'f1_t5',  label:'Pricing',         title:'Estimativa de custos na AWS Pricing Calculator',         desc:'calculator.aws · EC2 t3.micro + RDS db.t3.micro + Data Transfer · região us-east-1 · print para relatório', owner:'P3', doneBy:'Alan', doneAt:'02/11/2026 19:30' },
+  { id:'f1_t6',  label:'Infra AWS',       title:'Provisionar infraestrutura AWS (VPC, EC2, RDS, SGs)',    desc:'VPC · subnet pública + privada · IGW · Route Table · sg-ec2 · sg-rds · EC2 t3.micro · RDS PostgreSQL 15', owner:'P1', doneBy:'Erick, John', doneAt:'14/10/2026 21:00' },
+  { id:'f1_t7',  label:'Deploy EC2',      title:'Deploy da aplicação na EC2 via SSH',                     desc:'SSH na EC2 · clone repo · venv · pip install · env vars de banco · flask init-db · gunicorn --bind 0.0.0.0:5000', owner:'P2', doneBy:'John, Erick', doneAt:'02/11/2026 21:00' },
+  { id:'f1_t8',  label:'Validar API',     title:'Validar API pública na EC2',                             desc:'curl /health · POST /flags · GET /flags · PUT /flags · confirmação de persistência no RDS', owner:'ALL', doneBy:'Todos', doneAt:'02/11/2026 21:30' },
+  { id:'f1_t9',  label:'Relatório',       title:'Compilar relatório de entrega (.PDF ou .txt)',           desc:'Nomes dos participantes · link da documentação e vídeo · resumo dos desafios e custos AWS', owner:'P3', doneBy:'Alan', doneAt:'03/11/2026 10:00' },
+  { id:'f1_t10', label:'Vídeo',           title:'Gravar vídeo de demonstração (até 15 min)',              desc:'App local · diagrama · EC2 com RDS ao vivo · Security Groups · credenciais · link compartilhável', owner:'ALL', doneBy:'Todos', doneAt:'03/11/2026 10:30' },
+  { id:'f1_t11', label:'Submission',      title:'Submissão final + limpeza AWS',                          desc:'Reunir vídeo + diagrama + PDF · submeter na FIAP · parar EC2 e remover RDS para evitar custos', owner:'P1', doneBy:'Erick, Alan, John, Marcelo, Cassio', doneAt:'03/11/2026 11:00' },
+];
 
 // ── Tarefas padrão da FASE 2 ────────────────────────────
-const DEFAULT_TASKS = [
+const DEFAULT_TASKS_FASE2 = [
   {
     id:'t1',
     label:'Dockerfiles (x5)',
@@ -814,10 +1067,12 @@ const DEFAULT_TASKS = [
 ];
 
 // ══════════════════════════════════════════════
-// ESTADO
+// ESTADO GLOBAL & NAVEGAÇÃO ENTRE FASES
 // ══════════════════════════════════════════════
+let currentPhase = 2; // Padrão: Fase 2 (atual)
 let tasks = [];
 let doneState = {};
+let slotMap = { P1: null, P2: null, P3: null, P4: null, P5: null };
 let pendingTaskId = null;
 let pendingGuideId = null;
 let _fbReady = false;
@@ -827,9 +1082,13 @@ function _lsSaveState() { try { localStorage.setItem(STATE_KEY, JSON.stringify(d
 
 function saveTasks() { _lsSaveTasks(); set(_tasksRef, tasks).catch(() => {}); }
 function saveState() { _lsSaveState(); set(_stateRef, doneState).catch(() => {}); }
+function saveMembers() {
+  try { localStorage.setItem(MEMBERS_KEY, JSON.stringify(slotMap)); } catch {}
+  try { set(_membRef, slotMap).catch(() => {}); } catch {}
+}
 
 function _mergeTasks(remote) {
-  const defMap = Object.fromEntries(DEFAULT_TASKS.map(d => [d.id, d]));
+  const defMap = Object.fromEntries(DEFAULT_TASKS_FASE2.map(d => [d.id, d]));
   return remote.map(t => {
     const def = defMap[t.id] || {};
     return {
@@ -848,29 +1107,33 @@ function loadTasks() {
     const saved = JSON.parse(localStorage.getItem(TASKS_KEY));
     tasks = (Array.isArray(saved) && saved.length > 0)
       ? _mergeTasks(saved)
-      : DEFAULT_TASKS.map(t => ({ ...t }));
-  } catch { tasks = DEFAULT_TASKS.map(t => ({ ...t })); }
+      : DEFAULT_TASKS_FASE2.map(t => ({ ...t }));
+  } catch { tasks = DEFAULT_TASKS_FASE2.map(t => ({ ...t })); }
 }
 function loadState() {
   try { doneState = JSON.parse(localStorage.getItem(STATE_KEY)) || {}; } catch { doneState = {}; }
+}
+function loadMembers() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(MEMBERS_KEY));
+    if (saved && typeof saved === 'object' && !Array.isArray(saved)) slotMap = { ...slotMap, ...saved };
+  } catch {}
 }
 
 function _attachFirebaseListeners() {
   onValue(_membRef, (snap) => {
     const remote = snap.val();
     if (remote && typeof remote === 'object' && !Array.isArray(remote)) {
-      slotMap = { ...DEFAULT_SLOT_MAP, ...remote };
+      slotMap = { ...slotMap, ...remote };
       localStorage.setItem(MEMBERS_KEY, JSON.stringify(slotMap));
-      _buildMembersData();
-      renderMembers();
+      if (currentPhase === 2) renderMembers();
     }
   }, (err) => console.warn('[Firebase] members:', err));
 
   onValue(_stateRef, (snap) => {
     const remote = snap.val();
     if (remote !== null) { doneState = remote; _lsSaveState(); }
-    if (!_fbReady) { _fbReady = true; renderChecklist(); renderMembers(); }
-    else { renderChecklist(); renderMembers(); }
+    if (currentPhase === 2) { renderChecklist(); renderMembers(); }
   }, (err) => console.warn('[Firebase] state:', err));
 
   onValue(_tasksRef, (snap) => {
@@ -878,66 +1141,148 @@ function _attachFirebaseListeners() {
     if (remote !== null && Array.isArray(remote)) {
       tasks = _mergeTasks(remote);
       _lsSaveTasks();
-      renderChecklist();
-      renderMembers();
+      if (currentPhase === 2) { renderChecklist(); renderMembers(); }
     }
   }, (err) => console.warn('[Firebase] tasks:', err));
 }
 
 // ══════════════════════════════════════════════
-// LOGIN
+// SWITCH PHASE FUNCTION (HISTÓRICO vs ATUAL)
 // ══════════════════════════════════════════════
-async function sha256(str) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
-}
-async function tryLogin() {
-  const val = document.getElementById('pwInput').value;
-  if (!val) { document.getElementById('loginError').textContent = 'Digite a senha.'; return; }
-  const hash = await sha256(val);
-  if (hash === PW_HASH) {
-    sessionStorage.setItem(AUTH_KEY, '1');
-    const gate = document.getElementById('login-gate');
-    gate.classList.add('hidden');
-    document.documentElement.classList.remove('login-open');
-    document.body.classList.remove('login-open');
-    setTimeout(() => gate.remove(), 350);
-    _attachFirebaseListeners();
+function switchPhase(phaseNum) {
+  if (phaseNum !== 1 && phaseNum !== 2) return;
+  currentPhase = phaseNum;
+  location.hash = 'fase' + phaseNum;
+
+  const header = document.getElementById('mainHeader');
+  const pageTitle = document.getElementById('pageTitle');
+  const mainTitle = document.getElementById('headerMainTitle');
+  const subTitle  = document.getElementById('headerSubTitle');
+  const groupNum  = document.getElementById('headerGroupNum');
+  const p1Card    = document.getElementById('phase1Card');
+  const p2Card    = document.getElementById('phase2Card');
+  const p1Badge   = document.getElementById('phase1Badge');
+  const p2Badge   = document.getElementById('phase2Badge');
+  const view1     = document.getElementById('viewFase1');
+  const view2     = document.getElementById('viewFase2');
+
+  if (phaseNum === 1) {
+    // Modo Histórico Fase 1
+    header.classList.add('phase1-mode');
+    pageTitle.textContent = 'Tech Challenge – Grupo 20 · Fase 1 (Histórico Concluído)';
+    mainTitle.innerHTML = 'Tech Challenge &nbsp;<span>Grupo 20</span>';
+    subTitle.innerHTML = 'Fase 1: MVP Monolítico na AWS · <span style="color:var(--green);font-weight:700;">Histórico Concluído (100%)</span> · FIAP Pós Tech 2026';
+    groupNum.textContent = '20';
+
+    p1Card.className = 'phase-card done selected-phase clickable';
+    p1Badge.innerHTML = '<div class="badge-dot bd-done"></div>Concluído · Visualizando';
+    p2Card.className = 'phase-card active clickable';
+    p2Badge.innerHTML = '<div class="badge-dot bd-active"></div>Em andamento · Clique para alternar';
+
+    view1.style.display = 'block';
+    view2.style.display = 'none';
+
+    renderFase1Members();
+    renderFase1Checklist();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    showToast('📁 Visualizando Histórico da Fase 1 (Somente Leitura)');
   } else {
-    document.getElementById('loginError').textContent = 'Senha incorreta. Tente novamente.';
-    document.getElementById('pwInput').value = '';
-    document.getElementById('pwInput').focus();
+    // Modo Atual Fase 2
+    header.classList.remove('phase1-mode');
+    pageTitle.textContent = 'Tech Challenge – Grupo 24 · Fase 2: Microsserviços & Kubernetes (EKS)';
+    mainTitle.innerHTML = 'Tech Challenge &nbsp;<span>Grupo 24</span>';
+    subTitle.innerHTML = 'Fase 2: Microsserviços &amp; Kubernetes (EKS) · <span style="color:var(--txt);">Grupo 24</span> <span style="opacity:.65;">(ex-Grupo 20 na Fase 1)</span> · FIAP Pós Tech 2026';
+    groupNum.textContent = '24';
+
+    p1Card.className = 'phase-card done clickable';
+    p1Badge.innerHTML = '<div class="badge-dot bd-done"></div>Concluído · Ver histórico';
+    p2Card.className = 'phase-card active selected-phase clickable';
+    p2Badge.innerHTML = '<div class="badge-dot bd-active"></div>Em andamento · Atual';
+
+    view1.style.display = 'none';
+    view2.style.display = 'block';
+
+    renderMembers();
+    renderChecklist();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    showToast('⚡ Visualizando Fase 2 (Grupo 24 · Atual)');
   }
 }
-(function checkAuth() {
-  if (sessionStorage.getItem(AUTH_KEY) === '1') {
-    const g = document.getElementById('login-gate');
-    if (g) g.remove();
-    document.documentElement.classList.remove('login-open');
-    document.body.classList.remove('login-open');
-    _attachFirebaseListeners();
-  } else {
-    document.documentElement.classList.add('login-open');
-    document.body.classList.add('login-open');
-  }
-})();
 
 // ══════════════════════════════════════════════
-// TEMA
+// RENDER FASE 1 (HISTÓRICO)
 // ══════════════════════════════════════════════
-function toggleTheme() {
-  const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
-  localStorage.setItem('tc-fase2-theme', next);
-  updateThemeBtn(next);
+function renderFase1Members() {
+  const grid = document.getElementById('membersGridFase1');
+  if (!grid) return;
+
+  const ownTasks = {};
+  PEOPLE_CATALOG.forEach(p => ownTasks[p.pid] = []);
+  const allTasks = [];
+
+  FASE1_TASKS.forEach(t => {
+    const entry = { lbl: t.label, status: 'done' };
+    if (t.owner === 'ALL') allTasks.push(entry);
+    else if (t.owner && ownTasks[t.owner]) ownTasks[t.owner].push(entry);
+  });
+
+  grid.innerHTML = PEOPLE_CATALOG.map(person => {
+    const mine   = ownTasks[person.pid] || [];
+    const shared = allTasks;
+    const total  = mine.length + shared.length;
+
+    const mineTags   = mine.map(e => `<span class="task-tag ${person.tag} ts-done" title="${e.lbl}">✅ ${e.lbl}</span>`).join('');
+    const sharedTags = shared.map(e => `<span class="task-tag tag-purple ts-done" title="${e.lbl}">✅ 👥 ${e.lbl}</span>`).join('');
+
+    return `
+    <div class="member-card">
+      <div class="member-avatar ${person.av}">${person.name.split(' ')[0].charAt(0)}</div>
+      <div class="member-name">${person.name.split(' ')[0]}</div>
+      <div class="member-rm">${person.rm}</div>
+      <div class="member-tasks">${mineTags + sharedTags}</div>
+      <div class="member-stats" style="margin-top:auto;">
+        <div class="member-stat done-stat" style="border-right:none;width:100%;">
+          <span class="member-stat-val" style="color:var(--green);">${total} / ${total}</span>
+          <span class="member-stat-lbl">100% Concluído</span>
+        </div>
+      </div>
+      <div class="member-prog-bar">
+        <div class="member-prog-fill" style="width:100%;background:var(--green);"></div>
+      </div>
+    </div>`;
+  }).join('');
 }
-function updateThemeBtn(t) {
-  document.getElementById('themeBtn').querySelector('.icon').textContent = t === 'dark' ? '☀️' : '🌙';
-  document.getElementById('themeLabel').textContent = t === 'dark' ? 'Modo Claro' : 'Modo Escuro';
+
+function renderFase1Checklist() {
+  const el = document.getElementById('checklistFase1');
+  if (!el) return;
+
+  const numColors = ['cn-pink','cn-pink','cn-blue','cn-blue','cn-blue','cn-purple','cn-purple','cn-purple','cn-green','cn-green','cn-green'];
+
+  el.innerHTML = FASE1_TASKS.map((task, idx) => {
+    const guideKey = task.id.replace('f1_', '');
+    const hasGuide = GUIDES_FASE1[guideKey] !== undefined;
+    const guideBtn = hasGuide
+      ? `<button class="check-guide-btn" onclick="openGuide('${guideKey}', 1)">📋 Guia da Tarefa</button>` : '';
+
+    return `
+    <div class="check-item done" data-id="${task.id}">
+      <div class="check-num ${numColors[idx % numColors.length]}">${idx + 1}</div>
+      <div class="check-body">
+        <div class="check-title">${task.title}</div>
+        <div class="check-desc">${task.desc}</div>
+        <div class="done-by" style="display:block;">✓ Concluído por ${task.doneBy} em ${task.doneAt}</div>
+      </div>
+      <div class="check-actions">
+        ${guideBtn}
+        <span class="status-indicator si-done">✓ Concluída</span>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // ══════════════════════════════════════════════
-// RENDER MEMBERS
+// RENDER FASE 2 (INTERATIVA)
 // ══════════════════════════════════════════════
 function renderMembers() {
   const grid = document.getElementById('membersGrid');
@@ -956,7 +1301,7 @@ function renderMembers() {
   });
 
   tasks.forEach(t => {
-    const def = DEFAULT_TASKS.find(d => d.id === t.id) || {};
+    const def = DEFAULT_TASKS_FASE2.find(d => d.id === t.id) || {};
     const lbl = t.label || def.label || t.title || '';
     const realStatus = doneState[t.id] ? 'done' : (t.status || 'todo');
     const entry = { lbl, status: realStatus };
@@ -1030,19 +1375,8 @@ function renderMembers() {
   }).join('');
 }
 
-function saveInlineMembers() {
-  saveMembers();
-  renderChecklist();
-  showToast('✅ Atribuições salvas!');
-}
-
-// ══════════════════════════════════════════════
-// RENDER CHECKLIST
-// ══════════════════════════════════════════════
 const NUM_COLORS = ['cn-pink','cn-pink','cn-blue','cn-blue','cn-blue','cn-purple','cn-purple','cn-purple','cn-purple','cn-green','cn-green','cn-green','cn-green'];
 function getNumColor(idx) { return NUM_COLORS[idx % NUM_COLORS.length] || 'cn-pink'; }
-
-const GUIDE_IDS = new Set(['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10','t11','t12','t13']);
 let _dndSrcId = null;
 
 function renderChecklist() {
@@ -1053,8 +1387,8 @@ function renderChecklist() {
     const done   = !!doneState[task.id];
     const inProg = !done && task.status === 'progress';
     const doneText = done ? `✓ por ${doneState[task.id].by_name} em ${doneState[task.id].at}` : '';
-    const guideBtn = GUIDE_IDS.has(task.id)
-      ? `<button class="check-guide-btn" onclick="openGuide('${task.id}')">📋 Guia</button>` : '';
+    const guideBtn = GUIDES_FASE2[task.id] !== undefined
+      ? `<button class="check-guide-btn" onclick="openGuide('${task.id}', 2)">📋 Guia</button>` : '';
     const itemClass = done ? 'done' : (inProg ? 'in-progress' : '');
     return `
     <div class="check-item${itemClass ? ' '+itemClass : ''}" data-id="${task.id}" draggable="true">
@@ -1127,71 +1461,14 @@ function updateProgress() {
   if (p2f) p2f.style.width = pct + '%';
 }
 
-function closeModal() {
-  document.getElementById('modalOverlay').classList.remove('active');
-  const box = document.getElementById('modalBox');
-  box.classList.remove('modal-wide');
-  box.classList.remove('modal-guide');
-  pendingTaskId = null;
-  pendingGuideId = null;
+function saveInlineMembers() {
+  saveMembers();
+  renderChecklist();
+  showToast('✅ Atribuições salvas!');
 }
 
 // ══════════════════════════════════════════════
-// MODAL — SOBRE O GRUPO
-// ══════════════════════════════════════════════
-function openGroupModal() {
-  const tagColors = { 'tag-pink':'var(--pink)', 'tag-blue':'var(--blue)', 'tag-purple':'var(--purple)', 'tag-green':'var(--green)', 'tag-yellow':'var(--yellow)' };
-  const totalTasks = tasks.length;
-
-  const donePidCount = {};
-  PEOPLE_CATALOG.forEach(p => donePidCount[p.pid] = 0);
-  Object.values(doneState).forEach(ds => {
-    const byArr = Array.isArray(ds.by) ? ds.by : [ds.by];
-    byArr.forEach(pid => { if (pid !== 'ALL' && donePidCount[pid] !== undefined) donePidCount[pid]++; });
-    if (byArr.includes('ALL')) PEOPLE_CATALOG.forEach(p => donePidCount[p.pid]++);
-  });
-
-  const rows = PEOPLE_CATALOG.map(p => {
-    const pts = donePidCount[p.pid] || 0;
-    const pct = totalTasks > 0 ? Math.round((pts / totalTasks) * 100) : 0;
-    const barColor = tagColors[p.tag] || 'var(--blue)';
-    return `
-    <tr>
-      <td><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${barColor};margin-right:5px;"></span><span style="font-weight:600;">${p.name}</span></td>
-      <td style="color:var(--muted);white-space:nowrap;">${p.rm}</td>
-      <td style="text-align:center;font-weight:700;color:${pts > 0 ? 'var(--green)' : 'var(--muted)'};">${pts}</td>
-      <td style="min-width:80px;">
-        <div style="background:var(--surface2);border-radius:4px;height:7px;overflow:hidden;">
-          <div style="height:100%;width:${pct}%;background:${barColor};border-radius:4px;transition:width .4s;"></div>
-        </div>
-      </td>
-    </tr>`;
-  }).join('');
-
-  const totalDone = Object.keys(doneState).filter(id => tasks.find(t => t.id === id)).length;
-
-  document.getElementById('modalTitle').textContent    = '👥 Grupo 24 — Membros (ex-Grupo 20 · Fase 1)';
-  document.getElementById('modalSubtitle').textContent = 'FIAP Pós Tech · DevOps e Arquitetura Cloud · Fase 2 (2026)';
-  document.getElementById('modalBody').innerHTML = `
-    <table class="group-table">
-      <thead><tr><th>Nome completo</th><th>RM</th><th style="text-align:center;">✅</th><th>Desempenho</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
-    <div style="margin-top:14px;padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:.78rem;color:var(--muted);display:flex;gap:16px;flex-wrap:wrap;align-items:center;">
-      <span>Total de tarefas: <strong style="color:var(--txt);">${totalTasks}</strong></span>
-      <span>Concluídas: <strong style="color:var(--green);">${totalDone}</strong></span>
-      <span>Progresso: <strong style="color:var(--blue);">${totalTasks > 0 ? Math.round((totalDone/totalTasks)*100) : 0}%</strong></span>
-    </div>`;
-  document.getElementById('modalBtns').innerHTML =
-    `<button class="btn btn-cancel" onclick="closeModal()">Fechar</button>`;
-  const box = document.getElementById('modalBox');
-  box.classList.add('modal-wide');
-  box.classList.remove('modal-guide');
-  document.getElementById('modalOverlay').classList.add('active');
-}
-
-// ══════════════════════════════════════════════
-// MODAL — EDIÇÃO / CRIAÇÃO DE TAREFAS
+// MODAL — EDIÇÃO / CRIAÇÃO DE TAREFAS (FASE 2)
 // ══════════════════════════════════════════════
 function openEditTaskModal(id) {
   const task = tasks.find(t => t.id === id);
@@ -1199,7 +1476,7 @@ function openEditTaskModal(id) {
   pendingTaskId = id;
   const isDone = !!doneState[id];
 
-  document.getElementById('modalTitle').textContent = '✏️ Editar tarefa';
+  document.getElementById('modalTitle').textContent = '✏️ Editar tarefa (Fase 2)';
   document.getElementById('modalSubtitle').textContent = task.title;
 
   const ownerOpts = [
@@ -1310,12 +1587,127 @@ function openAddTaskModal() {
 }
 
 // ══════════════════════════════════════════════
-// GUIAS DETALHADOS DA FASE 2
+// MODAL — SOBRE O GRUPO
 // ══════════════════════════════════════════════
-const GUIDES = {
+function openGroupModal() {
+  const tagColors = { 'tag-pink':'var(--pink)', 'tag-blue':'var(--blue)', 'tag-purple':'var(--purple)', 'tag-green':'var(--green)', 'tag-yellow':'var(--yellow)' };
+  const totalTasks = tasks.length;
+
+  const donePidCount = {};
+  PEOPLE_CATALOG.forEach(p => donePidCount[p.pid] = 0);
+  Object.values(doneState).forEach(ds => {
+    const byArr = Array.isArray(ds.by) ? ds.by : [ds.by];
+    byArr.forEach(pid => { if (pid !== 'ALL' && donePidCount[pid] !== undefined) donePidCount[pid]++; });
+    if (byArr.includes('ALL')) PEOPLE_CATALOG.forEach(p => donePidCount[p.pid]++);
+  });
+
+  const rows = PEOPLE_CATALOG.map(p => {
+    const pts = donePidCount[p.pid] || 0;
+    const pct = totalTasks > 0 ? Math.round((pts / totalTasks) * 100) : 0;
+    const barColor = tagColors[p.tag] || 'var(--blue)';
+    return `
+    <tr>
+      <td><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${barColor};margin-right:5px;"></span><span style="font-weight:600;">${p.name}</span></td>
+      <td style="color:var(--muted);white-space:nowrap;">${p.rm}</td>
+      <td style="text-align:center;font-weight:700;color:${pts > 0 ? 'var(--green)' : 'var(--muted)'};">${pts}</td>
+      <td style="min-width:80px;">
+        <div style="background:var(--surface2);border-radius:4px;height:7px;overflow:hidden;">
+          <div style="height:100%;width:${pct}%;background:${barColor};border-radius:4px;transition:width .4s;"></div>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  const totalDone = Object.keys(doneState).filter(id => tasks.find(t => t.id === id)).length;
+
+  document.getElementById('modalTitle').textContent    = '👥 Grupo 24 — Membros (ex-Grupo 20 · Fase 1)';
+  document.getElementById('modalSubtitle').textContent = 'FIAP Pós Tech · DevOps e Arquitetura Cloud · Fase 2 (2026)';
+  document.getElementById('modalBody').innerHTML = `
+    <table class="group-table">
+      <thead><tr><th>Nome completo</th><th>RM</th><th style="text-align:center;">✅</th><th>Desempenho (Fase 2)</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div style="margin-top:14px;padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:.78rem;color:var(--muted);display:flex;gap:16px;flex-wrap:wrap;align-items:center;">
+      <span>Total de tarefas: <strong style="color:var(--txt);">${totalTasks}</strong></span>
+      <span>Concluídas: <strong style="color:var(--green);">${totalDone}</strong></span>
+      <span>Progresso: <strong style="color:var(--blue);">${totalTasks > 0 ? Math.round((totalDone/totalTasks)*100) : 0}%</strong></span>
+    </div>`;
+  document.getElementById('modalBtns').innerHTML =
+    `<button class="btn btn-cancel" onclick="closeModal()">Fechar</button>`;
+  const box = document.getElementById('modalBox');
+  box.classList.add('modal-wide');
+  box.classList.remove('modal-guide');
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+// ══════════════════════════════════════════════
+// GUIAS DA FASE 1 & FASE 2
+// ══════════════════════════════════════════════
+const GUIDES_FASE1 = {
+  t1: {
+    title: 'T1 — Executar a aplicação localmente',
+    subtitle: 'Fase 1 · Responsável: Cassio · Concluído',
+    steps: [
+      { title: 'Clonar o repositório', body: 'git clone https://github.com/dougls/toggle-master-monolith\ncd toggle-master-monolith' },
+      { title: 'Subir os contêineres', body: 'docker compose up --build', tip: 'Aguarde "Listening at: http://0.0.0.0:5000".' },
+      { title: 'Testar CRUD', body: 'curl http://localhost:5000/health\ncurl -X POST http://localhost:5000/flags -H "Content-Type: application/json" -d \'{"name":"nova-ui","is_enabled":false}\'' }
+    ]
+  },
+  t2: {
+    title: 'T2 — Acesso ao AWS Academy Learner Lab',
+    subtitle: 'Fase 1 · Responsável: Todos · Concluído',
+    steps: [
+      { title: 'Acessar o Learner Lab', body: 'Acessar o curso no Canvas · clicar Start Lab · aguardar círculo verde · abrir Console AWS na região us-east-1.' }
+    ]
+  },
+  t3: {
+    title: 'T3 — Diagrama de Arquitetura AWS',
+    subtitle: 'Fase 1 · Responsável: Marcelo · Concluído',
+    steps: [
+      { title: 'Layout no draw.io', body: 'VPC 10.0.0.0/16 · Subnet Pública (EC2) · Subnet Privada (RDS PostgreSQL) · Internet Gateway · Security Groups detalhados.' }
+    ]
+  },
+  t4: {
+    title: 'T4 — Análise dos 12 Fatores',
+    subtitle: 'Fase 1 · Responsável: Marcelo · Concluído',
+    steps: [
+      { title: 'Mapeamento no código', body: 'Classificação detalhada dos 12 fatores arquiteturais no monólito com status e justificativa técnica.' }
+    ]
+  },
+  t5: {
+    title: 'T5 — Estimativa de Custo AWS',
+    subtitle: 'Fase 1 · Responsável: Alan · Concluído',
+    steps: [
+      { title: 'Calculadora AWS', body: 'EC2 t3.micro + RDS db.t3.micro na região us-east-1 · exportação do link público e print para o relatório.' }
+    ]
+  },
+  t6: {
+    title: 'T6 — Provisionar Infraestrutura AWS',
+    subtitle: 'Fase 1 · Responsável: Erick + John · Concluído',
+    steps: [
+      { title: 'Provisionamento', body: 'Criação de VPC, sub-redes, Route Tables, Internet Gateway, Security Groups, instância EC2 Amazon Linux e RDS PostgreSQL 15.' }
+    ]
+  },
+  t7: {
+    title: 'T7 — Deploy na EC2 via SSH',
+    subtitle: 'Fase 1 · Responsável: Erick + John · Concluído',
+    steps: [
+      { title: 'Deploy e execução', body: 'SSH na EC2 · clone · venv · instalação de dependências · exportação de variáveis de banco · flask init-db · Gunicorn rodando.' }
+    ]
+  },
+  t10: {
+    title: 'T10 — Gravação do Vídeo Demonstrativo',
+    subtitle: 'Fase 1 · Responsável: Todos · Concluído',
+    steps: [
+      { title: 'Gravação conjunta', body: 'Demonstração do Docker local, diagrama, EC2 ao vivo com RDS, Security Groups e gestão de credenciais.' }
+    ]
+  }
+};
+
+const GUIDES_FASE2 = {
   t1: {
     title: 'T1 — Dockerfiles Multi-stage para os 5 Microsserviços',
-    subtitle: 'Responsável: Todos · Fase 2: Conteinerização',
+    subtitle: 'Fase 2 · Responsável: Todos · Conteinerização',
     steps: [
       { title: 'auth-service & evaluation-service (Go)', body: 'Crie Dockerfile com estágio de build (golang:1.22-alpine) gerando binário estático e runtime mínimo (alpine ou scratch/distroless):', code: '# Multi-stage Go\nFROM golang:1.22-alpine AS builder\nWORKDIR /app\nCOPY go.mod go.sum ./\nRUN go mod download\nCOPY . .\nRUN CGO_ENABLED=0 GOOS=linux go build -o /server .\n\nFROM alpine:3.19\nWORKDIR /app\nCOPY --from=builder /server .\nEXPOSE 8080\nCMD ["./server"]', tip: 'Multi-stage reduz o tamanho da imagem de ~800MB para menos de ~20MB.' },
       { title: 'flag-service, targeting-service & analytics-service (Python)', body: 'Crie Dockerfile com python:3.11-slim, instalando dependências com --no-cache-dir:', code: 'FROM python:3.11-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nEXPOSE 5000\nCMD ["python", "app.py"]', tip: 'Use non-root user se possível para melhores práticas de segurança em contêineres.' }
@@ -1323,7 +1715,7 @@ const GUIDES = {
   },
   t2: {
     title: 'T2 — Docker Compose Local com 9 Contêineres',
-    subtitle: 'Responsável: Cassio · Teste de Integração Local',
+    subtitle: 'Fase 2 · Responsável: Cassio · Teste de Integração Local',
     steps: [
       { title: 'Estruturar o docker-compose.yml', body: 'Suba todos os 5 serviços + 4 bancos locais (2x Postgres, 1x Redis, 1x DynamoDB Local):', code: 'services:\n  auth-service:\n    build: ./auth-service\n    ports: ["8081:8080"]\n    environment:\n      - DB_HOST=postgres-auth\n  flag-service:\n    build: ./flag-service\n    ports: ["8082:5000"]\n  targeting-service:\n    build: ./targeting-service\n    ports: ["8083:5000"]\n  evaluation-service:\n    build: ./evaluation-service\n    ports: ["8084:8080"]\n    environment:\n      - REDIS_HOST=redis\n  analytics-service:\n    build: ./analytics-service\n    environment:\n      - DYNAMODB_ENDPOINT=http://dynamodb-local:8000', tip: 'Este teste local é o primeiro item obrigatório cobrado no vídeo de demonstração!' },
       { title: 'Subir e testar', body: 'Execute:', code: 'docker compose up --build -d\ndocker compose ps\ncurl http://localhost:8081/health' }
@@ -1331,7 +1723,7 @@ const GUIDES = {
   },
   t3: {
     title: 'T3 — Provisionar 5 Repositórios no AWS ECR',
-    subtitle: 'Responsável: John · Container Registry',
+    subtitle: 'Fase 2 · Responsável: John · Container Registry',
     steps: [
       { title: 'Criar repositórios no ECR', body: 'Pelo Console AWS (ECR) ou AWS CLI:', code: 'aws ecr create-repository --repository-name auth-service\naws ecr create-repository --repository-name flag-service\naws ecr create-repository --repository-name targeting-service\naws ecr create-repository --repository-name evaluation-service\naws ecr create-repository --repository-name analytics-service' },
       { title: 'Autenticar Docker no ECR', body: 'Faça login no registro da sua conta:', code: 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <ID_CONTA>.dkr.ecr.us-east-1.amazonaws.com' },
@@ -1340,7 +1732,7 @@ const GUIDES = {
   },
   t4: {
     title: 'T4 — Provisionar Recursos Gerenciados (RDS, ElastiCache, DynamoDB, SQS)',
-    subtitle: 'Responsável: Erick · Bancos de Dados e Mensageria AWS',
+    subtitle: 'Fase 2 · Responsável: Erick · Bancos de Dados e Mensageria AWS',
     steps: [
       { title: '3 Instâncias RDS PostgreSQL', body: 'Criar 3 bancos independentes: auth-db, flag-db, targeting-db (db.t3.micro, PostgreSQL 15, sem acesso público, Security Group liberando porta 5432 apenas para os nós do EKS).' },
       { title: '1 Cluster ElastiCache for Redis', body: 'Criar cluster Redis para o evaluation-service (cache in-memory de alta velocidade para feature flags).' },
@@ -1351,7 +1743,7 @@ const GUIDES = {
   },
   t5: {
     title: 'T5 — Provisionar Cluster AWS EKS',
-    subtitle: 'Responsável: Erick · Orquestração Kubernetes',
+    subtitle: 'Fase 2 · Responsável: Erick · Orquestração Kubernetes',
     steps: [
       { title: 'Opção A — AWS Academy (Console)', body: 'Acesse Console AWS → EKS → Create Cluster · Nome: togglemaster-cluster · Cluster Role: LabRole · Subnets da VPC. Após "Active", crie o Node Group com Node IAM Role = LabRole (Min=1, Desejado=2, Max=4 instâncias t3.medium ou t3.small).' },
       { title: 'Opção B — Conta Pessoal (eksctl)', body: 'Com eksctl:', code: 'eksctl create cluster --name togglemaster-cluster --region us-east-1 --nodegroup-name standard-workers --node-type t3.medium --nodes 2 --nodes-min 1 --nodes-max 4 --managed' },
@@ -1360,7 +1752,7 @@ const GUIDES = {
   },
   t6: {
     title: 'T6 — Instalar Metrics Server e Ingress Controller',
-    subtitle: 'Responsável: Marcelo · Cluster Setup',
+    subtitle: 'Fase 2 · Responsável: Marcelo · Cluster Setup',
     steps: [
       { title: 'Instalar Metrics Server', body: 'Obrigatório para que o Horizontal Pod Autoscaler (HPA) possa ler métricas de CPU e memória:', code: 'kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml\nkubectl top nodes' },
       { title: 'Instalar Nginx Ingress Controller', body: 'Instale o controller que provisionará o AWS Load Balancer:', code: 'kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/aws/deploy.yaml\nkubectl get svc -n ingress-nginx' },
@@ -1369,7 +1761,7 @@ const GUIDES = {
   },
   t7: {
     title: 'T7 — Manifestos Kubernetes para os 5 Microsserviços',
-    subtitle: 'Responsável: John · Manifestos YAML',
+    subtitle: 'Fase 2 · Responsável: John · Manifestos YAML',
     steps: [
       { title: 'Namespaces & Secrets', body: 'Crie o namespace `togglemaster` e os Secrets em base64 com credenciais de banco e filas:', code: 'apiVersion: v1\nkind: Namespace\nmetadata:\n  name: togglemaster\n---\napiVersion: v1\nkind: Secret\nmetadata:\n  name: app-secrets\n  namespace: togglemaster\ntype: Opaque\ndata:\n  DB_PASS: <BASE64_PASS>' },
       { title: 'Deployments com Requests, Limits e Probes', body: 'Defina limites de CPU/memória e probes para garantir resiliência:', code: 'resources:\n  requests:\n    cpu: "100m"\n    memory: "128Mi"\n  limits:\n    cpu: "500m"\n    memory: "256Mi"\nlivenessProbe:\n  httpGet:\n    path: /health\n    port: 8080\nreadinessProbe:\n  httpGet:\n    path: /health\n    port: 8080' },
@@ -1378,14 +1770,14 @@ const GUIDES = {
   },
   t8: {
     title: 'T8 — Configurar Roteamento no Ingress Controller',
-    subtitle: 'Responsável: Alan · Roteamento HTTP',
+    subtitle: 'Fase 2 · Responsável: Alan · Roteamento HTTP',
     steps: [
       { title: 'Manifesto Ingress com Path-based Routing', body: 'Configure as 5 rotas apontando para cada serviço no namespace togglemaster:', code: 'apiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: togglemaster-ingress\n  namespace: togglemaster\n  annotations:\n    nginx.ingress.kubernetes.io/rewrite-target: /$2\nspec:\n  ingressClassName: nginx\n  rules:\n  - http:\n      paths:\n      - path: /auth(/|$)(.*)\n        pathType: ImplementationSpecific\n        backend:\n          service:\n            name: auth-service\n            port:\n              number: 8080\n      - path: /flags(/|$)(.*)\n        pathType: ImplementationSpecific\n        backend:\n          service:\n            name: flag-service\n            port:\n              number: 5000\n      - path: /evaluation(/|$)(.*)\n        pathType: ImplementationSpecific\n        backend:\n          service:\n            name: evaluation-service\n            port:\n              number: 8080' }
     ]
   },
   t9: {
     title: 'T9 — Configurar Escalabilidade Automática (HPA / KEDA)',
-    subtitle: 'Responsável: Marcelo · Auto Scaling',
+    subtitle: 'Fase 2 · Responsável: Marcelo · Auto Scaling',
     steps: [
       { title: 'HPA para evaluation-service (CPU 70%)', body: 'Crie o HPA para escalar de 2 a 10 réplicas baseado em utilização média de CPU:', code: 'apiVersion: autoscaling/v2\nkind: HorizontalPodAutoscaler\nmetadata:\n  name: evaluation-hpa\n  namespace: togglemaster\nspec:\n  scaleTargetRef:\n    apiVersion: apps/v1\n    kind: Deployment\n    name: evaluation-service\n  minReplicas: 2\n  maxReplicas: 10\n  metrics:\n  - type: Resource\n    resource:\n      name: cpu\n      target:\n        type: Utilization\n        averageUtilization: 70' },
       { title: 'HPA para analytics-service (Opção A) ou KEDA (Opção B)', body: 'Na AWS Academy, use HPA por CPU no analytics-service. Em conta pessoal, use KEDA ScaledObject apontando para a fila SQS (queueDepth).' }
@@ -1393,7 +1785,7 @@ const GUIDES = {
   },
   t10: {
     title: 'T10 — Testes de Carga, Escalabilidade e DynamoDB',
-    subtitle: 'Responsável: Todos · Validação e Stress Test',
+    subtitle: 'Fase 2 · Responsável: Todos · Validação e Stress Test',
     steps: [
       { title: 'Disparar Carga no evaluation-service', body: 'Use `hey` ou `ab` para enviar requisições simultâneas via URL do Load Balancer:', code: 'hey -n 10000 -c 50 http://<LOAD_BALANCER_DNS>/evaluation/test\nkubectl get hpa -n togglemaster -w\nkubectl get pods -n togglemaster' },
       { title: 'Testar Fila SQS e DynamoDB', body: 'Envie mensagens para a fila SQS e observe os Pods do analytics-service processando e salvando registros na tabela DynamoDB.' }
@@ -1401,7 +1793,7 @@ const GUIDES = {
   },
   t11: {
     title: 'T11 — [Opcional] Google Cloud Skills Boost (+10 pts)',
-    subtitle: 'Responsável: Todos · Pontuação Extra',
+    subtitle: 'Fase 2 · Responsável: Todos · Pontuação Extra',
     steps: [
       { title: 'Acessar a trilha no Google Cloud Skills Boost', body: 'Aceite o convite e complete a trilha recomendada de conteinerização/Kubernetes.' },
       { title: 'Tornar perfil público e gerar badge', body: 'No perfil do Skills Boost, marque o perfil como público e copie a URL pública do seu perfil/badge.' },
@@ -1410,14 +1802,14 @@ const GUIDES = {
   },
   t12: {
     title: 'T12 — Gravação do Vídeo Demonstrativo (até 20 min)',
-    subtitle: 'Responsável: Todos · Reunião Conjunta e Demonstração',
+    subtitle: 'Fase 2 · Responsável: Todos · Reunião Conjunta e Demonstração',
     steps: [
       { title: 'Roteiro Sugerido (20 min)', body: '[0:00–2:00] Apresentação do Grupo 24 e contexto dos 5 microsserviços\n[2:00–5:00] Docker Compose local rodando os 9 contêineres com curl\n[5:00–9:00] Cluster AWS EKS no console + kubectl get pods, svc, ingress\n[9:00–12:00] Chamada via Nginx Ingress Controller no Load Balancer público\n[12:00–16:00] Teste de carga (hey) + HPA aumentando réplicas ao vivo + SQS e DynamoDB\n[16:00–20:00] Explicação arquitetural, comparação dos 3 data stores e desafios da LabRole' }
     ]
   },
   t13: {
     title: 'T13 — Relatório de Entrega & Submissão FIAP',
-    subtitle: 'Responsável: Alan · Fechamento da Fase 2',
+    subtitle: 'Fase 2 · Responsável: Alan · Fechamento da Fase 2',
     steps: [
       { title: 'Elaborar Relatório (.PDF ou .txt)', body: 'Incluir: Nomes completos, RMs e Discord dos integrantes do Grupo 24 · Link do repositório GitHub · Link do vídeo (YouTube não listado) · Justificativa das escolhas técnicas e comparativo dos data stores · Link do Google Cloud Skills Boost.' },
       { title: 'Submissão no Portal FIAP', body: 'Submeter o relatório na plataforma FIAP dentro do prazo estipulado.' }
@@ -1425,27 +1817,34 @@ const GUIDES = {
   }
 };
 
-function openGuide(id) {
+function openGuide(id, phaseNum = 2) {
   pendingGuideId = id;
-  const g = GUIDES[id];
+  const guideSource = phaseNum === 1 ? GUIDES_FASE1 : GUIDES_FASE2;
+  const g = guideSource[id];
   if (!g) return;
   document.getElementById('modalTitle').textContent = g.title;
 
-  const task = tasks.find(t => t.id === id);
   let ownerLabel = '';
-  if (task && task.owner) {
-    if (task.owner === 'ALL') {
-      ownerLabel = 'Todos';
-    } else {
-      const person = PEOPLE_CATALOG.find(p => p.pid === task.owner);
-      ownerLabel = person ? person.name.split(' ')[0] : task.owner;
+  if (phaseNum === 2) {
+    const task = tasks.find(t => t.id === id);
+    if (task && task.owner) {
+      if (task.owner === 'ALL') ownerLabel = 'Todos';
+      else {
+        const person = PEOPLE_CATALOG.find(p => p.pid === task.owner);
+        ownerLabel = person ? person.name.split(' ')[0] : task.owner;
+      }
     }
+  } else {
+    const f1Task = FASE1_TASKS.find(t => t.id === 'f1_' + id || t.id === id);
+    if (f1Task) ownerLabel = f1Task.doneBy;
   }
+
   const staticSubtitle = g.subtitle || '';
   const dynamicSubtitle = ownerLabel
     ? staticSubtitle.replace(/Responsável:[^·]+/, `Responsável: ${ownerLabel}`)
     : staticSubtitle;
   document.getElementById('modalSubtitle').textContent = dynamicSubtitle;
+
   const stepsHtml = g.steps.map((s, i) => `
     <li>
       <div class="guide-step-num">${i + 1}</div>
@@ -1462,6 +1861,15 @@ function openGuide(id) {
   box.classList.remove('modal-wide');
   box.classList.add('modal-guide');
   document.getElementById('modalOverlay').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('active');
+  const box = document.getElementById('modalBox');
+  box.classList.remove('modal-wide');
+  box.classList.remove('modal-guide');
+  pendingTaskId = null;
+  pendingGuideId = null;
 }
 
 function showConfirm({ icon='⚠️', title, msg, okLabel='Confirmar', okClass='btn-danger', onOk }) {
@@ -1487,6 +1895,58 @@ function showToast(msg) {
 }
 
 // ══════════════════════════════════════════════
+// LOGIN & AUTH
+// ══════════════════════════════════════════════
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+async function tryLogin() {
+  const val = document.getElementById('pwInput').value;
+  if (!val) { document.getElementById('loginError').textContent = 'Digite a senha.'; return; }
+  const hash = await sha256(val);
+  if (hash === PW_HASH) {
+    sessionStorage.setItem(AUTH_KEY, '1');
+    const gate = document.getElementById('login-gate');
+    gate.classList.add('hidden');
+    document.documentElement.classList.remove('login-open');
+    document.body.classList.remove('login-open');
+    setTimeout(() => gate.remove(), 350);
+    _attachFirebaseListeners();
+  } else {
+    document.getElementById('loginError').textContent = 'Senha incorreta. Tente novamente.';
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwInput').focus();
+  }
+}
+(function checkAuth() {
+  if (sessionStorage.getItem(AUTH_KEY) === '1') {
+    const g = document.getElementById('login-gate');
+    if (g) g.remove();
+    document.documentElement.classList.remove('login-open');
+    document.body.classList.remove('login-open');
+    _attachFirebaseListeners();
+  } else {
+    document.documentElement.classList.add('login-open');
+    document.body.classList.add('login-open');
+  }
+})();
+
+// ══════════════════════════════════════════════
+// TEMA
+// ══════════════════════════════════════════════
+function toggleTheme() {
+  const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('tc-fase2-theme', next);
+  updateThemeBtn(next);
+}
+function updateThemeBtn(t) {
+  document.getElementById('themeBtn').querySelector('.icon').textContent = t === 'dark' ? '☀️' : '🌙';
+  document.getElementById('themeLabel').textContent = t === 'dark' ? 'Modo Claro' : 'Modo Escuro';
+}
+
+// ══════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════
 window.addEventListener('DOMContentLoaded', () => {
@@ -1502,11 +1962,16 @@ window.addEventListener('DOMContentLoaded', () => {
   loadMembers();
   loadTasks();
   loadState();
-  renderMembers();
-  renderChecklist();
+
+  if (location.hash === '#fase1') {
+    switchPhase(1);
+  } else {
+    switchPhase(2);
+  }
 });
 
-// Expondo funções para o escopo global do navegador
+// Expondo para o window
+window.switchPhase = switchPhase;
 window.tryLogin = tryLogin;
 window.toggleTheme = toggleTheme;
 window.openGroupModal = openGroupModal;
