@@ -1398,8 +1398,11 @@ function renderMembers() {
     const entry = { lbl, status: realStatus };
     if (t.owner === 'ALL') {
       allTasks.push(entry);
-    } else if (t.owner && ownTasks[t.owner] !== undefined) {
-      ownTasks[t.owner].push(entry);
+    } else {
+      const owners = Array.isArray(t.owner) ? t.owner : [t.owner];
+      owners.forEach(pid => {
+        if (ownTasks[pid] !== undefined) ownTasks[pid].push(entry);
+      });
     }
   });
 
@@ -1684,8 +1687,8 @@ function openGroupModal() {
   const tagColors = { 'tag-pink':'var(--pink)', 'tag-blue':'var(--blue)', 'tag-purple':'var(--purple)', 'tag-green':'var(--green)', 'tag-yellow':'var(--yellow)' };
 
   // 1. Estatísticas da Fase 1 (Histórico 100% concluído)
-  const totalTasksF1 = FASE1_TASKS.length; // 11
-  const totalDoneF1  = totalTasksF1;        // 11
+  const totalTasksF1 = FASE1_TASKS.length; // 15
+  const totalDoneF1  = totalTasksF1;        // 15
 
   // 2. Estatísticas da Fase 2 (Interativa / Em andamento)
   const totalTasksF2 = tasks.length;
@@ -1706,15 +1709,23 @@ function openGroupModal() {
 
   // 4. Montar linhas por membro somando todas as fases
   const rows = PEOPLE_CATALOG.map(p => {
-    // Fase 1 por membro (individual + tarefas compartilhadas ALL)
-    const mineF1   = FASE1_TASKS.filter(t => t.owner === p.pid).length;
-    const sharedF1 = FASE1_TASKS.filter(t => t.owner === 'ALL').length;
+    // Fase 1 por membro (individual + tarefas conjuntas/array + tarefas compartilhadas ALL)
+    const mineF1 = FASE1_TASKS.filter(t => {
+      if (t.owner === 'ALL') return false;
+      const owners = Array.isArray(t.owner) ? t.owner : [t.owner];
+      return owners.includes(p.pid);
+    }).length;
+    const sharedF1   = FASE1_TASKS.filter(t => t.owner === 'ALL').length;
     const totalF1Mem = mineF1 + sharedF1;
     const doneF1Mem  = totalF1Mem; // 100% entregue
 
-    // Fase 2 por membro (individual + tarefas compartilhadas ALL)
-    const mineF2   = tasks.filter(t => t.owner === p.pid).length;
-    const sharedF2 = tasks.filter(t => t.owner === 'ALL').length;
+    // Fase 2 por membro (individual + tarefas conjuntas/array + tarefas compartilhadas ALL)
+    const mineF2 = tasks.filter(t => {
+      if (t.owner === 'ALL') return false;
+      const owners = Array.isArray(t.owner) ? t.owner : [t.owner];
+      return owners.includes(p.pid);
+    }).length;
+    const sharedF2   = tasks.filter(t => t.owner === 'ALL').length;
     const totalF2Mem = mineF2 + sharedF2;
     const doneF2Mem  = donePidCountF2[p.pid] || 0;
     const pctF2Mem   = totalF2Mem > 0 ? Math.round((doneF2Mem / totalF2Mem) * 100) : 0;
