@@ -233,7 +233,7 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(3px);z-index:999;display:none;align-items:center;justify-content:center;padding:16px;}
 .modal-overlay.active{display:flex;}
 .modal-box{background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--pink);border-radius:14px;padding:24px 28px;width:100%;max-width:540px;box-shadow:var(--shadow);max-height:90vh;overflow-y:auto;position:relative;}
-.modal-box.modal-wide{max-width:980px;width:min(980px,96vw);padding:22px 26px;}
+.modal-box.modal-wide{max-width:1060px;width:min(1060px,96vw);padding:22px 26px;}
 .modal-box.modal-guide{max-width:640px;}
 .modal-title{font-size:1.1rem;font-weight:800;color:var(--txt);margin-bottom:2px;}
 .modal-subtitle{font-size:.75rem;color:var(--muted);margin-bottom:18px;}
@@ -257,10 +257,13 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 .guide-step-body .tip{margin-top:6px;font-size:.7rem;color:var(--yellow);background:rgba(245,197,24,.1);border:1px solid rgba(245,197,24,.3);border-radius:4px;padding:4px 8px;}
 
 /* Tabela modal sobre o grupo */
-.group-table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:4px;}
+.group-table-wrap{width:100%;overflow-x:hidden;margin-top:4px;}
+@media (max-width: 768px) {
+  .group-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+}
 .group-table{width:100%;border-collapse:collapse;font-size:.78rem;}
-.group-table th{text-align:left;padding:8px 10px;border-bottom:2px solid var(--border);color:var(--muted);font-size:.68rem;text-transform:uppercase;letter-spacing:1px;white-space:nowrap;}
-.group-table td{padding:9px 10px;border-bottom:1px solid var(--border);color:var(--txt);vertical-align:middle;}
+.group-table th{text-align:left;padding:8px 8px;border-bottom:2px solid var(--border);color:var(--muted);font-size:.68rem;text-transform:uppercase;letter-spacing:1px;white-space:nowrap;}
+.group-table td{padding:9px 8px;border-bottom:1px solid var(--border);color:var(--txt);vertical-align:middle;}
 .group-table tr:last-child td{border-bottom:none;}
 
 /* Form de edição de tarefa */
