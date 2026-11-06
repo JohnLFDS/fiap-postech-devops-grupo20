@@ -233,7 +233,7 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(3px);z-index:999;display:none;align-items:center;justify-content:center;padding:16px;}
 .modal-overlay.active{display:flex;}
 .modal-box{background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--pink);border-radius:14px;padding:24px 28px;width:100%;max-width:540px;box-shadow:var(--shadow);max-height:90vh;overflow-y:auto;position:relative;}
-.modal-box.modal-wide{max-width:880px;width:95vw;}
+.modal-box.modal-wide{max-width:980px;width:min(980px,96vw);padding:22px 26px;}
 .modal-box.modal-guide{max-width:640px;}
 .modal-title{font-size:1.1rem;font-weight:800;color:var(--txt);margin-bottom:2px;}
 .modal-subtitle{font-size:.75rem;color:var(--muted);margin-bottom:18px;}
@@ -258,9 +258,9 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",
 
 /* Tabela modal sobre o grupo */
 .group-table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:4px;}
-.group-table{width:100%;border-collapse:collapse;font-size:.8rem;}
-.group-table th{text-align:left;padding:10px 12px;border-bottom:2px solid var(--border);color:var(--muted);font-size:.7rem;text-transform:uppercase;letter-spacing:1px;white-space:nowrap;}
-.group-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--txt);vertical-align:middle;}
+.group-table{width:100%;border-collapse:collapse;font-size:.78rem;}
+.group-table th{text-align:left;padding:8px 10px;border-bottom:2px solid var(--border);color:var(--muted);font-size:.68rem;text-transform:uppercase;letter-spacing:1px;white-space:nowrap;}
+.group-table td{padding:9px 10px;border-bottom:1px solid var(--border);color:var(--txt);vertical-align:middle;}
 .group-table tr:last-child td{border-bottom:none;}
 
 /* Form de edição de tarefa */
@@ -1709,59 +1709,51 @@ function openGroupModal() {
 
   // 4. Montar linhas por membro somando todas as fases
   const rows = PEOPLE_CATALOG.map(p => {
-    // Fase 1 por membro (individual + tarefas conjuntas/array + tarefas compartilhadas ALL)
+    // Fase 1 por membro (tarefas realizadas sobre o total da Fase 1 = 15)
     const mineF1 = FASE1_TASKS.filter(t => {
       if (t.owner === 'ALL') return false;
       const owners = Array.isArray(t.owner) ? t.owner : [t.owner];
       return owners.includes(p.pid);
     }).length;
     const sharedF1   = FASE1_TASKS.filter(t => t.owner === 'ALL').length;
-    const totalF1Mem = mineF1 + sharedF1;
-    const doneF1Mem  = totalF1Mem; // 100% entregue
+    const doneF1Mem  = mineF1 + sharedF1; // Tarefas que o membro concluiu na Fase 1
+    const pctF1Phase = Math.round((doneF1Mem / totalTasksF1) * 100);
 
-    // Fase 2 por membro (individual + tarefas conjuntas/array + tarefas compartilhadas ALL)
-    const mineF2 = tasks.filter(t => {
-      if (t.owner === 'ALL') return false;
-      const owners = Array.isArray(t.owner) ? t.owner : [t.owner];
-      return owners.includes(p.pid);
-    }).length;
-    const sharedF2   = tasks.filter(t => t.owner === 'ALL').length;
-    const totalF2Mem = mineF2 + sharedF2;
+    // Fase 2 por membro (tarefas concluídas sobre o total da Fase 2 = 13)
     const doneF2Mem  = donePidCountF2[p.pid] || 0;
-    const pctF2Mem   = totalF2Mem > 0 ? Math.round((doneF2Mem / totalF2Mem) * 100) : 0;
+    const pctF2Phase = totalTasksF2 > 0 ? Math.round((doneF2Mem / totalTasksF2) * 100) : 0;
 
-    // Total Histórico Consolidado por membro
-    const totalGlobalMem = totalF1Mem + totalF2Mem;
-    const doneGlobalMem  = doneF1Mem + doneF2Mem;
-    const pctGlobalMem   = totalGlobalMem > 0 ? Math.round((doneGlobalMem / totalGlobalMem) * 100) : 0;
-    const barColor       = tagColors[p.tag] || 'var(--blue)';
+    // Total Histórico Consolidado por membro sobre o total do projeto (28 tarefas)
+    const doneGlobalMem     = doneF1Mem + doneF2Mem;
+    const pctContribGlobal  = totalTasksGlobal > 0 ? Math.round((doneGlobalMem / totalTasksGlobal) * 100) : 0;
+    const barColor          = tagColors[p.tag] || 'var(--blue)';
 
     return `
     <tr>
       <td style="white-space:nowrap;">
-        <div style="display:flex;align-items:center;gap:8px;">
+        <div style="display:flex;align-items:center;gap:7px;">
           <span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${barColor};flex-shrink:0;"></span>
           <span style="font-weight:700;color:var(--txt);white-space:nowrap;">${p.name}</span>
         </div>
       </td>
-      <td style="color:var(--muted);white-space:nowrap;font-size:.75rem;">${p.rm}</td>
+      <td style="color:var(--muted);white-space:nowrap;font-size:.74rem;">${p.rm}</td>
       <td style="text-align:center;white-space:nowrap;">
-        <span style="font-weight:700;color:var(--green);font-size:.78rem;">${doneF1Mem}/${totalF1Mem}</span>
-        <span style="font-size:.65rem;color:var(--green);font-weight:700;background:rgba(46,204,113,.12);border:1px solid rgba(46,204,113,.3);padding:2px 6px;border-radius:10px;margin-left:4px;">100%</span>
+        <span style="font-weight:700;color:var(--green);font-size:.76rem;">${doneF1Mem} / ${totalTasksF1}</span>
+        <span style="font-size:.64rem;color:var(--green);font-weight:700;background:rgba(46,204,113,.12);border:1px solid rgba(46,204,113,.3);padding:2px 5px;border-radius:10px;margin-left:3px;">${pctF1Phase}%</span>
       </td>
       <td style="text-align:center;white-space:nowrap;">
-        <span style="font-weight:700;color:${doneF2Mem > 0 ? 'var(--pink)' : 'var(--muted)'};font-size:.78rem;">${doneF2Mem}/${totalF2Mem}</span>
-        <span style="font-size:.65rem;color:${doneF2Mem > 0 ? 'var(--pink)' : 'var(--muted)'};font-weight:700;background:var(--surface2);border:1px solid var(--border);padding:2px 6px;border-radius:10px;margin-left:4px;">${pctF2Mem}%</span>
+        <span style="font-weight:700;color:${doneF2Mem > 0 ? 'var(--pink)' : 'var(--muted)'};font-size:.76rem;">${doneF2Mem} / ${totalTasksF2}</span>
+        <span style="font-size:.64rem;color:${doneF2Mem > 0 ? 'var(--pink)' : 'var(--muted)'};font-weight:700;background:var(--surface2);border:1px solid var(--border);padding:2px 5px;border-radius:10px;margin-left:3px;">${pctF2Phase}%</span>
       </td>
-      <td style="text-align:center;font-weight:800;color:var(--txt);font-size:.8rem;white-space:nowrap;">
-        ${doneGlobalMem} <span style="font-size:.72rem;font-weight:400;color:var(--muted);">/ ${totalGlobalMem}</span>
+      <td style="text-align:center;font-weight:800;color:var(--txt);font-size:.78rem;white-space:nowrap;">
+        ${doneGlobalMem} <span style="font-size:.7rem;font-weight:400;color:var(--muted);">/ ${totalTasksGlobal}</span>
       </td>
-      <td style="min-width:130px;">
-        <div style="display:flex;align-items:center;gap:8px;">
-          <div style="flex:1;background:var(--surface2);border-radius:4px;height:7px;overflow:hidden;min-width:65px;">
-            <div style="height:100%;width:${pctGlobalMem}%;background:${barColor};border-radius:4px;transition:width .4s;"></div>
+      <td style="min-width:120px;">
+        <div style="display:flex;align-items:center;gap:7px;">
+          <div style="flex:1;background:var(--surface2);border-radius:4px;height:7px;overflow:hidden;min-width:55px;">
+            <div style="height:100%;width:${pctContribGlobal}%;background:${barColor};border-radius:4px;transition:width .4s;"></div>
           </div>
-          <span style="font-size:.72rem;font-weight:700;color:${barColor};min-width:32px;text-align:right;">${pctGlobalMem}%</span>
+          <span style="font-size:.72rem;font-weight:800;color:${barColor};min-width:32px;text-align:right;">${pctContribGlobal}%</span>
         </div>
       </td>
     </tr>`;
@@ -1796,10 +1788,10 @@ function openGroupModal() {
           <tr>
             <th style="white-space:nowrap;">Membro</th>
             <th style="white-space:nowrap;">RM</th>
-            <th style="text-align:center;white-space:nowrap;">Fase 1 (G20)</th>
-            <th style="text-align:center;white-space:nowrap;">Fase 2 (G24)</th>
-            <th style="text-align:center;white-space:nowrap;">Total Geral</th>
-            <th style="white-space:nowrap;min-width:140px;">Desempenho Geral</th>
+            <th style="text-align:center;white-space:nowrap;">Fase 1 (15 tarefas)</th>
+            <th style="text-align:center;white-space:nowrap;">Fase 2 (13 tarefas)</th>
+            <th style="text-align:center;white-space:nowrap;">Total Entregue</th>
+            <th style="white-space:nowrap;min-width:130px;">Contribuição no Projeto</th>
           </tr>
         </thead>
         <tbody>${rows}</tbody>
@@ -1807,7 +1799,7 @@ function openGroupModal() {
     </div>
 
     <div style="margin-top:14px;padding:10px 14px;background:rgba(91,143,255,.07);border:1px solid rgba(91,143,255,.25);border-radius:8px;font-size:.74rem;color:var(--txt2);line-height:1.45;">
-      💡 <strong>Visão Consolidada:</strong> Esta tela contabiliza o histórico acumulado de todas as entregas do grupo durante a pós-graduação. A visão específica de cada fase (com checklists e tarefas editáveis) permanece disponível nas abas correspondentes do Roadmap.
+      💡 <strong>Visão Consolidada:</strong> A coluna <em>Contribuição no Projeto</em> representa o percentual de todas as entregas do curso (28 tarefas no total) que contaram com a participação de cada integrante.
     </div>`;
 
   document.getElementById('modalBtns').innerHTML =
